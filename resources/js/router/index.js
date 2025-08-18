@@ -106,7 +106,7 @@ const routes = [
         meta: { title: 'User Create' }
     },
     {
-        path: '/users/edit',
+        path: '/users/edit/:id',
         name: 'users-edit',
         component: UsersForm,
         meta: { title: 'User Edit' }

@@ -45,3 +45,22 @@ export async function createUser(payload) {
         throw error
     }
 }
+
+export async function getUserById(id) {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/users/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function updateUser(id, payload) {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/users/${id}`, payload);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+

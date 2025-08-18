@@ -10,7 +10,8 @@ use App\Http\Requests\UpdateUserStatusRequest;
 use Exception;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use Illuminate\Support\Facades\Hash;
+use App\Mail\UserCreatedMail;
+use Illuminate\Support\Facades\Mail;
 
 
 /**
@@ -162,8 +163,10 @@ class UserController extends Controller
     public function store(StoreUserRequest $request): JsonResponse
     {
         try {
+            $plainPassword = $request->input('password') ?? null;
             $user = $this->userService->createUser($request->validated());
 
+            Mail::to($user->email)->send(new UserCreatedMail($user, $plainPassword));
             return response()->json([
                 'message' => 'User created successfully.',
                 'data' => $user,
@@ -235,6 +238,82 @@ class UserController extends Controller
             return response()->json([
                 'message' => 'User not found.',
             ], 404);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/users/{id}",
+     *     summary="Get user details by ID",
+     *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="User ID",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User details retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="john@example.com"),
+     *                 @OA\Property(property="mobile_number", type="string", example="9876543210"),
+     *                 @OA\Property(property="status", type="boolean", example=true),
+     *                 @OA\Property(property="created_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="User not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Something went wrong while fetching the user.")
+     *         )
+     *     )
+     * )
+     */
+
+    public function view($id)
+    {
+        try {
+            $user = $this->userService->getUserById($id);
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not found'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong while fetching the user.',
+                'error'   => $e->getMessage()
+            ], 500);
         }
     }
 }

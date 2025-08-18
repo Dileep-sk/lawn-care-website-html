@@ -88,4 +88,10 @@ class UserService
 
         return $user;
     }
+
+    public function getUserById($id)
+    {
+        return User::select('id', 'name', 'email', 'mobile_number', 'status', 'created_at')
+            ->find($id);
+    }
 }

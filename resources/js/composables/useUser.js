@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router'
 
 import Swal from 'sweetalert2'
 import toastr from 'toastr'
-import { fetchUsers, deleteUser, updateUserStatus, createUser } from '@/services/userService'
+import { fetchUsers, deleteUser, updateUserStatus, createUser, updateUser, getUserById } from '@/services/userService'
 
 export function useUser(searchTerm = ref('')) {
     const users = ref([])
@@ -95,6 +95,32 @@ export function useUser(searchTerm = ref('')) {
         }
     }
 
+    const fetchUserById = async (id) => {
+        try {
+            return await getUserById(id)
+        } catch (err) {
+            toastr.error('Failed to fetch user details', 'Error')
+            throw err
+        }
+    }
+
+    const handleUpdateUser = async (id, payload) => {
+        try {
+            await updateUser(id, payload)
+            toastr.success('User updated successfully', 'Success')
+            router.push({ name: 'users' })
+            return true
+        } catch (error) {
+            if (error.response && error.response.data?.errors) {
+                const errors = error.response.data.errors
+                Object.values(errors).forEach(err => toastr.error(err[0], 'Error'))
+                return false
+            }
+        }
+    }
+
+
+
     watch(searchTerm, (newValue) => {
         clearTimeout(searchTimeout)
         searchTimeout = setTimeout(async () => {
@@ -124,5 +150,7 @@ export function useUser(searchTerm = ref('')) {
         handleDelete,
         handleStatusToggle,
         handleCreateUser,
+        handleUpdateUser,
+        fetchUserById,
     }
 }

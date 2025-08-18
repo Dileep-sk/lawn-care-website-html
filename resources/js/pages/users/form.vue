@@ -1,12 +1,19 @@
 <script setup>
-import { reactive, watch } from 'vue'
+import { reactive, watch, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useUser } from '@/composables/useUser'
 import AuthLayout from '../../layouts/AuthLayout.vue'
 import left_arrow from '@/assets/icons/left-arrow.svg'
 import eye from '@/assets/icons/eye-off.svg'
+import toastr from 'toastr'
+const route = useRoute()
+const { handleCreateUser, handleUpdateUser, fetchUserById } = useUser()
 
-const { handleCreateUser } = useUser()
+// detect edit mode
+const userId = route.params.id
+const isEdit = !!userId
 
+// form data
 const form = reactive({
     name: '',
     email: '',
@@ -32,12 +39,12 @@ const validators = {
         return !mobileRegex.test(val) ? 'Enter a valid mobile number' : ''
     },
     password: (val) => {
-        if (!val) return 'Password is required'
-        return val.length < 6 ? 'Password must be at least 6 characters' : ''
+        if (!isEdit && !val) return 'Password is required' // required only on create
+        return val && val.length < 6 ? 'Password must be at least 6 characters' : ''
     },
     password_confirmation: (val) => {
-        if (!val) return 'Please confirm your password'
-        return val !== form.password ? 'Passwords do not match' : ''
+        if (form.password && val !== form.password) return 'Passwords do not match'
+        return ''
     }
 }
 
@@ -59,23 +66,51 @@ const validateForm = () => {
     return Object.values(errors).every((err) => !err)
 }
 
+// submit handler
 const onSubmit = async () => {
     if (!validateForm()) return
-    await handleCreateUser({ ...form })
+
+    if (isEdit) {
+        try {
+            await handleUpdateUser(userId, { ...form })
+        } catch (err) {
+            toastr.error('Failed to update user', 'Error')
+        }
+    } else {
+        await handleCreateUser({ ...form })
+    }
 }
 
+// toggle password visibility
 const togglePassword = (id) => {
     const input = document.getElementById(id)
     input.type = input.type === 'password' ? 'text' : 'password'
 }
 
+// load data for edit mode
+onMounted(async () => {
+    if (isEdit) {
+        try {
+            const res = await fetchUserById(userId) // ✅ use composable
+            Object.assign(form, {
+                name: res.data.name,
+                email: res.data.email,
+                mobile_number: res.data.mobile_number,
+                password: '',
+                password_confirmation: ''
+            })
+        } catch (err) {
+            toastr.error('Failed to fetch user details', 'Error')
+        }
+    }
+})
+
+// live validation
 Object.keys(form).forEach((field) => {
     watch(
         () => form[field],
         () => {
-            if (touched[field]) {
-                validateField(field)
-            }
+            if (touched[field]) validateField(field)
         }
     )
 })
@@ -87,7 +122,9 @@ Object.keys(form).forEach((field) => {
             <div class="content_container w-full h-full bg-white rounded-[10px]">
                 <!-- Header -->
                 <div class="top_header border-b p-[15px] border-b-[#E8F0E2] flex justify-between items-center">
-                    <h1 class="text-[20px] font-[700]">Add User</h1>
+                    <h1 class="text-[20px] font-[700]">
+                        {{ isEdit ? 'Edit User' : 'Add User' }}
+                    </h1>
                     <router-link :to="{ name: 'users' }"
                         class="cursor-pointer h-[45px] flex px-[20px] items-center gap-[10px] text-white text-[15px] font-[500] rounded-[5px] bg-black">
                         <img :src="left_arrow" class="w-[20px]" alt="Back" /> Back
@@ -117,7 +154,7 @@ Object.keys(form).forEach((field) => {
                             <!-- Mobile -->
                             <div class="input_box">
                                 <label>Mobile Number</label>
-                                <input type="text" v-model="form.mobile_number" @blur="handleBlur('mobile_number')"
+                                <input type="number" v-model="form.mobile_number" @blur="handleBlur('mobile_number')"
                                     class="input" :class="errors.mobile_number && 'border-red-500'"
                                     placeholder="+911234567895" />
                                 <p v-if="errors.mobile_number" class="text-red-500 text-sm">{{ errors.mobile_number }}
@@ -125,7 +162,8 @@ Object.keys(form).forEach((field) => {
                             </div>
 
                             <!-- Password -->
-                            <div class="input_box">
+                            <!-- Password -->
+                            <div v-if="!isEdit" class="input_box">
                                 <label>Password</label>
                                 <div class="relative">
                                     <input id="userPass" type="password" v-model="form.password"
@@ -139,7 +177,7 @@ Object.keys(form).forEach((field) => {
                             </div>
 
                             <!-- Confirm Password -->
-                            <div class="input_box">
+                            <div v-if="!isEdit" class="input_box">
                                 <label>Confirm Password</label>
                                 <div class="relative">
                                     <input id="userPassConfirm" type="password" v-model="form.password_confirmation"
@@ -155,10 +193,9 @@ Object.keys(form).forEach((field) => {
                                 </p>
                             </div>
                         </div>
-
                         <div class="flex justify-end mt-[20px]">
                             <button type="submit" class="flex create justify-center gap-[10px] items-center">
-                                Add User
+                                {{ isEdit ? 'Update User' : 'Add User' }}
                             </button>
                         </div>
                     </form>

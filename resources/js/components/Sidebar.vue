@@ -25,7 +25,7 @@ const route = useRoute()
 
         <ul class="flex flex-col mt-[50px] gap-[18px]">
             <li :class="{ 'active': route.path === '/dashboard' }">
-                <router-link to="/dashboard"
+                <router-link :to="{ name: 'dashboard' }"
                     class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
                     <img :src="dashboard" alt="">
                     <span>Dashboard</span>
@@ -33,7 +33,7 @@ const route = useRoute()
             </li>
 
             <li :class="{ 'active': route.path.startsWith('/order') }">
-                <router-link to="/order"
+                <router-link :to="{ name: 'order' }"
                     class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
                     <img :src="cart" alt="">
                     <span>Orders</span>
@@ -41,7 +41,7 @@ const route = useRoute()
             </li>
 
             <li :class="{ 'active': route.path.startsWith('/jobs') }">
-                <router-link to="/jobs"
+                <router-link :to="{ name: 'jobs' }"
                     class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
                     <img :src="jobs" alt="">
                     <span>Jobs</span>
@@ -49,7 +49,7 @@ const route = useRoute()
             </li>
 
             <li :class="{ 'active': route.path.startsWith('/stock') }">
-                <router-link to="/stock"
+                <router-link :to="{ name: 'stock' }"
                     class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
                     <img :src="stocks" alt="">
                     <span>Stocks</span>
@@ -57,7 +57,7 @@ const route = useRoute()
             </li>
 
             <li :class="{ 'active': route.path.startsWith('/users') }">
-                <router-link to="/users"
+                <router-link :to="{ name: 'users' }"
                     class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
                     <img :src="users" alt="">
                     <span>Users</span>
@@ -65,7 +65,7 @@ const route = useRoute()
             </li>
 
             <li :class="{ 'active': route.path.startsWith('/reports') }">
-                <router-link to="/reports"
+                <router-link :to="{ name: 'reports' }"
                     class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
                     <img :src="doc" alt="">
                     <span>Reports</span>

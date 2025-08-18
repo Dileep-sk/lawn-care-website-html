@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Akaya+Kanadaka&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Akaya+Kanadaka&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 
 * {
     box-sizing: border-box;
@@ -15,11 +15,10 @@
 ::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background-color: #3a3737;
-
 }
 
 .login_container {
-    background-image: url('../js/assets/images/Loginbg.png');
+    background-image: url("../js/assets/images/Loginbg.png");
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -30,7 +29,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    content: '';
+    content: "";
     background-color: rgba(0, 0, 0, 0.85);
 }
 
@@ -44,7 +43,7 @@ label {
     width: 100%;
     height: 40px;
     border-radius: 5px;
-    border: 1px solid #D4D4D4;
+    border: 1px solid #d4d4d4;
     outline: none;
     margin-top: 6px;
     font-size: 14px;
@@ -55,7 +54,6 @@ label {
 
 form input {
     background-color: #fff;
-
 }
 
 input:focus {
@@ -63,12 +61,11 @@ input:focus {
 }
 
 ::placeholder {
-    color: rgba(0, 0, 0, 0.40);
+    color: rgba(0, 0, 0, 0.4);
 }
 
 .input:hover {
     border-color: #999696;
-
 }
 
 .search_box {
@@ -85,7 +82,8 @@ select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background: url(../../assets/icons/downArrow.svg) no-repeat right 10px center;
+    background: url(../js/assets/icons/downArrow.svg) no-repeat right 10px
+        center;
     color: #000 !important;
     background-color: #fff !important;
 }
@@ -95,7 +93,7 @@ input[type="date"] {
     -moz-appearance: none;
     appearance: none;
     cursor: pointer;
-    background: url(../../assets/icons/calender.svg) no-repeat right 10px center;
+    background: url(../js/assets/icons/calender.svg) no-repeat right 10px center;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -105,14 +103,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 #sidebar .active a {
     color: #fff;
-    background: linear-gradient(90deg, #FF7556 0%, #FF4757 100%);
-
+    background: linear-gradient(90deg, #ff7556 0%, #ff4757 100%);
 }
 
 #sidebar .active a img {
     filter: invert(1);
 }
-
 
 #sidebar,
 #contentArea,
@@ -127,7 +123,6 @@ body.collapsed #sidebar {
 body.collapsed #sidebar a span {
     display: none;
 }
-
 
 body.collapsed #collapseToggle img {
     transform: rotate(-180deg);
@@ -144,7 +139,6 @@ body.collapsed #contentArea {
 .navbar {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-
 }
 
 body.collapsed #collapseToggle img {
@@ -162,7 +156,6 @@ table {
 table thead {
     height: 50px;
     background-color: rgba(0, 0, 0, 0.03);
-
 }
 
 table thead tr th {
@@ -171,7 +164,6 @@ table thead tr th {
     text-align: start;
     color: #000000;
     font-weight: 600;
-
 }
 
 table tbody tr {
@@ -207,7 +199,7 @@ table tbody tr:last-child {
 
 .create,
 .cancel {
-    background-color: #DC3545;
+    background-color: #dc3545;
     color: #fff;
     height: 45px;
     padding: 0 25px;
@@ -217,11 +209,11 @@ table tbody tr:last-child {
 }
 
 .create {
-    background-color: #05C46B;
+    background-color: #05c46b;
 }
 
 .export_btn {
-    background-color: #ECCC68;
+    background-color: #eccc68;
     color: #000;
     height: 40px;
     border-radius: 5px;
@@ -234,7 +226,7 @@ table tbody tr:last-child {
 }
 
 input[type="checkbox"] {
-    accent-color: #385C4C;
+    accent-color: #385c4c;
     scale: 1.3;
 }
 
@@ -268,17 +260,17 @@ body.fade-in {
 }
 
 .out_of_stock {
-    color: #D62925;
+    color: #d62925;
     background-color: rgba(214, 41, 37, 0.15);
 }
 
 .full {
-    color: #05C46B;
+    color: #05c46b;
     background-color: rgba(5, 196, 107, 0.15);
 }
 
 .pending {
-    color: #FFB900;
+    color: #ffb900;
     background-color: rgba(255, 185, 0, 0.15);
 }
 
@@ -293,7 +285,7 @@ body.fade-in {
 }
 
 .ready {
-    color: #3C40C6;
+    color: #3c40c6;
     background-color: rgba(60, 64, 198, 0.15);
 }
 
@@ -318,17 +310,40 @@ button {
 
 /* override toastr success background color */
 
-#toast-container>.toast-success {
+#toast-container > .toast-success {
     background-color: green !important;
     /* use any custom color you prefer */
 }
 
-#toast-container>.toast-error {
+#toast-container > .toast-error {
     background-color: red !important;
     /* red-500 */
 }
 
-#toast-container>.toast-warning {
+#toast-container > .toast-warning {
     background-color: yellow !important;
     /* yellow-400 */
 }
+
+
+/* /// loader css */
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #ff4757;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    }

@@ -20,8 +20,6 @@ const {
     handleStatusToggle
 } = useUser(searchTerm)
 </script>
-
-
 <template>
     <AuthLayout>
         <div class="inner_contant mt-[20px] w-[100%] ">
@@ -35,11 +33,11 @@ const {
                             <input type="text" v-model="searchTerm" placeholder="Search here.."
                                 class="input !border-0 !w-[325px] rounded-[5px] !mt-[0] !px-[40px] !h-[45px] bg-[rgba(23,23,23,0.05)]" />
                         </div>
-                        <a href="#"
+                        <router-link :to="{ name: 'users-create' }"
                             class="cursor-pointer flex gap-[5px] h-[45px] px-[15px] font-[500] items-center text-[#fff] text-[15px] rounded-[5px] bg-[#05C46B]">
                             Add New User
                             <img :src="plus" class="w-[22px]" alt="">
-                        </a>
+                        </router-link>
                     </div>
                 </div>
 
@@ -54,19 +52,18 @@ const {
                     ]" :loading="loading" :error="error" :currentPage="currentPage" :lastPage="lastPage"
                         @page-changed="(page) => loadUsers(page, searchTerm)">
                         <template #status="{ row }">
-                            <button @click="handleStatusToggle(row.id, row.status)"
-                                class="px-3 py-1 rounded text-white text-sm"
-                                :class="row.status === 1 ? 'bg-green-500' : 'bg-gray-500'">
+                            <button @click="handleStatusToggle(row.id, row.status)" class=""
+                                :class="row.status === 1 ? 'badge full bg-green-500' : 'badge out_of_stock bg-gray-500'">
                                 {{ row.status === 1 ? 'Active' : 'Inactive' }}
                             </button>
                         </template>
 
                         <template #edit="{ row }">
-                            <a href="#"
+                            <router-link :to="{ name: 'users-edit' }"
                                 class="w-[70px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#1e90ff]">
                                 <img :src="edit" class="w-[20px]" alt="">
                                 Edit
-                            </a>
+                            </router-link>
                         </template>
 
                         <template #delete="{ row }">

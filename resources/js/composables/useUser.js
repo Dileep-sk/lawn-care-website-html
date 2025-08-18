@@ -1,49 +1,9 @@
 import { ref, watch, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
 import Swal from 'sweetalert2'
 import toastr from 'toastr'
-import { fetchUsers, deleteUser, updateUserStatus } from '@/services/userService'
-
-
-const name = ref('')
-const email = ref('')
-const mobile_number = ref('')
-const password = ref('')
-const password_confirmation = ref('')
-
-
-const handleCreateUser = async () => {
-    try {
-        const payload = {
-            name: name.value,
-            email: email.value,
-            mobile_number: mobile_number.value,
-            password: password.value,
-            password_confirmation: password_confirmation.value
-        }
-
-        await createUser(payload)
-        toastr.success('User created successfully', 'Success')
-        router.push({ name: 'users' })
-    } catch (error) {
-        if (error.response && error.response.data?.errors) {
-            const errors = error.response.data.errors
-            Object.values(errors).forEach(err => toastr.error(err[0], 'Error'))
-        } else {
-            toastr.error('Something went wrong', 'Error')
-        }
-    }
-}
-
-// // Password toggle function
-// const togglePassword = (id, el) => {
-//     const input = document.getElementById(id)
-//     if (input.type === 'password') {
-//         input.type = 'text'
-//     } else {
-//         input.type = 'password'
-//     }
-// }
-
+import { fetchUsers, deleteUser, updateUserStatus, createUser } from '@/services/userService'
 
 export function useUser(searchTerm = ref('')) {
     const users = ref([])
@@ -52,7 +12,21 @@ export function useUser(searchTerm = ref('')) {
     const loading = ref(false)
     const error = ref(null)
     let searchTimeout = null
-
+    const router = useRouter()
+    const handleCreateUser = async (payload) => {
+        try {
+            await createUser(payload)
+            toastr.success('User created successfully', 'Success')
+            router.push({ name: 'users' })
+            return true
+        } catch (error) {
+            if (error.response && error.response.data?.errors) {
+                const errors = error.response.data.errors
+                Object.values(errors).forEach(err => toastr.error(err[0], 'Error'))
+                return false
+            }
+        }
+    }
     const loadUsers = async (page = 1, search = '') => {
         loading.value = true
         try {
@@ -121,7 +95,6 @@ export function useUser(searchTerm = ref('')) {
         }
     }
 
-    // Debounced search with try/catch
     watch(searchTerm, (newValue) => {
         clearTimeout(searchTimeout)
         searchTimeout = setTimeout(async () => {
@@ -151,6 +124,5 @@ export function useUser(searchTerm = ref('')) {
         handleDelete,
         handleStatusToggle,
         handleCreateUser,
-
     }
 }

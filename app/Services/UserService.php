@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Hash;
+
 
 class UserService
 {
@@ -57,5 +59,33 @@ class UserService
         } catch (Exception $e) {
             throw new Exception("Error updating user status: " . $e->getMessage());
         }
+    }
+
+    public function createUser(array $data): User
+    {
+
+        return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'mobile_number' => $data['mobile_number'],
+            'password' => Hash::make($data['password']),
+            'status' => 1,
+        ]);
+    }
+
+
+    public function updateUser(int $id, array $data)
+    {
+        $user = User::findOrFail($id);
+
+        if (isset($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        $user->update($data);
+
+        return $user;
     }
 }

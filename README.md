@@ -1,5 +1,12 @@
 Node - 20
 PHP-8.3
 Laravel 12
- php artisan l5-swagger:generate
+php artisan l5-swagger:generate
 # Swati_Textile_Erp
+
+
+API DOCS
+
+========================= 
+
+http://127.0.0.1:8000/api/documentation#/Users

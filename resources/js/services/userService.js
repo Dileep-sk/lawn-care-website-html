@@ -35,3 +35,13 @@ export async function updateUserStatus(id, status) {
         throw error
     }
 }
+
+
+export async function createUser(payload) {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/users`, payload)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

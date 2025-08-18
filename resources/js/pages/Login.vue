@@ -9,7 +9,7 @@ const router = useRouter()
 
 function handleLogin() {
 
-    router.push({ name: 'Dashboard' })
+    router.push({ name: 'dashboard' })
 }
 </script>
 

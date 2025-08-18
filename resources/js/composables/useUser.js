@@ -3,6 +3,48 @@ import Swal from 'sweetalert2'
 import toastr from 'toastr'
 import { fetchUsers, deleteUser, updateUserStatus } from '@/services/userService'
 
+
+const name = ref('')
+const email = ref('')
+const mobile_number = ref('')
+const password = ref('')
+const password_confirmation = ref('')
+
+
+const handleCreateUser = async () => {
+    try {
+        const payload = {
+            name: name.value,
+            email: email.value,
+            mobile_number: mobile_number.value,
+            password: password.value,
+            password_confirmation: password_confirmation.value
+        }
+
+        await createUser(payload)
+        toastr.success('User created successfully', 'Success')
+        router.push({ name: 'users' })
+    } catch (error) {
+        if (error.response && error.response.data?.errors) {
+            const errors = error.response.data.errors
+            Object.values(errors).forEach(err => toastr.error(err[0], 'Error'))
+        } else {
+            toastr.error('Something went wrong', 'Error')
+        }
+    }
+}
+
+// // Password toggle function
+// const togglePassword = (id, el) => {
+//     const input = document.getElementById(id)
+//     if (input.type === 'password') {
+//         input.type = 'text'
+//     } else {
+//         input.type = 'password'
+//     }
+// }
+
+
 export function useUser(searchTerm = ref('')) {
     const users = ref([])
     const currentPage = ref(1)
@@ -107,6 +149,8 @@ export function useUser(searchTerm = ref('')) {
         error,
         loadUsers,
         handleDelete,
-        handleStatusToggle
+        handleStatusToggle,
+        handleCreateUser,
+
     }
 }

@@ -8,6 +8,10 @@ use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Http\Requests\UpdateUserStatusRequest;
 use Exception;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Facades\Hash;
+
 
 /**
  * @OA\Tag(
@@ -110,6 +114,127 @@ class UserController extends Controller
                 'message' => 'Failed to update user status.',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/users",
+     *     tags={"Users"},
+     *     summary="Create a new user",
+     *     description="Create a new user with the required fields.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "email", "mobile_number", "password", "password_confirmation"},
+     *             @OA\Property(property="name", type="string", example="admin"),
+     *             @OA\Property(property="email", type="string", format="email", example="test@gmail.com"),
+     *             @OA\Property(property="mobile_number", type="string", example="+911234567895"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret123"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="secret123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="User created successfully."),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="admin"),
+     *                 @OA\Property(property="email", type="string", example="test@gmail.com"),
+     *                 @OA\Property(property="mobile_number", type="string", example="+911234567895"),
+     *                 @OA\Property(property="created_at", type="string", example="2023-01-01T00:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", example="2023-01-01T00:00:00Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Failed to create user",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Failed to create user."),
+     *             @OA\Property(property="error", type="string", example="Exception message")
+     *         )
+     *     )
+     * )
+     */
+    public function store(StoreUserRequest $request): JsonResponse
+    {
+        try {
+            $user = $this->userService->createUser($request->validated());
+
+            return response()->json([
+                'message' => 'User created successfully.',
+                'data' => $user,
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Failed to create user.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/users/{id}",
+     *     tags={"Users"},
+     *     summary="Update an existing user",
+     *     description="Update user details by user ID. Fields are optional.",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="User ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="admin"),
+     *             @OA\Property(property="email", type="string", format="email", example="demo@gmail.com"),
+     *             @OA\Property(property="mobile_number", type="string", example="+911234567895"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret123"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="secret123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="User updated successfully."),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="admin"),
+     *                 @OA\Property(property="email", type="string", example="demo@gmail.com"),
+     *                 @OA\Property(property="mobile_number", type="string", example="+911234567895"),
+     *                 @OA\Property(property="updated_at", type="string", example="2023-01-01T00:00:00Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="User not found.")
+     *         )
+     *     )
+     * )
+     */
+    public function update(UpdateUserRequest $request, int $id): JsonResponse
+    {
+        try {
+            $user = $this->userService->updateUser($id, $request->validated());
+
+            return response()->json([
+                'message' => 'User updated successfully.',
+                'data' => $user,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'User not found.',
+            ], 404);
         }
     }
 }

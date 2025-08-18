@@ -52,6 +52,14 @@ return [
         ],
     ],
     'defaults' => [
+
+        'servers' => [
+            [
+                'url' => env('APP_URL', 'http://127.0.0.1:8000'),
+                'description' => 'Local server',
+            ],
+        ],
+
         'routes' => [
             /*
              * Route for accessing parsed swagger annotations.

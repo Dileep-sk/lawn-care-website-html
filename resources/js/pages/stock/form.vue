@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useStocks } from '@/composables/useStocks'
 import AuthLayout from '../../layouts/AuthLayout.vue'
+import BaseInput from '@/components/BaseInput.vue'
 import left_arrow from '@/assets/icons/left-arrow.svg'
 import right_arrow_white from '@/assets/icons/right-arrow_white.svg'
 
@@ -69,13 +70,11 @@ const loadStock = async (id) => {
         const response = await fetchStockById(id)
         if (response.success && response.data) {
             const stock = response.data
-
             form.value.mark_no = stock.mark_no || ''
             form.value.design_no = stock.design_no || ''
             form.value.item_name = stock.item_name || ''
             form.value.quantity = Number(stock.quantity) || ''
             form.value.status = stock.status ?? 1
-
             setupValidation()
         } else {
             console.error('Failed to load stock data')
@@ -100,13 +99,11 @@ const handleSubmit = async () => {
     }
 }
 
-
 onMounted(() => {
     if (route.params.id) {
         isEditMode.value = true
         loadStock(route.params.id)
     } else {
-
         setupValidation()
     }
 })
@@ -117,7 +114,6 @@ onMounted(() => {
         <div class="inner_contant mt-[20px] w-full">
             <div class="content_container w-full h-full bg-white rounded-[10px]">
                 <div class="top_header border-b p-[15px] border-b-[#E8F0E2] flex justify-between items-center">
-                    <!-- unwrap isEditMode.value -->
                     <h1 class="text-[20px] font-bold text-black">
                         {{ isEditMode.value ? 'Edit Stock' : 'Add Stock' }}
                     </h1>
@@ -129,46 +125,23 @@ onMounted(() => {
                 </div>
 
                 <div class="form_box p-[15px]">
-                    <!-- Show loading indicator or form -->
-                    <div v-if="loadingStock.value" class="p-4 text-center">Loading stock data...</div>
+                    <div v-if="loadingStock.value" class="p-4 text-center">
+                        Loading stock data...
+                    </div>
 
                     <form v-else class="p-[15px] bg-[rgba(56,92,76,0.04)]" @submit.prevent="handleSubmit">
                         <div class="grid grid-cols-3 gap-[30px]">
-                            <div class="input_box">
-                                <label>Mark No</label>
-                                <input type="text" class="input" placeholder="M001" v-model="form.mark_no"
-                                    :class="{ 'border-red-500': errors.mark_no }" />
-                                <p v-if="errors.mark_no" class="text-red-500 text-sm mt-1">
-                                    {{ errors.mark_no }}
-                                </p>
-                            </div>
+                            <BaseInput label="Mark No" v-model="form.mark_no" placeholder="M001"
+                                :error="errors.mark_no" />
 
-                            <div class="input_box">
-                                <label>Design No</label>
-                                <input type="text" class="input" placeholder="D1002" v-model="form.design_no"
-                                    :class="{ 'border-red-500': errors.design_no }" />
-                                <p v-if="errors.design_no" class="text-red-500 text-sm mt-1">
-                                    {{ errors.design_no }}
-                                </p>
-                            </div>
+                            <BaseInput label="Design No" v-model="form.design_no" placeholder="D1002"
+                                :error="errors.design_no" />
 
-                            <div class="input_box">
-                                <label>Item Name</label>
-                                <input type="text" class="input" placeholder="Cotton Shirt" v-model="form.item_name"
-                                    :class="{ 'border-red-500': errors.item_name }" />
-                                <p v-if="errors.item_name" class="text-red-500 text-sm mt-1">
-                                    {{ errors.item_name }}
-                                </p>
-                            </div>
+                            <BaseInput label="Item Name" v-model="form.item_name" placeholder="Cotton Shirt"
+                                :error="errors.item_name" />
 
-                            <div class="input_box">
-                                <label>Quantity</label>
-                                <input type="number" class="input" placeholder="00.00" v-model="form.quantity"
-                                    :class="{ 'border-red-500': errors.quantity }" />
-                                <p v-if="errors.quantity" class="text-red-500 text-sm mt-1">
-                                    {{ errors.quantity }}
-                                </p>
-                            </div>
+                            <BaseInput label="Quantity" type="number" v-model="form.quantity" placeholder="00.00"
+                                :error="errors.quantity" />
                         </div>
 
                         <div class="flex justify-end mt-[20px]">

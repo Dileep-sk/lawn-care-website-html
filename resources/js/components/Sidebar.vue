@@ -76,7 +76,7 @@ const route = useRoute()
                 <router-link :to="{ name: 'profile' }"
                     class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
                     <img :src="doc" alt="">
-                    <span>profile</span>
+                    <span>Profile</span>
                 </router-link>
             </li>
         </ul>

@@ -6,6 +6,7 @@ import arrowIcon from '@/assets/icons/right-arrow_white.svg'
 import { ref, watch } from 'vue'
 import { useAuth } from '@/composables/useAuth'
 import toastr from 'toastr'
+import BaseInput from '@/components/BaseInput.vue'
 
 const email = ref('')
 const password = ref('')
@@ -23,18 +24,10 @@ watch(password, (value) => {
 })
 
 const handleLogin = async () => {
+    if (!email.value) emailError.value = 'Email is required'
+    if (!password.value) passwordError.value = 'Password is required'
 
-    if (!email.value) {
-        emailError.value = 'Email is required'
-    }
-
-    if (!password.value) {
-        passwordError.value = 'Password is required'
-    }
-
-    if (emailError.value || passwordError.value) {
-        return
-    }
+    if (emailError.value || passwordError.value) return
 
     try {
         await login({ email: email.value, password: password.value })
@@ -50,7 +43,6 @@ const handleLogin = async () => {
 }
 </script>
 
-
 <template>
     <GuestLayout>
         <form @submit.prevent="handleLogin"
@@ -61,17 +53,13 @@ const handleLogin = async () => {
             </h1>
 
             <div class="input_container flex flex-col gap-[20px]">
-                <div class="input_box">
-                    <label>User ID</label>
-                    <input v-model="email" class="input" placeholder="test@user.com" type="email" />
-                    <span class="text-red-500 text-xs">{{ emailError }}</span>
-                </div>
+                <!-- User ID -->
+                <BaseInput v-model="email" label="User ID" type="email" placeholder="test@user.com"
+                    :error="emailError" />
 
-                <div class="input_box">
-                    <label>Password</label>
-                    <input v-model="password" class="input" type="password" />
-                    <span class="text-red-500 text-xs">{{ passwordError }}</span>
-                </div>
+                <!-- Password -->
+                <BaseInput v-model="password" label="Password" type="password" placeholder="Enter your password"
+                    :error="passwordError" />
 
                 <button :disabled="loading" type="submit"
                     class="h-[45px] flex gap-[10px] justify-center items-center px-[60px] w-full my-[20px] rounded-[6px] bg-[linear-gradient(90deg,_#FF7556_0%,_#FF4757_100%)] text-white font-[500] text-[17px]">

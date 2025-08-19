@@ -4,30 +4,28 @@ import { useRoute, useRouter } from 'vue-router'
 import { useUser } from '@/composables/useUser'
 import AuthLayout from '../../layouts/AuthLayout.vue'
 import left_arrow from '@/assets/icons/left-arrow.svg'
-import eye from '@/assets/icons/eye-off.svg'
 import toastr from 'toastr'
-
+import BaseInput from '@/components/BaseInput.vue'
 
 const route = useRoute()
 const router = useRouter()
 const userId = route.params.id
 const isEdit = !!userId
 
-
 const { handleCreateUser, handleUpdateUser, fetchUserById } = useUser()
-
 
 const form = reactive({
     name: '',
     email: '',
     mobile_number: '',
     password: '',
-    password_confirmation: '',
+    password_confirmation: ''
 })
+
 const errors = reactive({})
 const touched = reactive({})
 
-
+// Validators
 const validators = {
     name: val => (!val.trim() ? 'Name is required' : ''),
     email: val => {
@@ -53,16 +51,14 @@ const validators = {
                 ? 'Password must be at least 6 characters'
                 : '',
     password_confirmation: val =>
-        form.password && val !== form.password ? 'Passwords do not match' : '',
+        form.password && val !== form.password ? 'Passwords do not match' : ''
 }
-
 
 const validateField = field => {
     if (touched[field]) {
         errors[field] = validators[field]?.(form[field]) || ''
     }
 }
-
 
 const validateForm = () => {
     Object.keys(validators).forEach(field => {
@@ -72,17 +68,14 @@ const validateForm = () => {
     return Object.values(errors).every(err => !err)
 }
 
-
 const handleBlur = field => {
     touched[field] = true
     validateField(field)
 }
 
-
 Object.keys(form).forEach(field => {
     watch(() => form[field], () => validateField(field))
 })
-
 
 const onSubmit = async () => {
     if (!validateForm()) return
@@ -101,13 +94,6 @@ const onSubmit = async () => {
     }
 }
 
-
-const togglePassword = id => {
-    const input = document.getElementById(id)
-    if (input) input.type = input.type === 'password' ? 'text' : 'password'
-}
-
-
 onMounted(async () => {
     if (isEdit) {
         try {
@@ -117,7 +103,7 @@ onMounted(async () => {
                 email: res.data.email,
                 mobile_number: res.data.mobile_number,
                 password: '',
-                password_confirmation: '',
+                password_confirmation: ''
             })
         } catch {
             toastr.error('Failed to fetch user details', 'Error')
@@ -125,7 +111,6 @@ onMounted(async () => {
     }
 })
 </script>
-
 
 <template>
     <AuthLayout>
@@ -147,63 +132,27 @@ onMounted(async () => {
                     <form class="p-[15px] bg-[rgba(56,92,76,0.04)]" @submit.prevent="onSubmit">
                         <div class="grid grid-cols-4 gap-[30px]">
                             <!-- Name -->
-                            <div class="input_box">
-                                <label>User Name</label>
-                                <input type="text" v-model="form.name" @blur="handleBlur('name')" class="input"
-                                    :class="errors.name && 'border-red-500'" placeholder="John Doe" />
-                                <p v-if="errors.name" class="text-red-500 text-sm">{{ errors.name }}</p>
-                            </div>
+                            <BaseInput v-model="form.name" label="User Name" placeholder="John Doe" :error="errors.name"
+                                @blur="handleBlur('name')" />
 
                             <!-- Email -->
-                            <div class="input_box">
-                                <label>Email</label>
-                                <input type="email" v-model="form.email" @blur="handleBlur('email')" class="input"
-                                    :class="errors.email && 'border-red-500'" placeholder="test@gmail.com" />
-                                <p v-if="errors.email" class="text-red-500 text-sm">{{ errors.email }}</p>
-                            </div>
+                            <BaseInput v-model="form.email" label="Email" type="email" placeholder="test@gmail.com"
+                                :error="errors.email" @blur="handleBlur('email')" />
 
                             <!-- Mobile -->
-                            <div class="input_box">
-                                <label>Mobile Number</label>
-                                <input type="text" v-model="form.mobile_number" @blur="handleBlur('mobile_number')"
-                                    class="input" :class="errors.mobile_number && 'border-red-500'"
-                                    placeholder="+911234567895" />
-                                <p v-if="errors.mobile_number" class="text-red-500 text-sm">{{ errors.mobile_number }}
-                                </p>
-                            </div>
+                            <BaseInput v-model="form.mobile_number" label="Mobile Number" placeholder="+911234567895"
+                                :error="errors.mobile_number" @blur="handleBlur('mobile_number')" />
 
                             <!-- Password -->
-                            <!-- Password -->
-                            <div v-if="!isEdit" class="input_box">
-                                <label>Password</label>
-                                <div class="relative">
-                                    <input id="userPass" type="password" v-model="form.password"
-                                        @blur="handleBlur('password')" class="input w-full pr-10"
-                                        :class="errors.password && 'border-red-500'" placeholder="*********" />
-                                    <img @click="togglePassword('userPass')" :src="eye"
-                                        class="absolute right-[10px] top-[15px] w-5 h-5 cursor-pointer"
-                                        alt="Toggle visibility" />
-                                </div>
-                                <p v-if="errors.password" class="text-red-500 text-sm">{{ errors.password }}</p>
-                            </div>
+                            <BaseInput v-if="!isEdit" v-model="form.password" label="Password" type="password"
+                                placeholder="*********" :error="errors.password" @blur="handleBlur('password')" />
 
                             <!-- Confirm Password -->
-                            <div v-if="!isEdit" class="input_box">
-                                <label>Confirm Password</label>
-                                <div class="relative">
-                                    <input id="userPassConfirm" type="password" v-model="form.password_confirmation"
-                                        @blur="handleBlur('password_confirmation')" class="input w-full pr-10"
-                                        :class="errors.password_confirmation && 'border-red-500'"
-                                        placeholder="*********" />
-                                    <img @click="togglePassword('userPassConfirm')" :src="eye"
-                                        class="absolute right-[10px] top-[15px] w-5 h-5 cursor-pointer"
-                                        alt="Toggle visibility" />
-                                </div>
-                                <p v-if="errors.password_confirmation" class="text-red-500 text-sm">
-                                    {{ errors.password_confirmation }}
-                                </p>
-                            </div>
+                            <BaseInput v-if="!isEdit" v-model="form.password_confirmation" label="Confirm Password"
+                                type="password" placeholder="*********" :error="errors.password_confirmation"
+                                @blur="handleBlur('password_confirmation')" />
                         </div>
+
                         <div class="flex justify-end mt-[20px]">
                             <button type="submit" class="flex create justify-center gap-[10px] items-center">
                                 {{ isEdit ? 'Update User' : 'Add User' }}

@@ -15,3 +15,6 @@ http://127.0.0.1:8000/api/documentation#/Users
 php artisan db:seed --class=UserSeeder
 
 php artisan db:seed --class=StockSeeder
+
+php artisan db:seed --class=OrderSeeder
+

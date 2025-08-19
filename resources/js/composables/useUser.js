@@ -1,9 +1,10 @@
 import { ref, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
-import Swal from 'sweetalert2'
+import { deleteConfirm } from '@/utils/deleteConfirm'
 import toastr from 'toastr'
 import { fetchUsers, deleteUser, updateUserStatus, createUser, updateUser, getUserById } from '@/services/userService'
+import { confirmDialog } from '@/utils/confirmDialog'
 
 export function useUser(searchTerm = ref('')) {
     const users = ref([])
@@ -44,17 +45,8 @@ export function useUser(searchTerm = ref('')) {
 
     const handleDelete = async (id) => {
         try {
-            const result = await Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#D62925',
-                cancelButtonColor: '#aaa',
-                confirmButtonText: 'Yes, delete it!'
-            })
-
-            if (!result.isConfirmed) return
+            const confirmed = await deleteConfirm('this user')
+            if (!confirmed) return
 
             await deleteUser(id)
             users.value = users.value.filter(user => user.id !== id)
@@ -70,16 +62,8 @@ export function useUser(searchTerm = ref('')) {
             const newStatus = currentStatus === 1 ? 0 : 1
             const statusText = newStatus === 1 ? 'activate' : 'deactivate'
 
-            const result = await Swal.fire({
-                title: `Are you sure you want to ${statusText} this user?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#05C46B',
-                cancelButtonColor: '#aaa',
-                confirmButtonText: `Yes, ${statusText} it!`,
-            })
-
-            if (!result.isConfirmed) return
+            const confirmed = await confirmDialog(statusText, `Yes, ${statusText}`)
+            if (!confirmed) return
 
             await updateUserStatus(id, newStatus)
 

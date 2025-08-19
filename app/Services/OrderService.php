@@ -45,4 +45,17 @@ class OrderService
         $perPage = $request->input('per_page', 10);
         return $query->orderBy('id', 'desc')->paginate($perPage);
     }
+
+    public function updateOrderStatus($id, $status): bool
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return false;
+        }
+
+        $order->status = $status;
+
+        return $order->save();
+    }
 }

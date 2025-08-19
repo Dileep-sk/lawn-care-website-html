@@ -35,10 +35,10 @@ const emit = defineEmits(['page-changed'])
                 <tr v-else-if="data.length === 0">
                     <td :colspan="columns.length" class="text-center py-4">No records found.</td>
                 </tr>
-                <tr v-else v-for="row in data" :key="row.id">
+                <tr v-else v-for="(row, index) in data" :key="row?.id ?? index">
                     <td v-for="col in columns" :key="col.key">
                         <slot :name="col.key" :row="row">
-                            {{ row[col.key] }}
+                            {{ row?.[col.key] ?? '' }}
                         </slot>
                     </td>
                 </tr>

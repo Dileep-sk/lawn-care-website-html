@@ -18,3 +18,4 @@ php artisan db:seed --class=StockSeeder
 
 php artisan db:seed --class=OrderSeeder
 
+php artisan passport:client --personal

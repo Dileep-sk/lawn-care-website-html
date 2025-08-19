@@ -1,7 +1,9 @@
 import { ref, watch, onMounted } from 'vue'
 import { fetchStocks, updateStockStatus, createStock, getStockById, updateStock, deleteStock } from '@/services/stockService'
-import Swal from 'sweetalert2'
+import { deleteConfirm } from '@/utils/deleteConfirm'
 import toastr from 'toastr'
+import { confirmDialog } from '@/utils/confirmDialog'
+
 
 export function useStocks() {
     const stocks = ref([])
@@ -41,16 +43,8 @@ export function useStocks() {
             const newStatus = currentStatus === 1 ? 0 : 1
             const statusText = newStatus === 1 ? 'activate' : 'deactivate'
 
-            const result = await Swal.fire({
-                title: `Are you sure you want to ${statusText} this stock?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#05C46B',
-                cancelButtonColor: '#aaa',
-                confirmButtonText: `Yes, ${statusText} it!`,
-            })
-
-            if (!result.isConfirmed) return
+            const confirmed = await confirmDialog(statusText, `Yes, ${statusText}`)
+            if (!confirmed) return
 
             await updateStockStatus(id, newStatus)
 
@@ -108,17 +102,8 @@ export function useStocks() {
 
     const handleDelete = async (id) => {
         try {
-            const result = await Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#D62925',
-                cancelButtonColor: '#aaa',
-                confirmButtonText: 'Yes, delete it!'
-            })
-
-            if (!result.isConfirmed) return
+            const confirmed = await deleteConfirm('this stock')
+            if (!confirmed) return
 
             await deleteStock(id)
             stocks.value = stocks.value.filter(stocks => stocks.id !== id)

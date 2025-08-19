@@ -31,6 +31,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/stocks/{id}', [StockController::class, 'destroy']);
 
     Route::get('/orders', [OrderController::class, 'index']);
+    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
 
     Route::get('/user', function (Request $request) {
         return $request->user();

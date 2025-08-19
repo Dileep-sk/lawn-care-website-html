@@ -1,160 +1,163 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import AuthLayout from '../../layouts/AuthLayout.vue'
-import ViewOrderModal from '../../components/ViewOrder.vue' // use direct import
+import BaseTable from '@/components/BaseTable.vue'
+import ViewOrderModal from '../../components/ViewOrder.vue'
 
-import search from '@/assets/icons/search.svg'
 import plus from '@/assets/icons/plus.svg'
+import search from '@/assets/icons/search.svg'
 import edit from '@/assets/icons/edit.svg'
 import deletes from '@/assets/icons/delete.svg'
 import download from '@/assets/icons/download.svg'
 import eye from '@/assets/icons/eye.svg'
-import arrow_black from '@/assets/icons/left-arrow_black.svg'
 
-const showViewModal = ref(false)
+import { useOrders } from '@/composables/useOrders'
+
+const searchTerm = ref('')
 const route = useRoute()
 const router = useRouter()
 
+const showViewModal = ref(false)
 const openViewModal = () => {
     showViewModal.value = true
     router.replace({ hash: '#viewOrder' })
 }
-
 const closeViewModal = () => {
     showViewModal.value = false
     router.replace({ hash: '' })
 }
+if (route.hash === '#viewOrder') showViewModal.value = true
 
-onMounted(() => {
-    if (route.hash === '#viewOrder') {
-        showViewModal.value = true
-    }
-})
+const {
+    orders,
+    loading,
+    error,
+    currentPage,
+    lastPage,
+    loadOrders,
+    handleStatusToggle
+} = useOrders(searchTerm)
+
+const STATUS_OPTIONS = [
+    { text: 'Pending', value: 0, class: 'bg-yellow-100 text-yellow-600' },
+    { text: 'Hold', value: 1, class: 'bg-blue-100 text-blue-600' },
+    { text: 'Success', value: 2, class: 'bg-green-100 text-green-600' }
+]
+
+const getStatusOption = (status) =>
+    STATUS_OPTIONS.find(opt => opt.value === status) || STATUS_OPTIONS[0]
+
+
 </script>
 
 <template>
     <ViewOrderModal :isOpen="showViewModal" @close="closeViewModal" />
+
     <AuthLayout>
+        <div class="inner_contant mt-5 w-full">
+            <div class="content_container w-full h-full bg-white rounded-[10px]">
 
-        <div class="inner_contant mt-[20px]  w-[100%] ">
-            <div class="content_container w-[100%] h-[100%]  bg-white rounded-[10px]">
-                <div
-                    class="top_header border-b p-[15px]  border-b-[#E8F0E2] border border-transparent flex justify-between items-center">
+                <!-- Header -->
+                <div class="top_header border-b p-4 border-b-[#E8F0E2] flex justify-between items-center">
+                    <h1 class="text-xl text-black font-bold">Order List</h1>
 
-                    <h1 class="text-[20px] text-[#000] font-[700]">Order List</h1>
-
-                    <div class="flex gap-[15px] items-center">
+                    <div class="flex gap-4 items-center">
+                        <!-- search -->
                         <div class="search_box relative">
-                            <img :src="search" class="absolute w-[20px]" alt="" srcset="">
-                            <input type="text" placeholder="Search here.."
-                                class=" input !border-0 !w-[325px] rounded-[5px] !mt-[0] !px-[40px] !h-[45px] bg-[rgba(23,23,23,0.05)] ">
+                            <img :src="search" class="absolute w-5 left-3 top-3" />
+                            <input type="text" v-model="searchTerm" placeholder="Search here.."
+                                class="input !border-0 !w-[325px] rounded-md !px-10 !h-[45px] bg-[rgba(23,23,23,0.05)]" />
                         </div>
-
-                        <div class="flex gap-[15px] items-center">
-                            <select name=""
-                                class="input !w-[250px] !border-0 !mt-[0] !bg-[rgba(23,23,23,0.05)] !h-[45px]" id="">
-                                <option value="">Select Status</option>
-                                <option value="">Penddign</option>
-                                <option value="">Done</option>
-                                <option value="">Select Status</option>
-                            </select>
-                            <button type="button"
-                                class=" cursor-pointer h-[45px] px-[30px] text-[#fff] text-[15px] font-[500] rounded-[5px] bg-[#1E3799]   ">
-                                Filter </button>
-                        </div>
+                        <!-- create -->
                         <router-link :to="{ name: 'order-create' }"
-                            class="cursor-pointer flex gap-[5px] h-[45px] px-[15px] font-[500] items-center text-[#fff] text-[15px] rounded-[5px] bg-[#05C46B]">
+                            class="flex gap-2 h-[45px] px-4 font-medium items-center text-white text-[15px] rounded-md bg-[#05C46B]">
                             Create Order
-                            <img :src="plus" class="w-[22px]" alt="">
+                            <img :src="plus" class="w-[22px]" />
                         </router-link>
                     </div>
                 </div>
 
+                <!-- Table -->
                 <div class="h-[calc(100vh_-_209px)] flex flex-col justify-between">
-                    <div class="table_container p-[15px]">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Order No</th>
-                                    <th>Design No</th>
-                                    <th>Item</th>
-                                    <th>Quantity</th>
-                                    <th>Status</th>
-                                    <th class="w-[100px]">Edit</th>
-                                    <th class="w-[100px]">Delete</th>
-                                    <th class="w-[150px]">Export</th>
-                                    <th class="w-[130px]">View Order</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>ORD1234</td>
-                                    <td>D1002</td>
-                                    <td>Cotton Shirt</td>
-                                    <td>300</td>
-                                    <td>
-                                        <div class="badge out_of_stock">Out of Stock</div>
-                                    </td>
-                                    <td> <router-link :to="{ name: 'order-edit' }"
-                                            class="w-[70px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#1e90ff]">
-                                            <img :src="edit" class="w-[20px]" alt="">
-                                            Edit
-                                        </router-link></td>
-                                    <td> <a href="#delete_order" rel="modal:open"
-                                            class="w-[90px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#D62925]">
-                                            <img :src="deletes" class="w-[20px]" alt="">
-                                            Delete
-                                        </a> </td>
-                                    <td> <button
-                                            class="bg-[#0A3D62] px-[15px] h-[35px] text-white flex justify-center gap-[5px] items-center  rounded-[5px]">
-                                            <img :src="download" class="w-[20px]" alt="">
-                                            Export PDF
-
-                                        </button> </td>
-                                    <td>
-                                        <button @click="openViewModal"
-                                            class="bg-[#3C40C6] cursor-pointer w-[130px] px-[15px] h-[35px] text-white flex justify-center gap-[5px] items-center rounded-[5px]">
-                                            <img :src="eye" class="w-[20px]" alt="View" />
-                                            View Order
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
+                    <BaseTable :data="orders" :columns="[
+                        { label: 'Order No', key: 'order_no' },
+                        { label: 'Design No', key: 'design_no' },
+                        { label: 'Item', key: 'item_name' },
+                        { label: 'Quantity', key: 'quantity' },
+                        { label: 'Status', key: 'status' },
+                        { label: 'Edit', key: 'edit', thClass: 'w-[100px]' },
+                        { label: 'Delete', key: 'delete', thClass: 'w-[100px]' },
+                        { label: 'Export', key: 'export', thClass: 'w-[150px]' },
+                        { label: 'View Order', key: 'view', thClass: 'w-[130px]' }
+                    ]" :loading="loading" :error="error" :currentPage="currentPage" :lastPage="lastPage"
+                        @page-changed="(page) => loadOrders(page, searchTerm)">
+                        <!-- Status -->
+                        <template #status="{ row }">
+                            <div class="relative inline-block w-32">
+                                <!-- Current Status -->
+                                <button @click="row.showDropdown = !row.showDropdown"
+                                    class="w-full px-3 py-1 rounded text-sm font-medium flex items-center justify-between"
+                                    :class="getStatusOption(row.status).class">
+                                    <span>{{ getStatusOption(row.status).text }}</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
 
 
-                    <div class="pagination flex justify-end p-[15px]">
-                        <ul class="flex gap-[10px]">
-                            <li class="w-[45px] h-[35px] bg-[#fff] flex justify-center items-center">
-                                <img :src="arrow_black" alt="">
-                            </li>
+                                <!-- Dropdown -->
+                                <div v-if="row.showDropdown"
+                                    class="absolute z-10 mt-1 w-full bg-white rounded shadow-lg">
+                                    <div v-for="opt in STATUS_OPTIONS" :key="opt.value"
+                                        @click="handleStatusToggle(row, opt.value); row.showDropdown = false"
+                                        class="px-3 py-1 cursor-pointer text-sm text-center" :class="opt.class">
+                                        {{ opt.text }}
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
 
-                            <li
-                                class="w-[45px] h-[35px] bg-[#000] flex justify-center items-center rounded-[5px] text-white border-[1px] border-[#000]">
-                                1</li>
-                            <li
-                                class="w-[45px] h-[35px] bg-[#fff] flex justify-center items-center rounded-[5px] text-black border-[1px] border-[#000]">
-                                2</li>
-                            <li
-                                class="w-[45px] h-[35px] bg-[#fff] flex justify-center items-center rounded-[5px] text-black border-[1px] border-[#000]">
-                                3</li>
-                            <li class="w-[45px] h-[35px] bg-[#fff] flex justify-center items-center ">
-                                <img :src="arrow_black" class="rotate-[-180deg]" alt="">
-                            </li>
+                        <!-- Edit -->
+                        <template #edit="{ row }">
+                            <router-link v-if="row && row.id" :to="{ name: 'order-edit', params: { id: row.id } }"
+                                class="w-[70px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#1e90ff]">
+                                <img :src="edit" class="w-[20px]" />
+                                Edit
+                            </router-link>
+                        </template>
 
-                        </ul>
-                    </div>
+                        <!-- Delete -->
+                        <template #delete="{ row }">
+                            <button v-if="row && row.id" @click="console.log('delete order', row.id)"
+                                class="w-[90px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#D62925]">
+                                <img :src="deletes" class="w-[20px]" />
+                                Delete
+                            </button>
+                        </template>
+
+                        <!-- Export -->
+                        <template #export="{ row }">
+                            <button v-if="row && row.id" @click="console.log('export order', row.id)"
+                                class="bg-[#0A3D62] px-[15px] h-[35px] text-white flex justify-center gap-[5px] items-center rounded-[5px]">
+                                <img :src="download" class="w-[20px]" />
+                                Export PDF
+                            </button>
+                        </template>
+
+                        <!-- View -->
+                        <template #view="{ row }">
+                            <button v-if="row && row.id" @click="openViewModal"
+                                class="bg-[#3C40C6] cursor-pointer w-[130px] px-[15px] h-[35px] text-white flex justify-center gap-[5px] items-center rounded-[5px]">
+                                <img :src="eye" class="w-[20px]" />
+                                View Order
+                            </button>
+                        </template>
+                    </BaseTable>
                 </div>
-
             </div>
         </div>
-
-
     </AuthLayout>
 </template>

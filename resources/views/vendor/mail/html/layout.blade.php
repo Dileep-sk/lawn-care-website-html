@@ -34,7 +34,7 @@
         <tr>
             <td align="center">
                 <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-                    {{-- {!! $header ?? '' !!} --}}
+                    {!! $header ?? '' !!}
 
                     <!-- Email Body -->
                     <tr>
@@ -54,7 +54,7 @@
                         </td>
                     </tr>
 
-                    {{-- {!! $footer ?? '' !!} --}}
+                    {!! $footer ?? '' !!}
                 </table>
             </td>
         </tr>

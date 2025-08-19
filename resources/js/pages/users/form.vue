@@ -154,7 +154,7 @@ Object.keys(form).forEach((field) => {
                             <!-- Mobile -->
                             <div class="input_box">
                                 <label>Mobile Number</label>
-                                <input type="number" v-model="form.mobile_number" @blur="handleBlur('mobile_number')"
+                                <input type="text" v-model="form.mobile_number" @blur="handleBlur('mobile_number')"
                                     class="input" :class="errors.mobile_number && 'border-red-500'"
                                     placeholder="+911234567895" />
                                 <p v-if="errors.mobile_number" class="text-red-500 text-sm">{{ errors.mobile_number }}

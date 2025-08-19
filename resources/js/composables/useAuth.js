@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { loginApi } from "@/services/authService";
+import { loginApi, logoutApi } from "@/services/authService";
 
 export function useAuth() {
     const router = useRouter()
@@ -14,6 +14,9 @@ export function useAuth() {
         try {
             const response = await loginApi({ email, password })
             localStorage.setItem('token', response.data.token)
+            localStorage.setItem('user', JSON.stringify(response.data.user))
+
+
             router.push({ name: 'dashboard' })
         } catch (err) {
             error.value = err.response?.data?.message || 'Login failed'
@@ -33,6 +36,8 @@ export function useAuth() {
             console.error('Logout error:', err)
         } finally {
             localStorage.removeItem('token')
+            localStorage.removeItem('user')
+
             loading.value = false
             router.push({ name: 'login' })
         }

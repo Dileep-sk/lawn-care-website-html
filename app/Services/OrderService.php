@@ -7,24 +7,34 @@ use Illuminate\Http\Request;
 
 class OrderService
 {
-    /**
-     * Fetch orders with optional search and filters.
-     */
+
     public function getOrders(Request $request)
     {
-        $query = Order::query();
+        $query = Order::select([
+            'id',
+            'order_no',
+            'design_no',
+            'item_name',
+            'quantity',
+            'status',
+            // 'customer_name',
+            // 'date',
+            // 'broker_name',
+            // 'transport_company',
+            // 'rate',
+        ]);
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('customer_name', 'like', "%{$search}%")
                     ->orWhere('order_no', 'like', "%{$search}%")
-                    ->orWhere('broker_name', 'like', "%{$search}%")
-                    ->orWhere('transport_company', 'like', "%{$search}%")
                     ->orWhere('design_no', 'like', "%{$search}%")
                     ->orWhere('item_name', 'like', "%{$search}%")
-                    ->orWhere('quantity', 'like', "%{$search}%")
-                    ->orWhere('rate', 'like', "%{$search}%")
-                    ->orWhere('message', 'like', "%{$search}%");
+                    ->orWhere('quantity', 'like', "%{$search}%");
+                // ->orWhere('broker_name', 'like', "%{$search}%")
+                // ->orWhere('transport_company', 'like', "%{$search}%")
+                // ->orWhere('rate', 'like', "%{$search}%")
+                // ->orWhere('message', 'like', "%{$search}%");
             });
         }
 

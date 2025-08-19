@@ -1,6 +1,19 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import AuthLayout from "../../layouts/AuthLayout.vue";
 import eye from '@/assets/icons/eye-off.svg'
+
+const user = ref({
+    email: '',
+})
+
+onMounted(() => {
+    const userData = localStorage.getItem('user')
+    if (userData) {
+        user.value = JSON.parse(userData)
+    }
+})
+
 </script>
 
 <template>
@@ -16,8 +29,9 @@ import eye from '@/assets/icons/eye-off.svg'
                     <form action="" class="p-[15px] bg-[rgba(56,92,76,0.04)] max-w-[500px] mx-auto">
                         <div class="grid grid-cols-1 gap-[30px]">
                             <div class="input_box">
-                                <label for="">User Name</label>
-                                <input type="text" class="input" value="Test user" placeholder="D1002" name="" id="" />
+                                <label for="">Email</label>
+                                <input type="text" class="input" :value="user.email" placeholder="Email" readonly />
+
                             </div>
 
                             <!-- Old Password -->
@@ -26,8 +40,7 @@ import eye from '@/assets/icons/eye-off.svg'
                                 <div class="relative">
                                     <input value="123546ss" type="password" id="oldPassword" class="input w-full pr-10"
                                         placeholder="***********" />
-                                    <img :src="eye"
-                                        class="absolute right-[10px] top-[15px] w-5 h-5 cursor-pointer"
+                                    <img :src="eye" class="absolute right-[10px] top-[15px] w-5 h-5 cursor-pointer"
                                         onclick="togglePassword('oldPassword', this)" />
                                 </div>
                             </div>
@@ -38,8 +51,7 @@ import eye from '@/assets/icons/eye-off.svg'
                                 <div class="relative">
                                     <input type="password" id="newPassword" class="input w-full pr-10"
                                         placeholder="********" />
-                                    <img :src="eye"
-                                        class="absolute right-[10px] top-[15px] w-5 h-5 cursor-pointer"
+                                    <img :src="eye" class="absolute right-[10px] top-[15px] w-5 h-5 cursor-pointer"
                                         onclick="togglePassword('newPassword', this)" />
                                 </div>
                             </div>
@@ -50,8 +62,7 @@ import eye from '@/assets/icons/eye-off.svg'
                                 <div class="relative">
                                     <input type="password" id="reNewPassword" class="input w-full pr-10"
                                         placeholder="********" />
-                                    <img :src="eye"
-                                        class="absolute right-[10px] top-[15px] w-5 h-5 cursor-pointer"
+                                    <img :src="eye" class="absolute right-[10px] top-[15px] w-5 h-5 cursor-pointer"
                                         onclick="togglePassword('reNewPassword', this)" />
                                 </div>
                             </div>

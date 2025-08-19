@@ -6,115 +6,126 @@ import AuthLayout from '../../layouts/AuthLayout.vue'
 import left_arrow from '@/assets/icons/left-arrow.svg'
 import eye from '@/assets/icons/eye-off.svg'
 import toastr from 'toastr'
-const route = useRoute()
-const { handleCreateUser, handleUpdateUser, fetchUserById } = useUser()
 
-// detect edit mode
+
+const route = useRoute()
+const router = useRouter()
 const userId = route.params.id
 const isEdit = !!userId
 
-// form data
+
+const { handleCreateUser, handleUpdateUser, fetchUserById } = useUser()
+
+
 const form = reactive({
     name: '',
     email: '',
     mobile_number: '',
     password: '',
-    password_confirmation: ''
+    password_confirmation: '',
 })
-
 const errors = reactive({})
 const touched = reactive({})
 
-// validators
+
 const validators = {
-    name: (val) => (!val.trim() ? 'Name is required' : ''),
-    email: (val) => {
-        if (!val.trim()) return 'Email is required'
+    name: val => (!val.trim() ? 'Name is required' : ''),
+    email: val => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        return !emailRegex.test(val) ? 'Enter a valid email address' : ''
+        return !val.trim()
+            ? 'Email is required'
+            : !emailRegex.test(val)
+                ? 'Enter a valid email address'
+                : ''
     },
-    mobile_number: (val) => {
-        if (!val.trim()) return 'Mobile number is required'
+    mobile_number: val => {
         const mobileRegex = /^\+?\d{7,15}$/
-        return !mobileRegex.test(val) ? 'Enter a valid mobile number' : ''
+        return !val.trim()
+            ? 'Mobile number is required'
+            : !mobileRegex.test(val)
+                ? 'Enter a valid mobile number'
+                : ''
     },
-    password: (val) => {
-        if (!isEdit && !val) return 'Password is required' // required only on create
-        return val && val.length < 6 ? 'Password must be at least 6 characters' : ''
-    },
-    password_confirmation: (val) => {
-        if (form.password && val !== form.password) return 'Passwords do not match'
-        return ''
+    password: val =>
+        !isEdit && !val
+            ? 'Password is required'
+            : val && val.length < 6
+                ? 'Password must be at least 6 characters'
+                : '',
+    password_confirmation: val =>
+        form.password && val !== form.password ? 'Passwords do not match' : '',
+}
+
+
+const validateField = field => {
+    if (touched[field]) {
+        errors[field] = validators[field]?.(form[field]) || ''
     }
 }
 
-const validateField = (field) => {
-    if (!touched[field]) return
-    errors[field] = validators[field](form[field])
+
+const validateForm = () => {
+    Object.keys(validators).forEach(field => {
+        touched[field] = true
+        validateField(field)
+    })
+    return Object.values(errors).every(err => !err)
 }
 
-const handleBlur = (field) => {
+
+const handleBlur = field => {
     touched[field] = true
     validateField(field)
 }
 
-const validateForm = () => {
-    Object.keys(validators).forEach((field) => {
-        touched[field] = true
-        validateField(field)
-    })
-    return Object.values(errors).every((err) => !err)
-}
 
-// submit handler
+Object.keys(form).forEach(field => {
+    watch(() => form[field], () => validateField(field))
+})
+
+
 const onSubmit = async () => {
     if (!validateForm()) return
 
-    if (isEdit) {
-        try {
+    try {
+        if (isEdit) {
             await handleUpdateUser(userId, { ...form })
-        } catch (err) {
-            toastr.error('Failed to update user', 'Error')
+            toastr.success('User updated successfully', 'Success')
+        } else {
+            await handleCreateUser({ ...form })
+            toastr.success('User created successfully', 'Success')
         }
-    } else {
-        await handleCreateUser({ ...form })
+        router.push({ name: 'users' })
+    } catch {
+        toastr.error(isEdit ? 'Failed to update user' : 'Failed to create user', 'Error')
     }
 }
 
-// toggle password visibility
-const togglePassword = (id) => {
+
+const togglePassword = id => {
     const input = document.getElementById(id)
-    input.type = input.type === 'password' ? 'text' : 'password'
+    if (input) input.type = input.type === 'password' ? 'text' : 'password'
 }
 
-// load data for edit mode
+
 onMounted(async () => {
     if (isEdit) {
         try {
-            const res = await fetchUserById(userId) // ✅ use composable
+            const res = await fetchUserById(userId)
             Object.assign(form, {
                 name: res.data.name,
                 email: res.data.email,
                 mobile_number: res.data.mobile_number,
                 password: '',
-                password_confirmation: ''
+                password_confirmation: '',
             })
-        } catch (err) {
+        } catch {
             toastr.error('Failed to fetch user details', 'Error')
         }
     }
 })
-
-// live validation
-Object.keys(form).forEach((field) => {
-    watch(
-        () => form[field],
-        () => {
-            if (touched[field]) validateField(field)
-        }
-    )
-})
 </script>
+
 
 <template>
     <AuthLayout>

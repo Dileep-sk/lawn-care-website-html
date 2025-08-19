@@ -107,7 +107,6 @@ export function useUser(searchTerm = ref('')) {
     const handleUpdateUser = async (id, payload) => {
         try {
             await updateUser(id, payload)
-            toastr.success('User updated successfully', 'Success')
             router.push({ name: 'users' })
             return true
         } catch (error) {
@@ -119,19 +118,17 @@ export function useUser(searchTerm = ref('')) {
         }
     }
 
+    watch(
+        searchTerm,
+        (newValue) => {
+            clearTimeout(searchTimeout)
+            searchTimeout = setTimeout(() => {
+                loadUsers(1, newValue)
+            }, 500)
+        },
+        { immediate: false }
+    )
 
-
-    watch(searchTerm, (newValue) => {
-        clearTimeout(searchTimeout)
-        searchTimeout = setTimeout(async () => {
-            try {
-                await loadUsers(1, newValue)
-            } catch (err) {
-                error.value = 'Failed to search users.'
-                toastr.error('Something went wrong during search.', 'Error')
-            }
-        }, 500)
-    })
 
     onMounted(() => {
         loadUsers().catch(err => {

@@ -16,16 +16,8 @@ const {
     search,
     handleStatusToggle,
     loadStocks,
-
+    handleDelete,
 } = useStocks()
-
-
-
-function handleDelete(id) {
-
-}
-
-
 </script>
 
 <template>
@@ -66,7 +58,7 @@ function handleDelete(id) {
                                 'badge',
                                 row.status === 1 ? 'full bg-green-500' : 'out_of_stock bg-gray-500'
                             ]">
-                                {{ row.status === 1 ? 'Active' : 'Out of Stock' }}
+                                {{ row.status === 1 ? 'Available, In Stock' : 'Out of Stock' }}
                             </button>
                         </template>
 

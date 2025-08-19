@@ -52,4 +52,30 @@ class StockService
 
         return $user->delete();
     }
+
+    public function create(array $data): Stock
+    {
+        return Stock::create($data);
+    }
+
+    public function update(Stock $stock, array $data): Stock
+    {
+        $stock->update($data);
+        return $stock;
+    }
+
+    public function getStcokById($id)
+    {
+
+        return Stock::find($id);
+    }
+
+    public function updateStcok(int $id, array $data)
+    {
+        $stock = Stock::findOrFail($id);
+
+        $stock->update($data);
+
+        return $stock;
+    }
 }

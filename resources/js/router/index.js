@@ -82,7 +82,7 @@ const routes = [
         meta: { title: "Stock Create", requiresAuth: true },
     },
     {
-        path: "/stock/edit",
+        path: "/stock/edit/:id",
         name: "stock-edit",
         component: StockForm,
         meta: { title: "Stock Edit", requiresAuth: true },

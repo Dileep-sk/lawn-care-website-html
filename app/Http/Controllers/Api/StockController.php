@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreStockRequest;
 use App\Http\Requests\UpdateUserStatusRequest;
 use Illuminate\Http\Request;
 use App\Services\StockService;
@@ -65,6 +66,65 @@ class StockController extends Controller
                 'message' => 'Failed to delete Stock.',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function store(StoreStockRequest $request): JsonResponse
+    {
+        try {
+
+            $stock = $this->stockService->create($request->validated());
+            return response()->json([
+                'message' => 'Stock created successfully',
+                'data' => $stock
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Failed to create stock',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function view($id)
+    {
+        try {
+            $stock = $this->stockService->getStcokById($id);
+
+            if (!$stock) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Stock not found'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $stock
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong while fetching the stock.',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function update(StoreStockRequest $request, int $id): JsonResponse
+    {
+        try {
+            $user = $this->stockService->updateStcok($id, $request->validated());
+
+            return response()->json([
+                'message' => 'User updated successfully.',
+                'data' => $user,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'User not found.',
+            ], 404);
         }
     }
 }

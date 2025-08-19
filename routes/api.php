@@ -19,6 +19,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/users/{id}', [UserController::class, 'view']);
 
     Route::get('/stocks', [StockController::class, 'index']);
+    Route::get('/stocks/{id}', [StockController::class, 'view']);
+    Route::post('/stocks', [StockController::class, 'store']);
+    Route::put('/stocks/{id}', [StockController::class, 'update']);
     Route::put('/stocks/{id}/status', [StockController::class, 'updateStatus']);
     Route::delete('/stocks/{id}', [StockController::class, 'destroy']);
 

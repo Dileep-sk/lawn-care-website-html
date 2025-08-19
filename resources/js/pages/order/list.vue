@@ -37,7 +37,8 @@ const {
     currentPage,
     lastPage,
     loadOrders,
-    handleStatusToggle
+    handleStatusToggle,
+    exportOrderPDF,
 } = useOrders(searchTerm)
 
 const STATUS_OPTIONS = [
@@ -140,7 +141,7 @@ const getStatusOption = (status) =>
 
                         <!-- Export -->
                         <template #export="{ row }">
-                            <button v-if="row && row.id" @click="console.log('export order', row.id)"
+                            <button v-if="row && row.id" @click="exportOrderPDF(row)"
                                 class="bg-[#0A3D62] px-[15px] h-[35px] text-white flex justify-center gap-[5px] items-center rounded-[5px]">
                                 <img :src="download" class="w-[20px]" />
                                 Export PDF

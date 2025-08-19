@@ -3,9 +3,9 @@
 import { useRouter } from 'vue-router'
 import notification from '@/assets/icons/notification.svg'
 import profile from '@/assets/icons/profile.svg'
-import logout from '@/assets/icons/logout.svg'
-
-
+import logoutIcon from '@/assets/icons/logout.svg'
+import { useAuth } from '@/composables/useAuth'
+const { logout } = useAuth()
 </script>
 
 <template>
@@ -24,16 +24,15 @@ import logout from '@/assets/icons/logout.svg'
                 <img :src="notification" alt="">
             </div>
 
-            <a href="../Profile/Profile.html" class="flex gap-2 items-center text-[#385C4C] text-[15px] ">
+            <a href="#" class="flex gap-2 items-center text-[#385C4C] text-[15px] ">
                 <img :src="profile" alt="">
             </a>
 
-            <a href="../../../Login.html"
-                class="  cursor-pointer flex btn_hover items-center justify-center gap-[10px] bg-[#EB2F06] h-[40px] w-[110px] rounded-[6px] text-white text-[15px]">
+            <button @click="logout"
+                class="cursor-pointer flex btn_hover items-center justify-center gap-[10px] bg-[#EB2F06] h-[40px] w-[110px] rounded-[6px] text-white text-[15px]">
                 Logout
-                <img class="w-[24px] h-[24px]" :src="logout" alt="">
-            </a>
-
+                <img class="w-[24px] h-[24px]" :src="logoutIcon" alt="Logout">
+            </button>
 
         </div>
     </div>

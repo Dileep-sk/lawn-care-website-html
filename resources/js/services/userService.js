@@ -1,9 +1,8 @@
-import axios from 'axios';
-import API_BASE_URL from '@/config/api';
+import axios from '@/utils/axios'
 
 export async function fetchUsers(page = 1, search = '') {
     try {
-        const response = await axios.get(`${API_BASE_URL}/users`, {
+        const response = await axios.get(`/users`, {
             params: {
                 page,
                 search,
@@ -18,7 +17,7 @@ export async function fetchUsers(page = 1, search = '') {
 
 export async function deleteUser(id) {
     try {
-        const response = await axios.delete(`${API_BASE_URL}/users/${id}`);
+        const response = await axios.delete(`/users/${id}`);
         return response.data;
     } catch (error) {
         throw error;
@@ -27,7 +26,7 @@ export async function deleteUser(id) {
 
 export async function updateUserStatus(id, status) {
     try {
-        const response = await axios.put(`${API_BASE_URL}/users/${id}/status`, {
+        const response = await axios.put(`/users/${id}/status`, {
             status: status
         })
         return response.data
@@ -39,7 +38,7 @@ export async function updateUserStatus(id, status) {
 
 export async function createUser(payload) {
     try {
-        const response = await axios.post(`${API_BASE_URL}/users`, payload)
+        const response = await axios.post(`/users`, payload)
         return response.data
     } catch (error) {
         throw error
@@ -48,7 +47,7 @@ export async function createUser(payload) {
 
 export async function getUserById(id) {
     try {
-        const response = await axios.get(`${API_BASE_URL}/users/${id}`);
+        const response = await axios.get(`/users/${id}`);
         return response.data;
     } catch (error) {
         throw error;
@@ -57,7 +56,7 @@ export async function getUserById(id) {
 
 export async function updateUser(id, payload) {
     try {
-        const response = await axios.put(`${API_BASE_URL}/users/${id}`, payload);
+        const response = await axios.put(`/users/${id}`, payload);
         return response.data;
     } catch (error) {
         throw error;

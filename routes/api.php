@@ -18,4 +18,7 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::get('/users/{id}', [UserController::class, 'view']);
 
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 });

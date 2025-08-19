@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
-
+use App\Http\Controllers\Api\StockController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -17,6 +17,10 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::get('/users/{id}', [UserController::class, 'view']);
+
+    Route::get('/stocks', [StockController::class, 'index']);
+    Route::put('/stocks/{id}/status', [StockController::class, 'updateStatus']);
+    Route::delete('/stocks/{id}', [StockController::class, 'destroy']);
 
     Route::get('/user', function (Request $request) {
         return $request->user();

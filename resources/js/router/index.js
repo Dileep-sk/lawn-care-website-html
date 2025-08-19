@@ -10,7 +10,7 @@ import JobForm from "../pages/jobs/form.vue";
 import Stock from "../pages/stock/list.vue";
 import StockForm from "../pages/stock/form.vue";
 import Reports from "../pages/reports/lits.vue";
-
+import Profile from "../pages/profile/form.vue";
 import api from '@/utils/axios'
 
 const routes = [
@@ -115,6 +115,14 @@ const routes = [
         component: Reports,
         meta: { title: "Reports", requiresAuth: true },
     },
+
+    // profile
+    {
+        path: "/profile",
+        name: "profile",
+        component: Profile,
+        meta: { title: "Profile", requiresAuth: true },
+    },
 ];
 
 const router = createRouter({
@@ -122,53 +130,48 @@ const router = createRouter({
     routes,
 });
 
-// Set page title
+
 router.afterEach((to) => {
     document.title = to.meta?.title
         ? `${to.meta.title} | Textile Erp Software`
         : "Textile Erp Software";
 });
 
-// Global Auth Guard with token expiration check
 router.beforeEach(async (to, from, next) => {
     const token = localStorage.getItem("token");
 
-    // If route requires auth
     if (to.meta.requiresAuth) {
         if (!token) {
-            // No token at all
             return next({ name: "login" });
         }
 
         try {
-            // Validate token via backend
-            await api.get("/user"); // Laravel returns 401 if expired
-            return next(); // Valid token
+            await api.get("/user");
+            return next();
         } catch (error) {
-            // Token expired or invalid
+
             if (error.response?.status === 401) {
                 localStorage.removeItem("token");
                 return next({ name: "login" });
             } else {
-                // Optional: handle other errors like 500
+
                 return next({ name: "login" });
             }
         }
     }
 
-    // If user already logged in and tries to access login
+
     if (to.name === "login" && token) {
         try {
             await api.get("/user");
-            return next({ name: "dashboard" }); // Redirect to dashboard
+            return next({ name: "dashboard" });
         } catch {
-            // Token invalid, let them see login page
+
             localStorage.removeItem("token");
             return next();
         }
     }
 
-    // Open route
     return next();
 });
 

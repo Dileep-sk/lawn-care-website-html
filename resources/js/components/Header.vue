@@ -24,9 +24,9 @@ const { logout } = useAuth()
                 <img :src="notification" alt="">
             </div>
 
-            <a href="#" class="flex gap-2 items-center text-[#385C4C] text-[15px] ">
+            <router-link :to="{ name: 'profile' }" class="flex gap-2 items-center text-[#385C4C] text-[15px] ">
                 <img :src="profile" alt="">
-            </a>
+            </router-link>
 
             <button @click="logout"
                 class="cursor-pointer flex btn_hover items-center justify-center gap-[10px] bg-[#EB2F06] h-[40px] w-[110px] rounded-[6px] text-white text-[15px]">

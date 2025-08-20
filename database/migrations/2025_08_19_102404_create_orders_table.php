@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('transport_company')->nullable();
             $table->string('design_no');
             $table->string('item_name');
-            $table->decimal('quantity', 10, 2);
+            $table->integer('quantity');
             $table->decimal('rate', 10, 2);
             $table->tinyInteger('status')->default(0)->comment("Active = 1, Inactive = 0");
             $table->string('message')->nullable();

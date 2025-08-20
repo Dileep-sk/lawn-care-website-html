@@ -17,12 +17,12 @@ const { logout } = useAuth()
         <div class="flex gap-[15px] items-center">
 
 
-            <div class="relative">
+            <!-- <div class="relative">
                 <div
                     class="w-[18px] absolute right-[0] flex justify-center items-center h-[18px] rounded-full bg-[#D62925] text-[#fff] text-[10px] ">
                     10</div>
                 <img :src="notification" alt="">
-            </div>
+            </div> -->
 
             <router-link :to="{ name: 'profile' }" class="flex gap-2 items-center text-[#385C4C] text-[15px] ">
                 <img :src="profile" alt="">

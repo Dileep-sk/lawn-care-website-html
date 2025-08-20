@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('mark_no');
             $table->string('design_no');
             $table->string('item_name');
-            $table->decimal('quantity', 10, 2);
+            $table->integer('quantity');
             $table->string('message')->nullable();
             $table->tinyInteger('status')->default(1)->comment("Active = 1, Inactive = 0");
             $table->timestamps();

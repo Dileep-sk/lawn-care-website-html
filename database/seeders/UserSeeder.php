@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Create 1000 fake users
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 1000; $i++) {
             User::create([
                 'name' => fake()->name(),
                 'email' => fake()->unique()->safeEmail(),

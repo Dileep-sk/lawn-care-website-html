@@ -75,7 +75,7 @@ const route = useRoute()
             <li :class="{ 'active': route.path.startsWith('/profile') }">
                 <router-link :to="{ name: 'profile' }"
                     class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
-                    <img :src="doc" alt="">
+                    <img :src="users" alt="">
                     <span>Profile</span>
                 </router-link>
             </li>

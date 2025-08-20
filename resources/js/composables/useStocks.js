@@ -122,10 +122,7 @@ export function useStocks() {
         }, 500)
     })
 
-    onMounted(() => {
-        loadStocks()
-    })
-
+ 
     return {
         stocks,
         loading,

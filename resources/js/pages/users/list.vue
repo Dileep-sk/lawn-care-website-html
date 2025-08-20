@@ -1,7 +1,7 @@
 <script setup>
 import AuthLayout from '../../layouts/AuthLayout.vue'
 import BaseTable from '@/components/BaseTable.vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useUser } from '@/composables/useUser'
 import plus from '@/assets/icons/plus.svg'
 import search from '@/assets/icons/search.svg'
@@ -19,6 +19,10 @@ const {
     handleDelete,
     handleStatusToggle
 } = useUser(searchTerm)
+
+onMounted(() => {
+    loadUsers()
+})
 </script>
 <template>
     <AuthLayout>

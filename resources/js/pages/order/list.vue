@@ -1,11 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import AuthLayout from '../../layouts/AuthLayout.vue'
 import BaseTable from '@/components/BaseTable.vue'
-import ViewOrderModal from '../../components/ViewOrder.vue'
-
 import plus from '@/assets/icons/plus.svg'
 import search from '@/assets/icons/search.svg'
 import edit from '@/assets/icons/edit.svg'
@@ -14,21 +12,7 @@ import download from '@/assets/icons/download.svg'
 import eye from '@/assets/icons/eye.svg'
 
 import { useOrders } from '@/composables/useOrders'
-
 const searchTerm = ref('')
-const route = useRoute()
-const router = useRouter()
-
-const showViewModal = ref(false)
-const openViewModal = () => {
-    showViewModal.value = true
-    router.replace({ hash: '#viewOrder' })
-}
-const closeViewModal = () => {
-    showViewModal.value = false
-    router.replace({ hash: '' })
-}
-if (route.hash === '#viewOrder') showViewModal.value = true
 
 const {
     orders,
@@ -39,13 +23,20 @@ const {
     loadOrders,
     handleStatusToggle,
     exportOrderPDF,
+    handleDelete,
 } = useOrders(searchTerm)
 
 const STATUS_OPTIONS = [
     { text: 'Pending', value: 0, class: 'bg-yellow-100 text-yellow-600' },
     { text: 'Hold', value: 1, class: 'bg-blue-100 text-blue-600' },
-    { text: 'Success', value: 2, class: 'bg-green-100 text-green-600' }
+    { text: 'Completed', value: 2, class: 'bg-green-100 text-green-600' },
+    { text: 'Cancelled', value: 3, class: 'bg-red-600 text-white' }
+
 ]
+// 🔹 initial load
+onMounted(() => {
+    loadOrders()
+})
 
 const getStatusOption = (status) =>
     STATUS_OPTIONS.find(opt => opt.value === status) || STATUS_OPTIONS[0]
@@ -54,7 +45,7 @@ const getStatusOption = (status) =>
 </script>
 
 <template>
-    <ViewOrderModal :isOpen="showViewModal" @close="closeViewModal" />
+
 
     <AuthLayout>
         <div class="inner_contant mt-5 w-full">
@@ -132,7 +123,7 @@ const getStatusOption = (status) =>
 
                         <!-- Delete -->
                         <template #delete="{ row }">
-                            <button v-if="row && row.id" @click="console.log('delete order', row.id)"
+                            <button @click="handleDelete(row.id)"
                                 class="w-[90px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#D62925]">
                                 <img :src="deletes" class="w-[20px]" />
                                 Delete
@@ -150,11 +141,11 @@ const getStatusOption = (status) =>
 
                         <!-- View -->
                         <template #view="{ row }">
-                            <button v-if="row && row.id" @click="openViewModal"
+                            <router-link v-if="row && row.id" :to="{ name: 'order-view', params: { id: row.id } }"
                                 class="bg-[#3C40C6] cursor-pointer w-[130px] px-[15px] h-[35px] text-white flex justify-center gap-[5px] items-center rounded-[5px]">
                                 <img :src="eye" class="w-[20px]" />
                                 View Order
-                            </button>
+                            </router-link>
                         </template>
                     </BaseTable>
                 </div>

@@ -1,7 +1,8 @@
 import { ref, watch, onMounted, createApp, nextTick } from 'vue'
-import { fetchOrder, updateOrderStatus } from '@/services/orderService'
+import { fetchOrder, updateOrderStatus, createOrder, getLatestOrderId, getOrderById, updateOrder, deleteOrder } from '@/services/orderService'
 import toastr from 'toastr'
 import { confirmDialog } from '@/utils/confirmDialog'
+import { deleteConfirm } from '@/utils/deleteConfirm'
 import jsPDF from 'jspdf'
 
 import OrderPDFTemplate from '@/components/OrderPDFTemplate.vue'
@@ -26,7 +27,6 @@ export function useOrders(searchTerm = ref('')) {
             }
 
             const data = await fetchOrder(params)
-            console.log("Order API Response:", data)
 
             orders.value = data.data?.data || []
             currentPage.value = data.data?.current_page || 1
@@ -45,7 +45,8 @@ export function useOrders(searchTerm = ref('')) {
         const statusText =
             newStatus === 0 ? 'set Pending' :
                 newStatus === 1 ? 'put on Hold' :
-                    'mark as Success'
+                    newStatus === 2 ? 'put on Completed' :
+                        'mark as Cancelled'
 
         const confirmed = await confirmDialog(statusText, `Yes, ${statusText}`)
         if (!confirmed) return
@@ -64,6 +65,76 @@ export function useOrders(searchTerm = ref('')) {
         }
     }
 
+
+    const createOrderHandler = async (orderPayload) => {
+        try {
+            loading.value = true
+            const { data } = await createOrder(orderPayload)
+            toastr.success('Order created successfully!', 'Success')
+            await loadOrders()
+            return data
+        } catch (err) {
+            error.value = err.response?.data?.message || err.message || 'Failed to create order'
+            toastr.error(error.value, 'Error')
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+
+
+    const fetchLatestOrderId = async () => {
+        try {
+            const data = await getLatestOrderId()
+            console.log(data);
+
+            return data.latest_order_no
+        } catch (error) {
+            console.error('Failed to fetch latest order ID:', error)
+
+        }
+    }
+
+    const getOrderDetails = async (id) => {
+        try {
+            const { data } = await getOrderById(id)
+            return data
+        } catch (err) {
+            error.value = err.response?.data?.message || 'Failed to fetch order'
+            toastr.error(error.value, 'Error')
+            throw err
+        }
+    }
+
+    const updateOrderHandler = async (id, orderPayload) => {
+        try {
+            loading.value = true
+            const { data } = await updateOrder(id, orderPayload)
+            toastr.success('Order updated successfully!', 'Success')
+            return data
+        } catch (err) {
+            error.value = err.response?.data?.message || err.message || 'Failed to update order'
+            toastr.error(error.value, 'Error')
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+
+
+    const handleDelete = async (id) => {
+        try {
+            const confirmed = await deleteConfirm('this stock')
+            if (!confirmed) return
+
+            await deleteOrder(id)
+            orders.value = orders.value.filter(orders => orders.id !== id)
+            toastr.success('Order deleted successfully', 'Success')
+        } catch (err) {
+            error.value = 'Failed to delete user.'
+            toastr.error('Something went wrong while deleting.', 'Error')
+        }
+    }
 
     // const exportOrderPDF = (order) => {
     //     if (!order) return
@@ -141,6 +212,7 @@ export function useOrders(searchTerm = ref('')) {
 
 
 
+
     // 🔹 debounce search
     let debounceTimeout = null
     watch(searchTerm, (val) => {
@@ -150,10 +222,7 @@ export function useOrders(searchTerm = ref('')) {
         }, 500)
     })
 
-    // 🔹 initial load
-    onMounted(() => {
-        loadOrders()
-    })
+
 
     return {
         orders,
@@ -166,5 +235,10 @@ export function useOrders(searchTerm = ref('')) {
         loadOrders,
         handleStatusToggle,
         exportOrderPDF,
+        createOrderHandler,
+        fetchLatestOrderId,
+        getOrderDetails,
+        updateOrderHandler,
+        handleDelete,
     }
 }

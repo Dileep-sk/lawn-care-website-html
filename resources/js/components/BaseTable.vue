@@ -6,7 +6,7 @@ import arrow_black from '@/assets/icons/left-arrow_black.svg'
 const props = defineProps({
     data: Array,
     columns: Array,
-    loading: Boolean, // parent-controlled loading
+    loading: Boolean,
     error: String,
     currentPage: Number,
     lastPage: Number

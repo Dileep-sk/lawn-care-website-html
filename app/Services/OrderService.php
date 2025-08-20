@@ -58,4 +58,56 @@ class OrderService
 
         return $order->save();
     }
+
+
+    public function create(array $data): Order
+    {
+        $order = Order::create(array_merge($data, ['order_no' => 'TEMP']));
+
+        $order->order_no = 'ORD' . str_pad($order->id, 4, '0', STR_PAD_LEFT);
+        $order->save();
+
+        return $order;
+    }
+
+
+    public function getLatestOrderNo()
+    {
+        $latestOrder = Order::orderBy('id', 'desc')->first();
+
+        if ($latestOrder) {
+            return 'ORD' . $latestOrder->id + 1;
+        }
+
+        return 'ORD-00001';
+    }
+
+    public function getOrderById($id)
+    {
+        return Order::find($id);
+    }
+
+    public function updateOrder($id, array $data)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return false;
+        }
+
+        $order->update($data);
+
+        return $order;
+    }
+
+    public function deleteOrderById($id): bool
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return false;
+        }
+
+        return $order->delete();
+    }
 }

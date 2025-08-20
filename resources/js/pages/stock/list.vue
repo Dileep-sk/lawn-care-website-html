@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted } from 'vue'
 import AuthLayout from '../../layouts/AuthLayout.vue'
 import BaseTable from '@/components/BaseTable.vue'
 import plusIcon from '@/assets/icons/plus.svg'
@@ -18,6 +19,11 @@ const {
     loadStocks,
     handleDelete,
 } = useStocks()
+
+   onMounted(() => {
+        loadStocks()
+    })
+
 </script>
 
 <template>

@@ -114,12 +114,7 @@ export function useUser(searchTerm = ref('')) {
     )
 
 
-    onMounted(() => {
-        loadUsers().catch(err => {
-            error.value = 'Failed to load users initially.'
-            toastr.error('Initial load failed.', 'Error')
-        })
-    })
+
 
     return {
         users,

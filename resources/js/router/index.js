@@ -3,6 +3,7 @@ import Login from "../pages/Login.vue";
 import Dashboard from "../pages/dashboard.vue";
 import Order from "../pages/order/list.vue";
 import OrderForm from "../pages/order/form.vue";
+import OrderView from "../pages/order/view.vue";
 import Users from "../pages/users/list.vue";
 import UsersForm from "../pages/users/form.vue";
 import Jobs from "../pages/jobs/list.vue";
@@ -42,10 +43,16 @@ const routes = [
         meta: { title: "Order Create", requiresAuth: true },
     },
     {
-        path: "/order/edit",
+        path: "/order/edit/:id",
         name: "order-edit",
         component: OrderForm,
         meta: { title: "Order Edit", requiresAuth: true },
+    },
+    {
+        path: "/order/view/:id",
+        name: "order-view",
+        component: OrderView,
+        meta: { title: "Order View", requiresAuth: true },
     },
 
     // Jobs

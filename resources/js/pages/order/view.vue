@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import AuthLayout from '../../layouts/AuthLayout.vue'
-import arrow_black from '@/assets/icons/left-arrow_black.svg'
+import left_arrow from '@/assets/icons/left-arrow.svg'
 import { useOrders } from '@/composables/useOrders'
 import { useRoute } from 'vue-router'
 
@@ -49,9 +49,9 @@ onMounted(async () => {
                         <h2 class="font-bold text-[24px]">Order Detail</h2>
                         <div class="flex justify-end mb-6">
                             <router-link :to="{ name: 'order' }"
-                                class="flex items-center gap-2 bg-[#1d3f92] text-white font-medium px-4 py-2 rounded hover:bg-[#163273] transition">
-                                <img :src="arrow_black" alt="Back" class="w-4 h-4 invert" />
-                                Return
+                                class="h-[45px] flex px-[20px] items-center gap-[10px] text-white text-[15px] font-medium rounded-[5px] bg-black">
+                                <img :src="left_arrow" class="w-[20px]" alt="Back" />
+                                Back
                             </router-link>
                         </div>
                     </div>

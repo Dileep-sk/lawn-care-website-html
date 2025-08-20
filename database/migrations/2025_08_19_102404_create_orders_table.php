@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('customer_name');
-            $table->string('order_no')->unique();
+            $table->string('customer_name')->index();
+            $table->string('order_no')->unique()->index();
             $table->date('date');
-            $table->string('broker_name')->nullable();
-            $table->string('transport_company')->nullable();
-            $table->string('design_no');
-            $table->string('item_name');
-            $table->integer('quantity');
-            $table->decimal('rate', 10, 2);
+            $table->string('broker_name')->nullable()->index();
+            $table->string('transport_company')->nullable()->index();
+            $table->string('design_no')->index();
+            $table->string('item_name')->index();
+            $table->integer('quantity')->index();
+            $table->decimal('rate', 10, 2)->index();
             $table->tinyInteger('status')->default(0)->comment("Active = 1, Inactive = 0");
             $table->string('message')->nullable();
             $table->timestamps();

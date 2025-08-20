@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\StockController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\JobController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -37,6 +38,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::put('/orders/{id}', [OrderController::class, 'update']);
     Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
+
+
+    Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
+
 
     Route::get('/user', function (Request $request) {
         return $request->user();

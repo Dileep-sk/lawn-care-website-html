@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             StockSeeder::class,
             OrderSeeder::class,
+            JobsSeeder::class,
         ]);
     }
 }

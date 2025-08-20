@@ -13,7 +13,7 @@ class StockSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 1000; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             Stock::create([
                 'mark_no'   => 'M' . str_pad($i, 3, '0', STR_PAD_LEFT), // M001, M002,...
                 'design_no' => 'D' . str_pad(rand(1, 1000), 4, '0', STR_PAD_LEFT),

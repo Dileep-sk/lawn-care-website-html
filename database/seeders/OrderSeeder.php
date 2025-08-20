@@ -16,7 +16,7 @@ class OrderSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        foreach (range(1, 1000) as $index) {
+        foreach (range(1, 100) as $index) {
             Order::create([
                 'customer_name'      => $faker->name,
                 'order_no'           => 'ORD' . str_pad($index, 4, '0', STR_PAD_LEFT), // e.g., ORD0001

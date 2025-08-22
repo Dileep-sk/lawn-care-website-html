@@ -12,8 +12,8 @@ class JobsSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        // Seed 50 dummy records
-        for ($i = 0; $i < 50; $i++) {
+
+        for ($i = 0; $i < 500; $i++) {
             DB::table('order_jobs')->insert([
                 'company_name' => $faker->company,
                 'design_no' => strtoupper($faker->bothify('D-###??')),

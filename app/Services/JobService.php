@@ -13,24 +13,49 @@ class JobService
     {
         $query = Job::query();
 
-        // Optional search
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('company_name', 'like', "%{$search}%")
                     ->orWhere('design_no', 'like', "%{$search}%")
-                    ->orWhere('order_no', 'like', "%{$search}%");
+                    ->orWhere('order_no', 'like', "%{$search}%")
+                    ->orWhere('quantity', 'like', "%{$search}%")
+                    ->orWhere('id', 'like', "%{$search}%");
             });
         }
 
-        // Optional status filter
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Pagination
-        $perPage = $request->input('per_page', 10); // default 10
+        $perPage = $request->input('per_page', 10);
         return $query->latest()->paginate($perPage);
     }
+
+
+    public function updateJobStatus($id, $status)
+    {
+        $job = Job::find($id);
+
+        if (!$job) {
+            return false;
+        }
+        $job->status = $status;
+        return $job->save();
+    }
+
+
+     public function deleteJobById($id)
+    {
+        $job = Job::find($id);
+
+        if (!$job) {
+            return false;
+        }
+
+        return $job->delete();
+    }
+
+
 
     public function getJobById($id)
     {
@@ -49,9 +74,5 @@ class JobService
         return $job;
     }
 
-    public function deleteJob($id)
-    {
-        $job = Job::findOrFail($id);
-        return $job->delete();
-    }
+
 }

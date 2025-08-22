@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateJobStatusRequest;
 use Illuminate\Http\Request;
 use App\Services\JobService;
 use Illuminate\Http\JsonResponse;
@@ -34,6 +35,45 @@ class JobController extends Controller
             ], 500);
         }
     }
+
+
+    public function updateStatus(UpdateJobStatusRequest $request, $id): JsonResponse
+    {
+        try {
+            $updated = $this->jobService->updateJobStatus($id, $request->status);
+
+            if ($updated) {
+                return response()->json(['message' => 'Job status updated successfully.']);
+            }
+
+            return response()->json(['message' => 'Job not found or status not updated.'], 404);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Failed to update Job status.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function destroy($id): JsonResponse
+    {
+        try {
+            $result = $this->jobService->deleteJobById($id);
+
+            if ($result) {
+                return response()->json(['message' => 'Job deleted successfully.']);
+            }
+            return response()->json(['message' => 'Job not found.'], 404);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete Order.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
 
     public function show($id): JsonResponse
     {
@@ -87,11 +127,5 @@ class JobController extends Controller
 
         $job = $this->jobService->updateJob($id, $data);
         return response()->json($job);
-    }
-
-    public function destroy($id): JsonResponse
-    {
-        $this->jobService->deleteJob($id);
-        return response()->json(['message' => 'Job deleted successfully']);
     }
 }

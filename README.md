@@ -21,3 +21,5 @@ php artisan db:seed --class=OrderSeeder
 php artisan db:seed --class=JobsSeeder
 
 php artisan passport:client --personal
+
+php artisan passport:keys

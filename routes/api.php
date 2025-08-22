@@ -41,6 +41,8 @@ Route::middleware('auth:api')->group(function () {
 
 
     Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
+    Route::put('/jobs/{id}/status', [JobController::class, 'updateStatus']);
+    Route::delete('/jobs/{id}', [JobController::class, 'destroy']);
 
 
     Route::get('/user', function (Request $request) {

@@ -15,16 +15,15 @@ class JobsSeeder extends Seeder
 
         for ($i = 0; $i < 500; $i++) {
             DB::table('order_jobs')->insert([
-                'company_name' => $faker->company,
+                'customer_name' => $faker->name,
                 'design_no' => strtoupper($faker->bothify('D-###??')),
                 'image' => $faker->optional()->imageUrl(640, 480, 'business'),
                 'quantity' => $faker->numberBetween(1, 1000),
                 'order_no' => strtoupper($faker->bothify('ORD-#####')),
-                'status' => $faker->numberBetween(0, 3), // Example status codes 0-3
+                'status' => $faker->numberBetween(0, 3),
                 'message' => $faker->sentence(),
                 'created_at' => now(),
                 'updated_at' => now(),
-                // matching_1 to matching_8
                 'matching_1' => $faker->optional()->word,
                 'matching_2' => $faker->optional()->word,
                 'matching_3' => $faker->optional()->word,

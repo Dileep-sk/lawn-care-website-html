@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateJobRequest;
 use App\Http\Requests\UpdateJobStatusRequest;
 use Illuminate\Http\Request;
 use App\Services\JobService;
@@ -72,38 +73,28 @@ class JobController extends Controller
         }
     }
 
-
-
-
     public function show($id): JsonResponse
     {
         $job = $this->jobService->getJobById($id);
         return response()->json($job);
     }
 
-    public function store(Request $request): JsonResponse
+    public function create(CreateJobRequest $request): JsonResponse
     {
-        $data = $request->validate([
-            'company_name' => 'required|string',
-            'design_no' => 'required|string',
-            'image' => 'nullable|string',
-            'quantity' => 'required|integer',
-            'order_no' => 'required|string',
-            'status' => 'required|integer',
-            'message' => 'required|string',
-            'matching_1' => 'nullable|string',
-            'matching_2' => 'nullable|string',
-            'matching_3' => 'nullable|string',
-            'matching_4' => 'nullable|string',
-            'matching_5' => 'nullable|string',
-            'matching_6' => 'nullable|string',
-            'matching_7' => 'nullable|string',
-            'matching_8' => 'nullable|string',
-        ]);
-
-        $job = $this->jobService->createJob($data);
-        return response()->json($job, 201);
+        try {
+            $job = $this->jobService->createJob($request->validated());
+            return response()->json([
+                'message' => 'Job created successfully',
+                'data' => $job
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Failed to create job.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
 
     public function update(Request $request, $id): JsonResponse
     {

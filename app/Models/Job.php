@@ -9,7 +9,7 @@ class Job extends Model
     protected $table = 'order_jobs';
 
     protected $fillable = [
-        'company_name',
+        'customer_name',
         'design_no',
         'image',
         'quantity',

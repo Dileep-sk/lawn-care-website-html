@@ -1,9 +1,10 @@
 import { ref } from 'vue'
-import { fetchJobs, updateJobStatus, deleteJob } from '@/services/jobService'
+import { fetchJobs, updateJobStatus, deleteJob, createJob } from '@/services/jobService'
 import toastr from 'toastr'
 import { deleteConfirm } from '@/utils/deleteConfirm'
 import { confirmDialog } from '@/utils/confirmDialog'
 import { STATUS_OPTIONS } from '@/constants/jobStatus'
+import { useRouter } from 'vue-router'
 export function useJobs() {
     const jobs = ref([])
     const loading = ref(false)
@@ -14,6 +15,7 @@ export function useJobs() {
     const lastPage = ref(1)
     const totalItems = ref(0)
     const deleteLoading = ref(false)
+    const router = useRouter()
 
     const loadJobs = async (page = 1, search = '', status = '') => {
         loading.value = true
@@ -66,7 +68,6 @@ export function useJobs() {
         try {
             const response = await updateJobStatus(id, status)
             toastr.success(response.message, 'Success')
-
             const job = jobs.value.find(job => job.id === id)
             if (job) {
                 job.status = status
@@ -82,7 +83,6 @@ export function useJobs() {
     const handleDeleteJob = async (id) => {
         deleteLoading.value = true
         error.value = null
-
         try {
             const confirmed = await deleteConfirm('this user')
             if (!confirmed) return
@@ -98,6 +98,23 @@ export function useJobs() {
         }
     }
 
+    const createJobHandler = async (formData) => {
+        try {
+            if (formData instanceof FormData) {
+                console.log("Creating job with FormData:", [...formData.entries()])
+            } else {
+                console.log("Creating job with JSON:", formData)
+            }
+            const response = await createJob(formData)
+            jobs.value.push(response.data)
+            router.push({ name: 'jobs' })
+
+        } catch (err) {
+            error.value = err.response?.data?.message || err.message || 'Failed to create job'
+            toastr.error(error.value, 'Error')
+        }
+    }
+
     return {
         jobs,
         loading,
@@ -110,6 +127,7 @@ export function useJobs() {
         updateStatus,
         handleDeleteJob,
         getStatusText,
-        handleStatusChange
+        handleStatusChange,
+        createJobHandler
     }
 }

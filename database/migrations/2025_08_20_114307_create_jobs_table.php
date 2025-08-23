@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('order_jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('company_name')->index();
+            $table->string('customer_name')->index();
             $table->string('design_no')->index();;
             $table->string('image')->nullable();
             $table->integer('quantity')->index();
@@ -22,7 +22,7 @@ return new class extends Migration
             for ($i = 1; $i <= 8; $i++) {
                 $table->string("matching_$i")->nullable();
             }
-            $table->string('message');
+            $table->string('message')->nullable();
             $table->timestamps();
         });
     }

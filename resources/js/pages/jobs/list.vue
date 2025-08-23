@@ -10,14 +10,11 @@ import BaseTable from '@/components/BaseTable.vue'
 import { useJobs } from '@/composables/useJobs'
 import { STATUS_OPTIONS } from '@/constants/jobStatus'
 
-
-// ---- State ----
 const filters = reactive({
     search: '',
     status: ''
 })
 
-// ---- Jobs composable ----
 const {
     loadJobs,
     jobs,
@@ -29,16 +26,14 @@ const {
     handleStatusChange,
 } = useJobs()
 
-
 watch(filters, ({ search, status }) => {
     loadJobs(1, search, status)
-}, { deep: true })
+})
 
+onMounted(() => {
+    loadJobs()
+})
 
-    -
-    onMounted(() => {
-        loadJobs()
-    })
 </script>
 
 <template>
@@ -57,7 +52,6 @@ watch(filters, ({ search, status }) => {
                             <input v-model="filters.search" type="text" placeholder="Search here.."
                                 class="input !border-0 !w-[325px] rounded-[5px] !mt-[0] !px-[40px] !h-[45px] bg-[rgba(23,23,23,0.05)]" />
                         </div>
-
                         <!-- Status Dropdown -->
                         <select v-model="filters.status"
                             class="input !w-[250px] !border-0 !mt-[0] !bg-[rgba(23,23,23,0.05)] !h-[45px]">

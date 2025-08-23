@@ -15,3 +15,8 @@ export const deleteJob = async (id) => {
     const response = await axios.delete(`/jobs/${id}`)
     return response.data
 }
+
+export const createJob = async (data) => {
+    const response = await axios.post('/jobs', data)
+    return response.data
+}

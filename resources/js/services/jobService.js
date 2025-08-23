@@ -20,3 +20,8 @@ export const createJob = async (data) => {
     const response = await axios.post('/jobs', data)
     return response.data
 }
+
+export const getJobById = async (id) => {
+    const response = await axios.get(`/jobs/${id}`)
+    return response.data
+}

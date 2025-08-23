@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { fetchJobs, updateJobStatus, deleteJob, createJob } from '@/services/jobService'
+import { fetchJobs, updateJobStatus, deleteJob, createJob, getJobById } from '@/services/jobService'
 import toastr from 'toastr'
 import { deleteConfirm } from '@/utils/deleteConfirm'
 import { confirmDialog } from '@/utils/confirmDialog'
@@ -114,6 +114,17 @@ export function useJobs() {
             toastr.error(error.value, 'Error')
         }
     }
+     const getJobDetails = async (id) => {
+        try {
+            const data  = await getJobById(id)
+
+            return data
+        } catch (err) {
+            error.value = err.response?.data?.message || 'Failed to fetch order'
+            toastr.error(error.value, 'Error')
+            throw err
+        }
+    }
 
     return {
         jobs,
@@ -128,6 +139,7 @@ export function useJobs() {
         handleDeleteJob,
         getStatusText,
         handleStatusChange,
-        createJobHandler
+        createJobHandler,
+        getJobDetails,
     }
 }

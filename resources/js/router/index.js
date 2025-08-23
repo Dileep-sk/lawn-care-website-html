@@ -8,6 +8,7 @@ import Users from "../pages/users/list.vue";
 import UsersForm from "../pages/users/form.vue";
 import Jobs from "../pages/jobs/list.vue";
 import JobForm from "../pages/jobs/form.vue";
+import JobView from "../pages/jobs/view.vue";
 import Stock from "../pages/stock/list.vue";
 import StockForm from "../pages/stock/form.vue";
 import Reports from "../pages/reports/lits.vue";
@@ -73,6 +74,12 @@ const routes = [
         name: "jobs-edit",
         component: JobForm,
         meta: { title: "Jobs Edit", requiresAuth: true },
+    },
+    {
+        path: "/jobs/view:id",
+        name: "jobs-view",
+        component: JobView,
+        meta: { title: "Jobs View", requiresAuth: true },
     },
 
     // Stock

@@ -114,10 +114,10 @@ onMounted(() => {
 
                         <!-- View Order Column -->
                         <template #view_order="{ row }">
-                            <a href="#view_job" rel="modal:open"
+                             <router-link v-if="row && row.id" :to="{ name: 'jobs-view', params: { id: row.id } }"
                                 class="bg-[#3C40C6] cursor-pointer w-[130px] h-[35px] text-white flex justify-center text-[15px] items-center gap-[5px] rounded-[5px]">
                                 <img :src="eye" class="w-[20px]" alt="">View Job
-                            </a>
+                            </router-link>
                         </template>
                     </BaseTable>
                 </div>

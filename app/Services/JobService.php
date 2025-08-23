@@ -59,7 +59,7 @@ class JobService
 
     public function getJobById($id)
     {
-        return Job::findOrFail($id);
+        return Job::find($id);
     }
 
     public function createJob(array $data)

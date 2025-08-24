@@ -14,7 +14,7 @@ import BrokerSelect from '@/components/BrokerSelect.vue'
 import TransportCompanySelect from '@/components/TransportCompanySelect.vue'
 import DesignNoDropdown from '@/components/DesignNoDropdown.vue'
 import ItemDropdown from '@/components/ItemDropdown.vue'
-
+import { statusOptions } from '@/constants/orderStatus'
 
 const { createOrderHandler, fetchLatestOrderId, getOrderDetails, updateOrderHandler } = useOrders()
 const router = useRouter()
@@ -25,7 +25,7 @@ const isEditMode = ref(false)
 const isLoading = ref(false)
 
 const form = reactive({
-    customer_name: '',   // store ID instead of name
+    customer_name: '',
     order_no: '',
     date: '',
     broker_name: '',
@@ -142,21 +142,13 @@ Object.keys(form).forEach((key) => {
     )
 })
 
-const statusOptions = [
-    { value: '0', text: 'Pending' },
-    { value: '1', text: 'Hold' },
-    { value: '2', text: 'Completed' },
-    { value: '3', text: 'Cancelled' }
-]
 
 const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'))
 </script>
-
 <template>
     <AuthLayout>
         <div class="inner_contant mt-[20px] w-full">
             <div class="content_container w-full h-full bg-white rounded-[10px]">
-
                 <!-- Header -->
                 <div class="top_header border-b p-[15px] border-b-[#E8F0E2] flex justify-between items-center">
                     <h1 class="text-[20px] font-bold text-black">{{ title }}</h1>
@@ -166,7 +158,6 @@ const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'
                         Back
                     </router-link>
                 </div>
-
                 <!-- Form -->
                 <div class="form_box p-[15px]">
                     <form class="p-[15px] bg-[rgba(56,92,76,0.04)]" @submit.prevent="handleSubmit">
@@ -208,7 +199,6 @@ const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'
                                     {{ validationErrors.broker_name }}
                                 </p>
                             </div>
-
                             <div>
                                 <TransportCompanySelect v-model="form.transport_company" />
                                 <p v-if="touched.transport_company && validationErrors.transport_company"
@@ -216,8 +206,6 @@ const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'
                                     {{ validationErrors.transport_company }}
                                 </p>
                             </div>
-
-
                             <div>
                                 <DesignNoDropdown v-model="form.design_no" />
                                 <p v-if="touched.design_no && validationErrors.design_no"
@@ -225,17 +213,14 @@ const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'
                                     {{ validationErrors.design_no }}
                                 </p>
                             </div>
-
-
                             <!-- Item Name -->
                             <div>
                                 <ItemDropdown v-model="form.item_name" />
-                                <p v-if="validationErrors.item_name && validationErrors.item_name" class="text-red-600 text-sm mt-1">
+                                <p v-if="validationErrors.item_name && validationErrors.item_name"
+                                    class="text-red-600 text-sm mt-1">
                                     {{ validationErrors.item_name }}
                                 </p>
                             </div>
-
-
                             <!-- Quantity -->
                             <div>
                                 <BaseInput v-model="form.quantity" label="Quantity" type="number" placeholder="00.00"
@@ -245,7 +230,6 @@ const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'
                                     {{ validationErrors.quantity }}
                                 </p>
                             </div>
-
                             <!-- Rate -->
                             <div>
                                 <BaseInput v-model="form.rate" label="Rate" type="number" placeholder="00.00"
@@ -254,14 +238,12 @@ const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'
                                     {{ validationErrors.rate }}
                                 </p>
                             </div>
-
                             <!-- Status Dropdown -->
                             <div class="input_box">
                                 <SelectDropdown v-model="form.status" label="Status" :options="statusOptions"
                                     placeholder="Select Status" />
                             </div>
                         </div>
-
                         <div class="flex justify-end mt-[20px]">
                             <button :disabled="isLoading" type="submit"
                                 class="flex create justify-center gap-[10px] cursor-pointer items-center">
@@ -271,8 +253,7 @@ const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'
                         </div>
                     </form>
                 </div>
-
-                <AvailableStocks />
+                <AvailableStocks :designNo="form.design_no" />
             </div>
         </div>
     </AuthLayout>

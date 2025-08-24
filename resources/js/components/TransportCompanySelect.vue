@@ -26,7 +26,7 @@ watch(modelValue, (val) => {
 }, { immediate: true })
 
 
-const filteredCompanies = computed(() => {
+const filteredTransportCompanies = computed(() => {
     if (!search.value) return companies.value
     return companies.value.filter(c =>
         c.name.toLowerCase().includes(search.value.toLowerCase())
@@ -48,6 +48,12 @@ const handleBlur = () => {
     }
     showDropdown.value = false
 }
+
+watch(search, () => {
+    showDropdown.value = filteredTransportCompanies.value.length > 0
+})
+
+
 </script>
 
 <template>
@@ -58,9 +64,9 @@ const handleBlur = () => {
             placeholder="Search Transport Company..." class="input w-full pr-10" />
 
         <!-- Dropdown -->
-        <ul v-if="showDropdown && filteredCompanies.length"
+        <ul v-if="showDropdown && filteredTransportCompanies.length"
             class="absolute z-10 w-full bg-white border rounded-lg shadow mt-1 max-h-40 overflow-y-auto">
-            <li v-for="company in filteredCompanies" :key="company.id" @mousedown.prevent="selectCompany(company)"
+            <li v-for="company in filteredTransportCompanies" :key="company.id" @mousedown.prevent="selectCompany(company)"
                 class="px-3 py-2 cursor-pointer hover:bg-gray-100">
                 {{ company.name }}
             </li>

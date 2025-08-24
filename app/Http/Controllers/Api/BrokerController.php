@@ -3,18 +3,28 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Broker;
-use Illuminate\Http\Request;
+use App\Services\BrokerService;
+use Illuminate\Http\JsonResponse;
 
 class BrokerController extends Controller
 {
-    public function index()
+    protected $brokerService;
+
+    public function __construct(BrokerService $brokerService)
     {
-        $broker = Broker::where('status', 1)->get();
+        $this->brokerService = $brokerService;
+    }
+
+    /**
+     * Return active brokers.
+     */
+    public function index(): JsonResponse
+    {
+        $brokers = $this->brokerService->getActiveBrokers();
 
         return response()->json([
             'success' => true,
-            'data' => $broker
-        ], 200);
+            'data' => $brokers,
+        ]);
     }
 }

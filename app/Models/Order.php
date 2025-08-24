@@ -6,14 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+
+    public const STATUS_CANCELED = 4;
+
      protected $fillable = [
-        'customer_name',
+        'customer_id',
         'order_no',
         'date',
-        'broker_name',
-        'transport_company',
-        'design_no',
-        'item_name',
+        'broker_id',
+        'transport_company_id',
+        'design_no_id',
+        'item_id',
         'quantity',
         'rate',
         'status',

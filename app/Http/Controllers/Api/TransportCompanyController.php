@@ -3,18 +3,28 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\TransportCompany;
-use Illuminate\Http\Request;
+use App\Services\TransportCompanyService;
+use Illuminate\Http\JsonResponse;
 
 class TransportCompanyController extends Controller
 {
-     public function index()
+    protected $transportCompanyService;
+
+    public function __construct(TransportCompanyService $transportCompanyService)
     {
-        $TransportCompany = TransportCompany::where('status', 1)->get();
+        $this->transportCompanyService = $transportCompanyService;
+    }
+
+    /**
+     * Return active transport companies.
+     */
+    public function index(): JsonResponse
+    {
+        $companies = $this->transportCompanyService->getActiveCompanies();
 
         return response()->json([
             'success' => true,
-            'data' => $TransportCompany
-        ], 200);
+            'data' => $companies,
+        ]);
     }
 }

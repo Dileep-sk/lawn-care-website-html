@@ -26,11 +26,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Call other seeders
-        $this->call([
-            UserSeeder::class,
-            StockSeeder::class,
-            OrderSeeder::class,
-            JobsSeeder::class,
-        ]);
+        // $this->call([
+        //     UserSeeder::class,
+        //     StockSeeder::class,
+        //     OrderSeeder::class,
+        //     JobsSeeder::class,
+        // ]);
     }
 }

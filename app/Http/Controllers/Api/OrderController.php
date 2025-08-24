@@ -7,16 +7,31 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 use App\Http\Requests\UpdateOrderStatusRequest;
+use App\Models\DesignNo;
+use App\Models\Item;
+use App\Models\Order;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use App\Services\TransportCompanyService;
+use App\Services\BrokerService;
+use App\Services\CustomerService;
+use App\Services\StockService;
 
 class OrderController extends Controller
 {
     protected $orderService;
+    protected $transportCompanyService;
+    protected $brokerService;
+    protected $customerService;
+    protected $stockService;
 
-    public function __construct(OrderService $orderService)
+    public function __construct(OrderService $orderService, TransportCompanyService $transportCompanyService, BrokerService $brokerService, CustomerService $customerService, StockService $stockService)
     {
         $this->orderService = $orderService;
+        $this->transportCompanyService = $transportCompanyService;
+        $this->brokerService = $brokerService;
+        $this->customerService = $customerService;
+        $this->stockService = $stockService;
     }
 
     /**
@@ -55,7 +70,49 @@ class OrderController extends Controller
     public function store(StoreOrderRequest $request): JsonResponse
     {
         try {
-            $order = $this->orderService->create($request->validated());
+            $isDesignNameExit = DesignNo::find($request->design_no);
+            if (empty($isDesignNameExit)) {
+
+                return response()->json([
+                    'message' => 'Design No does not Please select correct Design No.',
+                    'error' => ""
+                ], 500);
+            }
+
+            $isitemExit = Item::find($request->item_name);
+            if (empty($isitemExit)) {
+
+                return response()->json([
+                    'message' => 'Item Name No does not Please select correct Item Name.',
+                    'error' => ""
+                ], 500);
+            }
+
+            $transport_company = $this->transportCompanyService->createAndFind($request->transport_company);
+            $broker_name = $this->brokerService->createAndFind($request->broker_name);
+            $customer_name = $this->customerService->createAndFind($request->customer_name);
+            $orderData = array_merge($request->validated(), [
+                'transport_company_id' => $transport_company,
+                'broker_id' => $broker_name,
+                'customer_id' => $customer_name,
+                'design_no_id' => $request->design_no,
+                'item_id' => $request->item_name,
+            ]);
+
+            $stockData = [
+                'item_id' => $request->item_name,
+                'design_no_id' => $request->design_no,
+                'mark_no_id' => 1,
+                'quantity' => $request->quantity,
+                'message ' => 'Order Created',
+                'stock_manage' => 0,
+            ];
+
+            $stock = $this->stockService->create($stockData);
+
+            if (isset($stock)) {
+                $order = $this->orderService->create($orderData);
+            }
 
             return response()->json([
                 'message' => 'Order created successfully',

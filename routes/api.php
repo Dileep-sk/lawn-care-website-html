@@ -57,8 +57,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/items', [ItemController::class, 'index'])->name('items.index');
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
     Route::get('/broker', [BrokerController::class, 'index'])->name('broker.index');
-     Route::get('/transport-company', [TransportCompanyController::class, 'index'])->name('broker.index');
+    Route::get('/transport-company', [TransportCompanyController::class, 'index'])->name('broker.index');
 
+
+    Route::get('/design-no/{id}', [StockController::class, 'availableStock'])->name('availableStock');
 
     Route::get('/user', function (Request $request) {
         return $request->user();

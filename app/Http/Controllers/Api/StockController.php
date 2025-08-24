@@ -83,11 +83,17 @@ class StockController extends Controller
             $itemId = $this->itemService->createAndFind($request->item_name);
             $designNoId = $this->designNoService->createAndFind($request->design_no);
             $markNoId = $this->markNoService->createAndFind($request->mark_no);
-
+            $message = '';
+            if ($request->stock_manage == 1) {
+                $message = "Stock Added";
+            } else {
+                $message = "Stock Remove";
+            }
             $stockData = array_merge($request->validated(), [
                 'item_id' => $itemId,
                 'design_no_id' => $designNoId,
                 'mark_no_id' => $markNoId,
+                'message'       => $message,
             ]);
 
             $stock = $this->stockService->create($stockData);
@@ -144,5 +150,14 @@ class StockController extends Controller
                 'message' => 'User not found.',
             ], 404);
         }
+    }
+
+    public function availableStock(Request $request, $id)
+    {
+        $stock = $this->stockService->availableStock($id);
+        return response()->json([
+            'message' => 'Stock Get successfully.',
+            'data' => $stock,
+        ], 200);
     }
 }

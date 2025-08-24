@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue"
 import { useBrokers } from "@/composables/useBrokers"
+import { options } from "toastr"
 
 const modelValue = defineModel()
 
@@ -48,6 +49,9 @@ const handleBlur = () => {
     }
     showDropdown.value = false
 }
+watch(search, () => {
+    showDropdown.value = filteredBrokers.value.length > 0
+})
 </script>
 
 <template>

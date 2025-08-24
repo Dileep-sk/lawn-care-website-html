@@ -48,6 +48,12 @@ const handleBlur = () => {
     }
     showDropdown.value = false
 }
+
+watch(search, () => {
+    showDropdown.value = filteredCustomers.value.length > 0
+})
+
+
 </script>
 
 <template>

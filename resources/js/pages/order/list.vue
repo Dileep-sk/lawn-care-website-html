@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import AuthLayout from '../../layouts/AuthLayout.vue'
@@ -10,10 +10,10 @@ import edit from '@/assets/icons/edit.svg'
 import deletes from '@/assets/icons/delete.svg'
 import download from '@/assets/icons/download.svg'
 import eye from '@/assets/icons/eye.svg'
-
 import { useOrders } from '@/composables/useOrders'
+import { STATUS_OPTIONS } from '@/constants/orderListStatus'
 const searchTerm = ref('')
-
+const STATUS_CANCELLED  = 4 // order cancell
 const {
     orders,
     loading,
@@ -26,16 +26,15 @@ const {
     handleDelete,
 } = useOrders(searchTerm)
 
-const STATUS_OPTIONS = [
-    { text: 'Pending', value: 0, class: 'bg-yellow-100 text-yellow-600' },
-    { text: 'Hold', value: 1, class: 'bg-blue-100 text-blue-600' },
-    { text: 'Completed', value: 2, class: 'bg-green-100 text-green-600' },
-    { text: 'Cancelled', value: 3, class: 'bg-red-600 text-white' }
+const filters = ref({
+    status: ''
+})
 
-]
-// 🔹 initial load
 onMounted(() => {
-    loadOrders()
+    loadOrders(1, searchTerm.value, filters.value.status)
+})
+watch(() => filters.value.status, () => {
+    loadOrders(1, searchTerm.value, filters.value.status)
 })
 
 const getStatusOption = (status) =>
@@ -43,10 +42,7 @@ const getStatusOption = (status) =>
 
 
 </script>
-
 <template>
-
-
     <AuthLayout>
         <div class="inner_contant mt-5 w-full">
             <div class="content_container w-full h-full bg-white rounded-[10px]">
@@ -62,6 +58,14 @@ const getStatusOption = (status) =>
                             <input type="text" v-model="searchTerm" placeholder="Search here.."
                                 class="input !border-0 !w-[325px] rounded-md !px-10 !h-[45px] bg-[rgba(23,23,23,0.05)]" />
                         </div>
+                        <select v-model="filters.status"
+                            class="input w-[250px] border-0 mt-0 bg-[rgba(23,23,23,0.05)] h-[45px] text-left text-start">
+                            <option value="">All Statuses</option>
+                            <option v-for="opt in STATUS_OPTIONS" :key="opt.value" :value="opt.value"
+                                :class="opt.class + ' text-left'">
+                                {{ opt.text }}
+                            </option>
+                        </select>
                         <!-- create -->
                         <router-link :to="{ name: 'order-create' }"
                             class="flex gap-2 h-[45px] px-4 font-medium items-center text-white text-[15px] rounded-md bg-[#05C46B]">
@@ -79,7 +83,7 @@ const getStatusOption = (status) =>
                         { label: 'Item', key: 'item_name' },
                         { label: 'Quantity', key: 'quantity' },
                         { label: 'Status', key: 'status' },
-                        { label: 'Edit', key: 'edit', thClass: 'w-[100px]' },
+                        // { label: 'Edit', key: 'edit', thClass: 'w-[100px]' },
                         { label: 'Delete', key: 'delete', thClass: 'w-[100px]' },
                         { label: 'Export', key: 'export', thClass: 'w-[150px]' },
                         { label: 'View Order', key: 'view', thClass: 'w-[130px]' }
@@ -89,9 +93,13 @@ const getStatusOption = (status) =>
                         <template #status="{ row }">
                             <div class="relative inline-block w-32">
                                 <!-- Current Status -->
-                                <button @click="row.showDropdown = !row.showDropdown"
+                                <button
+                                    @click="row.status !== STATUS_CANCELLED  && (row.showDropdown = !row.showDropdown)"
                                     class="w-full px-3 py-1 rounded text-sm font-medium flex items-center justify-between"
-                                    :class="getStatusOption(row.status).class">
+                                    :class="[
+                                        getStatusOption(row.status).class,
+                                        row.status === STATUS_CANCELLED  ? 'cursor-not-allowed opacity-50' : ''
+                                    ]" :disabled="row.status === STATUS_CANCELLED ">
                                     <span>{{ getStatusOption(row.status).text }}</span>
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -99,9 +107,8 @@ const getStatusOption = (status) =>
                                     </svg>
                                 </button>
 
-
                                 <!-- Dropdown -->
-                                <div v-if="row.showDropdown"
+                                <div v-if="row.showDropdown && row.status !== STATUS_CANCELLED "
                                     class="absolute z-10 mt-1 w-full bg-white rounded shadow-lg">
                                     <div v-for="opt in STATUS_OPTIONS" :key="opt.value"
                                         @click="handleStatusToggle(row, opt.value); row.showDropdown = false"
@@ -113,13 +120,13 @@ const getStatusOption = (status) =>
                         </template>
 
                         <!-- Edit -->
-                        <template #edit="{ row }">
+                        <!-- <template #edit="{ row }">
                             <router-link v-if="row && row.id" :to="{ name: 'order-edit', params: { id: row.id } }"
                                 class="w-[70px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#1e90ff]">
                                 <img :src="edit" class="w-[20px]" />
                                 Edit
                             </router-link>
-                        </template>
+                        </template> -->
 
                         <!-- Delete -->
                         <template #delete="{ row }">

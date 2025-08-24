@@ -2,7 +2,6 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useDesignNo } from '@/composables/useDesignNo'
 
-
 const emit = defineEmits(['update:modelValue'])
 
 const search = ref('')
@@ -14,7 +13,7 @@ onMounted(() => {
     fetchDesignNos(true)
 })
 
-
+// Sync search with incoming modelValue
 watch(
     (val) => {
         if (!val) return
@@ -24,6 +23,11 @@ watch(
     { immediate: true }
 )
 
+
+watch(search, () => {
+    showDropdown.value = filteredOptions.value.length > 0
+})
+
 const filteredOptions = computed(() => {
     if (!search.value) return options.value
     return options.value.filter(design =>
@@ -31,13 +35,11 @@ const filteredOptions = computed(() => {
     )
 })
 
-
 const selectOption = (design) => {
     search.value = design.name
     emit('update:modelValue', design.id)
     showDropdown.value = false
 }
-
 
 const handleBlur = () => {
     setTimeout(() => {
@@ -53,6 +55,7 @@ const handleBlur = () => {
     }, 150)
 }
 </script>
+
 
 <template>
     <div class="relative">

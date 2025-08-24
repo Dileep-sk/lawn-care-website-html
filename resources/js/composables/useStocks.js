@@ -1,5 +1,5 @@
 import { ref, watch, onMounted } from 'vue'
-import { fetchStocks, updateStockStatus, createStock, getStockById, updateStock, deleteStock } from '@/services/stockService'
+import { fetchStocks, updateStockStatus, createStock, getStockById, updateStock, deleteStock, availableStock } from '@/services/stockService'
 import { deleteConfirm } from '@/utils/deleteConfirm'
 import toastr from 'toastr'
 import { confirmDialog } from '@/utils/confirmDialog'
@@ -7,6 +7,7 @@ import { confirmDialog } from '@/utils/confirmDialog'
 
 export function useStocks() {
     const stocks = ref([])
+    const availableStocks = ref([])
     const loading = ref(false)
     const error = ref(null)
     const currentPage = ref(1)
@@ -114,6 +115,22 @@ export function useStocks() {
         }
     }
 
+
+    const getAvailableStockByDesignNo = async (designNoId) => {
+        if (!designNoId) return
+        loading.value = true
+        error.value = null
+        try {
+            const response = await availableStock(designNoId)
+            return response?.data?.original || []
+        } catch (err) {
+            error.value = err.response?.data?.message || 'Failed to fetch available stock.'
+            toastr.error(error.value, 'Error')
+        } finally {
+            loading.value = false
+        }
+    }
+
     let debounceTimeout = null
     watch(search, (val) => {
         clearTimeout(debounceTimeout)
@@ -122,7 +139,7 @@ export function useStocks() {
         }, 500)
     })
 
- 
+
     return {
         stocks,
         loading,
@@ -138,5 +155,6 @@ export function useStocks() {
         fetchStockById,
         handleUpdateStock,
         handleDelete,
+        getAvailableStockByDesignNo,
     }
 }

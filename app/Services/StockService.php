@@ -34,7 +34,7 @@ class StockService
             $totalQuantity = $group->sum(function ($stock) {
                 return $stock->stock_manage == 1
                     ? $stock->quantity
-                    : -$stock->quantity;    
+                    : -$stock->quantity;
             });
 
             return [
@@ -107,5 +107,37 @@ class StockService
         $stock->update($data);
 
         return $stock;
+    }
+
+    public function availableStock($designNoId)
+    {
+        $stocks = Stock::with(['item', 'designNo', 'markNp'])
+            ->where('design_no_id', $designNoId)
+            ->get();
+
+        $grouped = $stocks->groupBy(function ($stock) {
+            return $stock->item_id . '-' . $stock->design_no_id . '-' . $stock->mark_no_id;
+        })->map(function ($group) {
+            $first = $group->first();
+            $totalQuantity = $group->sum(function ($stock) {
+                return $stock->stock_manage == 1
+                    ? $stock->quantity
+                    : -$stock->quantity;
+            });
+
+            if ($totalQuantity > 0) {
+                return [
+                    'item_name' => $first->item->name ?? null,
+                    'design_no' => $first->designNo->name ?? null,
+                    'mark_no' => $first->markNp->name ?? null,
+                    'quantity' => $totalQuantity,
+                    'status' => 1,
+                ];
+            }
+
+            return null;
+        })->filter()->values();
+
+        return response()->json($grouped);
     }
 }

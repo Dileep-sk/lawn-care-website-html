@@ -4,47 +4,65 @@ namespace App\Services;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Services\StockService;
 
 class OrderService
 {
+    protected $stockService;
+    public function __construct(StockService $stockService)
+    {
+        $this->stockService = $stockService;
+    }
 
     public function getOrders(Request $request)
     {
-        $query = Order::select([
-            'id',
-            'order_no',
-            'design_no',
-            'item_name',
-            'quantity',
-            'status',
-            // 'customer_name',
-            // 'date',
-            // 'broker_name',
-            // 'transport_company',
-            // 'rate',
-        ]);
+        $query = Order::query()
+            ->select([
+                'orders.id',
+                'orders.order_no',
+                'orders.quantity',
+                'orders.status',
+                'orders.date',
+                'orders.rate',
+                'orders.message',
+                'customers.name as customer_name',
+                'brokers.name as broker_name',
+                'transport_companies.name as transport_company',
+                'design_nos.name as design_no',
+                'items.name as item_name',
+            ])
+            ->join('customers', 'orders.customer_id', '=', 'customers.id')
+            ->leftJoin('brokers', 'orders.broker_id', '=', 'brokers.id')
+            ->leftJoin('transport_companies', 'orders.transport_company_id', '=', 'transport_companies.id')
+            ->join('design_nos', 'orders.design_no_id', '=', 'design_nos.id')
+            ->join('items', 'orders.item_id', '=', 'items.id');
+
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
-                $q->where('customer_name', 'like', "%{$search}%")
-                    ->orWhere('order_no', 'like', "%{$search}%")
-                    ->orWhere('design_no', 'like', "%{$search}%")
-                    ->orWhere('item_name', 'like', "%{$search}%")
-                    ->orWhere('quantity', 'like', "%{$search}%");
-                // ->orWhere('broker_name', 'like', "%{$search}%")
-                // ->orWhere('transport_company', 'like', "%{$search}%")
-                // ->orWhere('rate', 'like', "%{$search}%")
-                // ->orWhere('message', 'like', "%{$search}%");
+                $q->where('customers.name', 'like', "%{$search}%")
+                    ->orWhere('orders.order_no', 'like', "%{$search}%")
+                    ->orWhere('design_nos.name  ', 'like', "%{$search}%")
+                    ->orWhere('items.name', 'like', "%{$search}%")
+                    ->orWhere('orders.quantity', 'like', "%{$search}%")
+                    ->orWhere('brokers.name', 'like', "%{$search}%")
+                    ->orWhere('transport_companies.name', 'like', "%{$search}%")
+                    ->orWhere('orders.rate', 'like', "%{$search}%")
+                    ->orWhere('orders.message', 'like', "%{$search}%");
             });
         }
 
+        // Status filter
         if ($request->has('status')) {
-            $query->where('status', $request->input('status'));
+            $query->where('orders.status', $request->input('status'));
         }
 
+        // Pagination
         $perPage = $request->input('per_page', 10);
-        return $query->orderBy('id', 'desc')->paginate($perPage);
+
+        return $query->orderBy('orders.id', 'desc')->paginate($perPage);
     }
+
 
     public function updateOrderStatus($id, $status): bool
     {
@@ -52,6 +70,19 @@ class OrderService
 
         if (!$order) {
             return false;
+        }
+
+        if ($status == Order::STATUS_CANCELED) {
+            $stockData = [
+                'item_id'       => $order->item_id,
+                'design_no_id'  => $order->design_no_id,
+                'mark_no_id'    => 1,
+                'quantity'      => $order->quantity,
+                'message'       => 'Order Canceled',
+                'stock_manage'  => 1,
+            ];
+
+            $this->stockService->create($stockData);
         }
 
         $order->status = $status;
@@ -106,6 +137,26 @@ class OrderService
 
         if (!$order) {
             return false;
+        }
+
+        $order = Order::find($id);
+
+        if (!$order) {
+            return false;
+        }
+
+        if ($order->status != Order::STATUS_CANCELED) {
+
+            $stockData = [
+                'item_id'       => $order->item_id,
+                'design_no_id'  => $order->design_no_id,
+                'mark_no_id'    => 1,
+                'quantity'      => $order->quantity,
+                'message'       => 'Order Delete',
+                'stock_manage'  => 1,
+            ];
+
+            $this->stockService->create($stockData);
         }
 
         return $order->delete();

@@ -53,6 +53,10 @@ const handleBlur = () => {
         showDropdown.value = false
     }, 150)
 }
+watch(search, () => {
+    showDropdown.value = filteredOptions.value.length > 0
+})
+
 </script>
 
 <template>

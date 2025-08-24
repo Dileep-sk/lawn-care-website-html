@@ -23,12 +23,12 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_name'     => 'required|string',
+            'customer_name'     => 'required',
             'date'              => 'required|date',
-            'broker_name'       => 'nullable|string',
-            'transport_company' => 'nullable|string',
-            'design_no'         => 'nullable|string',
-            'item_name'         => 'required|string',
+            'broker_name'       => 'nullable',
+            'transport_company' => 'nullable',
+            'design_no'         => 'nullable',
+            'item_name'         => 'required',
             'quantity'          => 'required|numeric|min:0',
             'rate'              => 'required|numeric|min:0',
             'status'            => 'nullable|string',

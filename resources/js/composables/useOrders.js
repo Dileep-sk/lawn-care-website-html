@@ -16,14 +16,16 @@ export function useOrders(searchTerm = ref('')) {
     const lastPage = ref(1)
     const totalItems = ref(0)
 
-    const loadOrders = async (page = 1, search = '') => {
+    const loadOrders = async (page = 1, search = '', status = '') => {
         loading.value = true
         error.value = null
+
         try {
             const params = {
                 page,
                 per_page: perPage.value,
                 search: search || undefined,
+                status: status !== '' ? status : undefined,
             }
 
             const data = await fetchOrder(params)
@@ -232,11 +234,11 @@ export function useOrders(searchTerm = ref('')) {
         perPage,
         lastPage,
         totalItems,
+        fetchLatestOrderId,
         loadOrders,
         handleStatusToggle,
         exportOrderPDF,
         createOrderHandler,
-        fetchLatestOrderId,
         getOrderDetails,
         updateOrderHandler,
         handleDelete,

@@ -42,3 +42,17 @@ export async function deleteStock(id) {
         throw error;
     }
 }
+
+
+export async function availableStock(id) {
+    try {
+        const response = await axios.get(`/design-no/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+
+

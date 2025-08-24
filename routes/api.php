@@ -4,11 +4,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DesignNoController;
+use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\StockController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\JobController;
-
+use App\Http\Controllers\Api\MarkNoController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -46,6 +48,10 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/jobs', [JobController::class, 'create']);
     Route::get('/jobs/{id}', [JobController::class, 'show']);
 
+    Route::get('/mark_no', [MarkNoController::class, 'index'])->name('mark_no.index');
+    Route::get('/design_no', [DesignNoController::class, 'index'])->name('design_no.index');
+
+    Route::get('/items', [ItemController::class, 'index'])->name('items.index');
 
     Route::get('/user', function (Request $request) {
         return $request->user();

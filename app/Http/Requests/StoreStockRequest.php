@@ -14,7 +14,7 @@ class StoreStockRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mark_no' => 'required|string',
+            'mark_no' => 'required',
             'design_no' => 'required|string',
             'item_name' => 'required|string',
             'quantity' => 'required|integer',

@@ -7,6 +7,9 @@ use App\Http\Requests\StoreStockRequest;
 use App\Http\Requests\UpdateUserStatusRequest;
 use Illuminate\Http\Request;
 use App\Services\StockService;
+use App\Services\ItemService;
+use App\Services\DesignNoService;
+use App\Services\MarkNoService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 
@@ -14,11 +17,16 @@ use Illuminate\Http\JsonResponse;
 class StockController extends Controller
 {
     protected $stockService;
+    protected $itemService;
+    protected $designNoService;
+    protected $markNoService;
 
-
-    public function __construct(StockService $stockService)
+    public function __construct(StockService $stockService, ItemService $itemService, DesignNoService $designNoService, MarkNoService $markNoService)
     {
         $this->stockService = $stockService;
+        $this->itemService = $itemService;
+        $this->designNoService = $designNoService;
+        $this->markNoService = $markNoService;
     }
 
 
@@ -73,7 +81,15 @@ class StockController extends Controller
     {
         try {
 
-            $stock = $this->stockService->create($request->validated());
+            $item = $this->itemService->createAndFind($request->item_name);
+            $designNo = $this->designNoService->createAndFind($request->design_no);
+            $markNo = $this->markNoService->createAndFind($request->mark_no);
+
+            $stockData = array_merge($request->validated(), ['item_name' => $item]);
+            $stockData['design_no'] = $designNo;
+            $stockData['mark_no'] = $markNo;
+
+            $stock = $this->stockService->create($stockData);
             return response()->json([
                 'message' => 'Stock created successfully',
                 'data' => $stock

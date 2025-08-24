@@ -6,6 +6,9 @@ import AuthLayout from '../../layouts/AuthLayout.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import left_arrow from '@/assets/icons/left-arrow.svg'
 import right_arrow_white from '@/assets/icons/right-arrow_white.svg'
+import MarkNoDropdown from '@/components/MarkNoDropdown.vue'
+import DesignNoDropdown from '@/components/DesignNoDropdown.vue'
+import ItemDropdown from '@/components/ItemDropdown.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -131,14 +134,12 @@ onMounted(() => {
 
                     <form v-else class="p-[15px] bg-[rgba(56,92,76,0.04)]" @submit.prevent="handleSubmit">
                         <div class="grid grid-cols-3 gap-[30px]">
-                            <BaseInput label="Mark No" v-model="form.mark_no" placeholder="M001"
-                                :error="errors.mark_no" />
+                            <MarkNoDropdown v-model="form.mark_no" label="Mark No" :error="errors.mark_no" />
 
-                            <BaseInput label="Design No" v-model="form.design_no" placeholder="D1002"
+                            <DesignNoDropdown v-model="form.design_no" label="Design Number"
                                 :error="errors.design_no" />
 
-                            <BaseInput label="Item Name" v-model="form.item_name" placeholder="Cotton Shirt"
-                                :error="errors.item_name" />
+                          <ItemDropdown v-model="form.item_name" label="Item" :error="errors.item_name" />
 
                             <BaseInput label="Quantity" type="number" v-model="form.quantity" placeholder="00.00"
                                 :error="errors.quantity" />

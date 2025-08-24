@@ -80,16 +80,18 @@ class StockController extends Controller
     public function store(StoreStockRequest $request): JsonResponse
     {
         try {
+            $itemId = $this->itemService->createAndFind($request->item_name);
+            $designNoId = $this->designNoService->createAndFind($request->design_no);
+            $markNoId = $this->markNoService->createAndFind($request->mark_no);
 
-            $item = $this->itemService->createAndFind($request->item_name);
-            $designNo = $this->designNoService->createAndFind($request->design_no);
-            $markNo = $this->markNoService->createAndFind($request->mark_no);
-
-            $stockData = array_merge($request->validated(), ['item_name' => $item]);
-            $stockData['design_no'] = $designNo;
-            $stockData['mark_no'] = $markNo;
+            $stockData = array_merge($request->validated(), [
+                'item_id' => $itemId,
+                'design_no_id' => $designNoId,
+                'mark_no_id' => $markNoId,
+            ]);
 
             $stock = $this->stockService->create($stockData);
+
             return response()->json([
                 'message' => 'Stock created successfully',
                 'data' => $stock

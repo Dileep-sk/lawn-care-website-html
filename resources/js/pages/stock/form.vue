@@ -20,6 +20,7 @@ const form = ref({
     item_name: '',
     quantity: '',
     status: 1,
+    stock_manage: 1,
 })
 
 const errors = ref({
@@ -40,10 +41,6 @@ const validateField = (key, value) => {
         const number = Number(value)
         if (!trimmed) {
             errors.value.quantity = 'This field is required'
-        } else if (isNaN(number)) {
-            errors.value.quantity = 'Quantity must be a number'
-        } else if (number <= 0) {
-            errors.value.quantity = 'Quantity must be greater than 0'
         } else {
             errors.value.quantity = ''
         }
@@ -128,21 +125,25 @@ onMounted(() => {
                 </div>
 
                 <div class="form_box p-[15px]">
-                    <div v-if="loadingStock.value" class="p-4 text-center">
-                        Loading stock data...
-                    </div>
-
-                    <form v-else class="p-[15px] bg-[rgba(56,92,76,0.04)]" @submit.prevent="handleSubmit">
+                    <form class="p-[15px] bg-[rgba(56,92,76,0.04)]" @submit.prevent="handleSubmit">
                         <div class="grid grid-cols-3 gap-[30px]">
                             <MarkNoDropdown v-model="form.mark_no" label="Mark No" :error="errors.mark_no" />
 
                             <DesignNoDropdown v-model="form.design_no" label="Design Number"
                                 :error="errors.design_no" />
 
-                          <ItemDropdown v-model="form.item_name" label="Item" :error="errors.item_name" />
+                            <ItemDropdown v-model="form.item_name" label="Item" :error="errors.item_name" />
 
                             <BaseInput label="Quantity" type="number" v-model="form.quantity" placeholder="00.00"
                                 :error="errors.quantity" />
+
+                            <div class="flex flex-col">
+                                <label class="text-sm font-medium mb-1">Action</label>
+                                <select v-model="form.stock_manage" class="input w-full">
+                                    <option :value="1">Add</option>
+                                    <option :value="0">Remove</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="flex justify-end mt-[20px]">

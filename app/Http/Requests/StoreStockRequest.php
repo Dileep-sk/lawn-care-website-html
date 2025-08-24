@@ -15,9 +15,10 @@ class StoreStockRequest extends FormRequest
     {
         return [
             'mark_no' => 'required',
-            'design_no' => 'required|string',
-            'item_name' => 'required|string',
+            'design_no' => 'required',
+            'item_name' => 'required',
             'quantity' => 'required|integer',
+            'stock_manage'=>'required'
         ];
     }
 }

@@ -20,9 +20,9 @@ const {
     handleDelete,
 } = useStocks()
 
-   onMounted(() => {
-        loadStocks()
-    })
+onMounted(() => {
+    loadStocks()
+})
 
 </script>
 
@@ -55,12 +55,13 @@ const {
                         { label: 'Item', key: 'item_name' },
                         { label: 'Quantity', key: 'quantity' },
                         { label: 'Status', key: 'status' },
-                        { label: 'Edit', key: 'edit', thClass: 'w-[100px]' },
-                        { label: 'Delete', key: 'delete', thClass: 'w-[100px]' }
+                        // { label: 'Edit', key: 'edit', thClass: 'w-[100px]' },
+                        // { label: 'Delete', key: 'delete', thClass: 'w-[100px]' }
                     ]" :loading="loading" :error="error" :currentPage="currentPage" :lastPage="lastPage"
                         @page-changed="loadStocks">
                         <template #status="{ row }">
-                            <button @click="handleStatusToggle(row.id, row.status)" :class="[
+                            <!-- <button @click="handleStatusToggle(row.id, row.status)" :class="[ -->
+                            <button :class="[
                                 'badge',
                                 row.status === 1 ? 'full bg-green-500' : 'out_of_stock bg-gray-500'
                             ]">
@@ -68,21 +69,21 @@ const {
                             </button>
                         </template>
 
-                        <template #edit="{ row }">
+                        <!-- <template #edit="{ row }">
                             <router-link :to="{ name: 'stock-edit', params: { id: row.id } }"
                                 class="w-[70px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#1e90ff]">
                                 <img :src="editIcon" class="w-[20px]" alt="" />
                                 Edit
                             </router-link>
-                        </template>
+                        </template> -->
 
-                        <template #delete="{ row }">
+                        <!-- <template #delete="{ row }">
                             <button @click="handleDelete(row.id)"
                                 class="w-[90px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#D62925]">
                                 <img :src="deleteIcon" class="w-[20px]" alt="" />
                                 Delete
                             </button>
-                        </template>
+                        </template> -->
                     </BaseTable>
                 </div>
             </div>

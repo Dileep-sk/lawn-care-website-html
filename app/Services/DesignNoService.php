@@ -13,15 +13,15 @@ class DesignNoService
         return $query;
     }
 
-    public function createAndFind($designNo)
+    public function createAndFind($name): int
     {
-        $isExit = DesignNo::find($designNo);
+        $existing = DesignNo::where('id', $name)->first();
 
-        if (isset($isExit)) {
-            return $isExit;
-        } else {
-            $newDesignNo = DesignNo::create(['name' => $designNo]);
-            return $newDesignNo->id;
+        if ($existing) {
+            return $existing->id;
         }
+
+        $new = DesignNo::create(['name' => $name]);
+        return $new->id;
     }
 }

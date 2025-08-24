@@ -9,11 +9,25 @@ class Stock extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'mark_no',
-        'design_no',
-        'item_name',
+        'mark_no_id',
+        'design_no_id',
+        'item_id',
         'quantity',
         'message',
         'status',
+        'stock_manage'
     ];
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+    }
+    public function designNo()
+    {
+        return $this->belongsTo(DesignNo::class);
+    }
+    public function markNp()
+    {
+        return $this->belongsTo(MarkNo::class, 'mark_no_id', 'id');
+    }
 }

@@ -22,15 +22,15 @@ class MarkNoService
         return MarkNo::where('status', 1)->get();
     }
 
-     public function createAndFind($mark_no)
+    public function createAndFind($name): int
     {
-        $isExit = MarkNo::find($mark_no);
+        $existing = MarkNo::where('id', $name)->first();
 
-        if (isset($isExit)) {
-            return $isExit;
-        } else {
-            $newMarkNo = MarkNo::create(['name' => $mark_no]);
-            return $newMarkNo->id;
+        if ($existing) {
+            return $existing->id;
         }
+
+        $new = MarkNo::create(['name' => $name]);
+        return $new->id;
     }
 }

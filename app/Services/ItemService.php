@@ -19,15 +19,15 @@ class ItemService
         return $query->select('id', 'name')->orderBy('name')->get();
     }
 
-    public function createAndFind($item_name)
+    public function createAndFind($name): int
     {
-        $isExit = Item::find($item_name);
+        $existing = Item::where('id', $name)->first();
 
-        if (isset($isExit)) {
-            return $isExit;
-        } else {
-            $newItem = Item::create(['name' => $item_name]);
-            return $newItem->id;
+        if ($existing) {
+            return $existing->id;
         }
+
+        $newItem = Item::create(['name' => $name]);
+        return $newItem->id;
     }
 }

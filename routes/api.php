@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BrokerController;
+use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\DesignNoController;
 use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\StockController;
@@ -11,6 +13,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\MarkNoController;
+use App\Http\Controllers\Api\TransportCompanyController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -52,6 +55,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/design_no', [DesignNoController::class, 'index'])->name('design_no.index');
 
     Route::get('/items', [ItemController::class, 'index'])->name('items.index');
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/broker', [BrokerController::class, 'index'])->name('broker.index');
+     Route::get('/transport-company', [TransportCompanyController::class, 'index'])->name('broker.index');
+
 
     Route::get('/user', function (Request $request) {
         return $request->user();

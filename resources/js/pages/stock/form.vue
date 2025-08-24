@@ -127,12 +127,29 @@ onMounted(() => {
                 <div class="form_box p-[15px]">
                     <form class="p-[15px] bg-[rgba(56,92,76,0.04)]" @submit.prevent="handleSubmit">
                         <div class="grid grid-cols-3 gap-[30px]">
-                            <MarkNoDropdown v-model="form.mark_no" label="Mark No" :error="errors.mark_no" />
 
-                            <DesignNoDropdown v-model="form.design_no" label="Design Number"
-                                :error="errors.design_no" />
+                            <div>
+                                <MarkNoDropdown v-model="form.mark_no" />
+                                <p v-if="errors.mark_no" class="text-red-600 text-sm mt-1">
+                                    {{ errors.mark_no }}
+                                </p>
+                            </div>
 
-                            <ItemDropdown v-model="form.item_name" label="Item" :error="errors.item_name" />
+                            <div>
+                                <DesignNoDropdown v-model="form.design_no" />
+                                <p v-if="errors.design_no && errors.design_no" class="text-red-600 text-sm mt-1">
+                                    {{ errors.design_no }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <ItemDropdown v-model="form.item_name" />
+                                <p v-if="errors.item_name && errors.item_name" class="text-red-600 text-sm mt-1">
+                                    {{ errors.item_name }}
+                                </p>
+                            </div>
+
+
 
                             <BaseInput label="Quantity" type="number" v-model="form.quantity" placeholder="00.00"
                                 :error="errors.quantity" />

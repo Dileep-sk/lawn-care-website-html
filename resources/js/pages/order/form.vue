@@ -9,19 +9,23 @@ import SelectDropdown from '@/components/SelectDropdown.vue'
 import left_arrow from '@/assets/icons/left-arrow.svg'
 import right_arrow_white from '@/assets/icons/right-arrow_white.svg'
 import { formatDateToISO } from '../../helpers/dateFormat'
+import CustomerDropdown from '@/components/CustomerDropdown.vue'
+import BrokerSelect from '@/components/BrokerSelect.vue'
+import TransportCompanySelect from '@/components/TransportCompanySelect.vue'
+import DesignNoDropdown from '@/components/DesignNoDropdown.vue'
+import ItemDropdown from '@/components/ItemDropdown.vue'
 
 
 const { createOrderHandler, fetchLatestOrderId, getOrderDetails, updateOrderHandler } = useOrders()
 const router = useRouter()
 const route = useRoute()
 
-
 const orderId = ref(route.params.id || null)
 const isEditMode = ref(false)
 const isLoading = ref(false)
 
 const form = reactive({
-    customer_name: '',
+    customer_name: '',   // store ID instead of name
     order_no: '',
     date: '',
     broker_name: '',
@@ -38,7 +42,7 @@ const validationErrors = reactive({})
 const touched = reactive({})
 
 const validators = {
-    customer_name: val => val ? '' : 'Customer name is required',
+    customer_name: val => val ? '' : 'Customer is required',
     order_no: val => val ? '' : 'Order No is required',
     date: val => val ? '' : 'Date is required',
     broker_name: val => val ? '' : 'Broker Name is required',
@@ -98,7 +102,7 @@ onMounted(async () => {
             console.log('Fetched order:', order)
 
             Object.assign(form, {
-                customer_name: order.customer_name || '',
+                customer_name: order.customer_name || '',  // use ID here
                 order_no: order.order_no || '',
                 date: formatDateToISO(order.date) || '',
                 broker_name: order.broker_name || '',
@@ -110,9 +114,6 @@ onMounted(async () => {
                 status: order.status !== undefined ? String(order.status) : '0',
                 message: order.message || ''
             })
-
-            console.log('Form after assignment:', JSON.stringify(form, null, 2))
-
 
             Object.keys(validators).forEach(key => {
                 touched[key] = true
@@ -130,7 +131,6 @@ onMounted(async () => {
     }
 })
 
-
 Object.keys(form).forEach((key) => {
     watch(
         () => form[key],
@@ -142,14 +142,12 @@ Object.keys(form).forEach((key) => {
     )
 })
 
-
 const statusOptions = [
     { value: '0', text: 'Pending' },
     { value: '1', text: 'Hold' },
     { value: '2', text: 'Completed' },
     { value: '3', text: 'Cancelled' }
 ]
-
 
 const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'))
 </script>
@@ -158,6 +156,7 @@ const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'
     <AuthLayout>
         <div class="inner_contant mt-[20px] w-full">
             <div class="content_container w-full h-full bg-white rounded-[10px]">
+
                 <!-- Header -->
                 <div class="top_header border-b p-[15px] border-b-[#E8F0E2] flex justify-between items-center">
                     <h1 class="text-[20px] font-bold text-black">{{ title }}</h1>
@@ -172,10 +171,10 @@ const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'
                 <div class="form_box p-[15px]">
                     <form class="p-[15px] bg-[rgba(56,92,76,0.04)]" @submit.prevent="handleSubmit">
                         <div class="grid grid-cols-3 gap-[30px]">
-                            <!-- Customer Name -->
+
+                            <!-- Customer Dropdown -->
                             <div>
-                                <BaseInput v-model="form.customer_name" label="Customer Name"
-                                    placeholder="Enter Customer Name" @blur="touched.customer_name = true" />
+                                <CustomerDropdown v-model="form.customer_name" />
                                 <p v-if="touched.customer_name && validationErrors.customer_name"
                                     class="text-red-600 text-sm mt-1">
                                     {{ validationErrors.customer_name }}
@@ -201,44 +200,41 @@ const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'
                             </div>
 
                             <!-- Broker Name -->
+                            <!-- Broker Name -->
                             <div>
-                                <BaseInput v-model="form.broker_name" label="Broker Name"
-                                    placeholder="Enter Broker Name" @blur="touched.broker_name = true" />
+                                <BrokerSelect v-model="form.broker_name" />
                                 <p v-if="touched.broker_name && validationErrors.broker_name"
                                     class="text-red-600 text-sm mt-1">
                                     {{ validationErrors.broker_name }}
                                 </p>
                             </div>
 
-                            <!-- Transport Company -->
                             <div>
-                                <BaseInput v-model="form.transport_company" label="Transport Company"
-                                    placeholder="Transport Company Name" @blur="touched.transport_company = true" />
+                                <TransportCompanySelect v-model="form.transport_company" />
                                 <p v-if="touched.transport_company && validationErrors.transport_company"
                                     class="text-red-600 text-sm mt-1">
                                     {{ validationErrors.transport_company }}
                                 </p>
                             </div>
 
-                            <!-- Design No -->
+
                             <div>
-                                <BaseInput v-model="form.design_no" label="Design No" placeholder="D1002"
-                                    @blur="touched.design_no = true" />
+                                <DesignNoDropdown v-model="form.design_no" />
                                 <p v-if="touched.design_no && validationErrors.design_no"
                                     class="text-red-600 text-sm mt-1">
                                     {{ validationErrors.design_no }}
                                 </p>
                             </div>
 
+
                             <!-- Item Name -->
                             <div>
-                                <BaseInput v-model="form.item_name" label="Item Name" placeholder="Enter Item Name"
-                                    @blur="touched.item_name = true" />
-                                <p v-if="touched.item_name && validationErrors.item_name"
-                                    class="text-red-600 text-sm mt-1">
+                                <ItemDropdown v-model="form.item_name" />
+                                <p v-if="validationErrors.item_name && validationErrors.item_name" class="text-red-600 text-sm mt-1">
                                     {{ validationErrors.item_name }}
                                 </p>
                             </div>
+
 
                             <!-- Quantity -->
                             <div>

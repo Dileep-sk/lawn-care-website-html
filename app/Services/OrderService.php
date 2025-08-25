@@ -76,7 +76,7 @@ class OrderService
             $stockData = [
                 'item_id'       => $order->item_id,
                 'design_no_id'  => $order->design_no_id,
-                'mark_no_id'    => 1,
+                'mark_no_id'    => $order->mark_no_id,
                 'quantity'      => $order->quantity,
                 'message'       => 'Order Canceled',
                 'stock_manage'  => 1,
@@ -171,7 +171,7 @@ class OrderService
             $stockData = [
                 'item_id'       => $order->item_id,
                 'design_no_id'  => $order->design_no_id,
-                'mark_no_id'    => 1,
+                'mark_no_id'    => $order->mark_no_id,
                 'quantity'      => $order->quantity,
                 'message'       => 'Order Delete',
                 'stock_manage'  => 1,

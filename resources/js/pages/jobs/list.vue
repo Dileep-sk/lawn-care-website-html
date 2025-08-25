@@ -10,6 +10,9 @@ import BaseTable from '@/components/BaseTable.vue'
 import { useJobs } from '@/composables/useJobs'
 import { STATUS_OPTIONS } from '@/constants/jobStatus'
 
+const MOVE_JOB_IN_STOCK = 4 // Stocked
+
+
 const filters = reactive({
     search: '',
     status: ''
@@ -53,12 +56,15 @@ onMounted(() => {
                                 class="input !border-0 !w-[325px] rounded-[5px] !mt-[0] !px-[40px] !h-[45px] bg-[rgba(23,23,23,0.05)]" />
                         </div>
                         <!-- Status Dropdown -->
+
                         <select v-model="filters.status"
                             class="input !w-[250px] !border-0 !mt-[0] !bg-[rgba(23,23,23,0.05)] !h-[45px]">
+                            <option value="">All Status</option>
                             <option v-for="opt in STATUS_OPTIONS" :key="opt.value" :value="opt.value">
                                 {{ opt.label }}
                             </option>
                         </select>
+
 
                         <!-- Create Job Button -->
                         <router-link :to="{ name: 'jobs-create' }"
@@ -85,14 +91,13 @@ onMounted(() => {
                         <!-- Status Column -->
                         <template #status="{ row }">
                             <select :value="row.status" @change="(event) => handleStatusChange(row, event)"
-                                class="px-3 py-2 rounded-md border-2 border-gray-300 w-[150px]">
-                                <option v-for="opt in STATUS_OPTIONS.slice(1)" :key="opt.value" :value="opt.value">
+                                class="px-3 py-2 rounded-md border-2 border-gray-300 w-[150px]"
+                                :disabled="row.status === MOVE_JOB_IN_STOCK">
+                                <option v-for="opt in STATUS_OPTIONS" :key="opt.value" :value="opt.value">
                                     {{ opt.label }}
                                 </option>
                             </select>
                         </template>
-
-
 
                         <!-- Edit Column -->
                         <!-- <template #edit="{ row }">
@@ -105,11 +110,13 @@ onMounted(() => {
                         <!-- Delete Column -->
 
                         <template #delete="{ row }">
-                            <a @click="handleDeleteJob(row.id)"
-                                class="w-[90px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#D62925] cursor-pointer">
-                                <img :src="deletes" class="w-[20px]" alt="">Delete
-                            </a>
+                            <button @click="handleDeleteJob(row.id)" :disabled="row.status === MOVE_JOB_IN_STOCK"
+                                class="w-[90px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px]"
+                                :class="row.status === MOVE_JOB_IN_STOCK ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#D62925] cursor-pointer'">
+                                <img :src="deletes" class="w-[20px]" alt="" />Delete
+                            </button>
                         </template>
+
 
 
                         <!-- View Order Column -->

@@ -6,14 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Job extends Model
 {
+    public const MOVE_JOB_IN_STOCK = 4;
+
     protected $table = 'order_jobs';
 
     protected $fillable = [
-        'customer_name',
-        'design_no',
-        'image',
+        'customer_id',
+        'mark_no_id',
+        'design_no_id',
+        'item_id',
         'quantity',
-        'order_no',
+        'order_no_id',
         'status',
         'matching_1',
         'matching_2',

@@ -25,7 +25,7 @@ class UpdateJobStatusRequest extends FormRequest
     public function rules()
     {
         return [
-            'status' => 'required|integer|in:0,1,2,3',
+            'status' => 'required|integer|in:0,1,2,3,4',
         ];
     }
 

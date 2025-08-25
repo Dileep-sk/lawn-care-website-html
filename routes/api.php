@@ -48,7 +48,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
     Route::put('/jobs/{id}/status', [JobController::class, 'updateStatus']);
     Route::delete('/jobs/{id}', [JobController::class, 'destroy']);
-    Route::post('/jobs', [JobController::class, 'create']);
+    Route::post('/jobs', [JobController::class, 'store']);
     Route::get('/jobs/{id}', [JobController::class, 'show']);
 
     Route::get('/mark_no', [MarkNoController::class, 'index'])->name('mark_no.index');
@@ -58,7 +58,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
     Route::get('/broker', [BrokerController::class, 'index'])->name('broker.index');
     Route::get('/transport-company', [TransportCompanyController::class, 'index'])->name('broker.index');
-
 
     Route::get('/design-no/{id}', [StockController::class, 'availableStock'])->name('availableStock');
 

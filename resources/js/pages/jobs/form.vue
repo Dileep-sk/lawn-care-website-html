@@ -9,6 +9,8 @@ import { STATUS_OPTIONS } from '@/constants/jobStatus'
 import MarkNoDropdown from '@/components/MarkNoDropdown.vue'
 import CustomerDropdown from '@/components/CustomerDropdown.vue'
 import DesignNoDropdown from '@/components/DesignNoDropdown.vue'
+import OrderNoDropdown from '@/components/OrderNoDropdown.vue'
+import ItemDropdown from '@/components/ItemDropdown.vue'
 import ImageUploader from '@/components/ImageUploader.vue'
 
 const { createJobHandler } = useJobs()
@@ -22,6 +24,7 @@ const form = reactive({
     quantity: '',
     order_no: '',
     status: '',
+    item_name: '',
     matchings: Array.from({ length: 8 }, () => ({ text: '' }))
 })
 
@@ -30,14 +33,21 @@ const errors = reactive({})
 const touched = reactive({})
 
 const validators = {
-    design_no: val => !val.trim() ? 'Design No is required' : '',
-    customer_name: val => !val.trim() ? 'Customer Name is required' : '',
-    mark_no: val => !val.trim() ? 'Mark No is required' : '',
-    quantity: val => !val ? 'Quantity is required' : isNaN(val) || val <= 0 ? 'Enter a valid quantity' : '',
-    order_no: val => !val.trim() ? 'Order No is required' : '',
-    status: val => (val === '' ? 'Status is required' : ''),
+    design_no: val => val ? '' : 'Design No is required',
+    item_name: val => val ? '' : 'Item Name is required',
+    customer_name: val => val ? '' : 'Customer Name is required',
+    mark_no: val => val ? '' : 'Mark No is required',
+    quantity: val => {
+        if (!val) return 'Quantity is required'
+        if (isNaN(val) || val <= 0) return 'Enter a valid quantity'
+        return ''
+    },
+    order_no: val => val ? '' : 'Order No is required',
+    status: val => val === '' ? 'Status is required' : '',
     images: val => (!val || val.length === 0) ? 'At least one image is required' : ''
 }
+
+
 
 const validateField = (field) => {
     if (touched[field]) {
@@ -136,6 +146,12 @@ Object.keys(validators).forEach((field) => {
                             </div>
                             <!-- Image Upload -->
 
+                            <div>
+                                <ItemDropdown v-model="form.item_name" />
+                                <p v-if="touched.item_name && errors.item_name" class="text-red-600 text-sm mt-1">
+                                    {{ errors.item_name }}
+                                </p>
+                            </div>
 
                             <!-- Quantity -->
                             <div class="input_box">
@@ -145,10 +161,11 @@ Object.keys(validators).forEach((field) => {
                             </div>
 
                             <!-- Order No -->
-                            <div class="input_box">
-                                <BaseInput v-model="form.order_no" label="Order No" placeholder="ORD1234"
-                                    @blur="handleBlur('order_no')" />
-                                <span v-if="errors.order_no" class="text-red-500">{{ errors.order_no }}</span>
+                            <div>
+                                <OrderNoDropdown v-model="form.order_no" />
+                                <p v-if="touched.order_no && errors.order_no" class="text-red-600 text-sm mt-1">
+                                    {{ errors.order_no }}
+                                </p>
                             </div>
 
                             <!-- Status -->
@@ -171,7 +188,11 @@ Object.keys(validators).forEach((field) => {
                         </div>
                         <div class="input_box mt-[20px]">
                             <ImageUploader v-model="form.images" />
+                            <p v-if="touched.images && errors.images" class="text-red-600 text-sm mt-1">
+                                {{ errors.images }}
+                            </p>
                         </div>
+
                         <div class="flex justify-end mt-[20px]">
                             <button type="submit" class="flex create justify-center gap-[10px] items-center">
                                 Submit Job

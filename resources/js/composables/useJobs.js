@@ -53,13 +53,11 @@ export function useJobs() {
         const statusText = getStatusText(newValue)
 
         const confirmed = await confirmDialog(statusText, `Yes, ${statusText}`)
-        if (!confirmed) return
-
-        if (confirmed) {
-            await updateStatus(row.id, newValue, statusText)
-        } else {
+        if (!confirmed) {
             event.target.value = row.status
+            return
         }
+        await updateStatus(row.id, newValue, statusText)
     }
 
     const updateStatus = async (id, status, statusText) => {
@@ -114,9 +112,9 @@ export function useJobs() {
             toastr.error(error.value, 'Error')
         }
     }
-     const getJobDetails = async (id) => {
+    const getJobDetails = async (id) => {
         try {
-            const data  = await getJobById(id)
+            const data = await getJobById(id)
 
             return data
         } catch (err) {

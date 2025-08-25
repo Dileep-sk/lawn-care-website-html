@@ -25,11 +25,13 @@ class CreateJobRequest extends FormRequest
     public function rules()
     {
         return [
-            'customer_name' => 'required|string|max:255',
-            'design_no' => 'required|string|max:255',
+            'customer_name' => 'required',
+            'mark_no' => 'required',
+            'design_no' => 'required',
+            'item_name' => 'required',
             'image' => 'nullable|array',
             'quantity' => 'required|numeric',
-            'order_no' => 'required|string|max:255',
+            'order_no' => 'required',
             'status' => 'required|in:0,1,2,3',
             'matching_1' => 'nullable|string',
             'matching_2' => 'nullable|string',

@@ -14,7 +14,7 @@ import { useOrders } from '@/composables/useOrders'
 import { STATUS_OPTIONS } from '@/constants/orderListStatus'
 const searchTerm = ref('')
 const STATUS_CANCELLED = 4 // order cancell
-const STATUS_COMPLETE = 3 // order cancell
+const STATUS_COMPLETE = 3 // order Complete
 const {
     orders,
     loading,

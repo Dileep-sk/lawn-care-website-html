@@ -1,5 +1,5 @@
 import { ref, watch, onMounted, createApp, nextTick } from 'vue'
-import { fetchOrder, updateOrderStatus, createOrder, getLatestOrderId, getOrderById, updateOrder, deleteOrder } from '@/services/orderService'
+import { fetchOrder, updateOrderStatus, createOrder, getLatestOrderId, getOrderById, updateOrder, deleteOrder, getOrderId } from '@/services/orderService'
 import toastr from 'toastr'
 import { confirmDialog } from '@/utils/confirmDialog'
 import { deleteConfirm } from '@/utils/deleteConfirm'
@@ -137,6 +137,18 @@ export function useOrders(searchTerm = ref('')) {
         }
     }
 
+
+    const fetchAllOrderNos = async () => {
+        try {
+            const { data } = await getOrderId()
+            return data || []
+        } catch (err) {
+            toastr.error('Failed to fetch order numbers', 'Error')
+            return []
+        }
+    }
+
+
     // const exportOrderPDF = (order) => {
     //     if (!order) return
 
@@ -241,5 +253,6 @@ export function useOrders(searchTerm = ref('')) {
         getOrderDetails,
         updateOrderHandler,
         handleDelete,
+        fetchAllOrderNos,
     }
 }

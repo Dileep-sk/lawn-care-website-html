@@ -5,6 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateJobRequest;
 use App\Http\Requests\UpdateJobStatusRequest;
+use App\Models\Customer;
+use App\Models\DesignNo;
+use App\Models\Item;
+use App\Models\MarkNo;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Services\JobService;
 use Illuminate\Http\JsonResponse;
@@ -48,6 +53,7 @@ class JobController extends Controller
             }
 
             return response()->json(['message' => 'Job not found or status not updated.'], 404);
+
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Failed to update Job status.',
@@ -79,9 +85,53 @@ class JobController extends Controller
         return response()->json($job);
     }
 
-    public function create(CreateJobRequest $request): JsonResponse
+    public function store(CreateJobRequest $request): JsonResponse
     {
         try {
+
+            $isCustomerNameExit = Customer::find($request->customer_name);
+            if (empty($isCustomerNameExit)) {
+                return response()->json([
+                    'message' => 'Customer Name does not Please select correct Customer Name.',
+                    'error' => ""
+                ], 500);
+            }
+
+            $isMarkNoExit = MarkNo::find($request->mark_no);
+            if (empty($isMarkNoExit)) {
+                return response()->json([
+                    'message' => 'Mark No does not Please select correct Mark No.',
+                    'error' => ""
+                ], 500);
+            }
+
+            $isDesignNameExit = DesignNo::find($request->design_no);
+            if (empty($isDesignNameExit)) {
+
+                return response()->json([
+                    'message' => 'Design No does not Please select correct Design No.',
+                    'error' => ""
+                ], 500);
+            }
+
+            $isitemExit = Item::find($request->item_name);
+            if (empty($isitemExit)) {
+
+                return response()->json([
+                    'message' => 'Item Name does not Please select correct Item Name.',
+                    'error' => ""
+                ], 500);
+            }
+
+            $isOrderNoExit = Order::find($request->order_no);
+            if (empty($isOrderNoExit)) {
+
+                return response()->json([
+                    'message' => 'Order No does not Please select correct Order No.',
+                    'error' => ""
+                ], 500);
+            }
+
             $job = $this->jobService->createJob($request->validated());
             return response()->json([
                 'message' => 'Job created successfully',

@@ -35,4 +35,10 @@ export const deleteOrder = async (id) => {
     return response.data
 }
 
+export const getOrderId = async (params = {}) => {
+    const response = await axios.get('/order_id', { params })
+    return response.data
+}
+
+
 

@@ -19,6 +19,14 @@ class AuthService
         /** @var User $user */
         $user = Auth::user();
 
+
+        if ($user->status != 1) {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => ['User is inactive. Please contact administrator.'],
+            ]);
+        }
+
         $token = $user->createToken('AuthToken')->accessToken;
 
         return [
@@ -26,6 +34,7 @@ class AuthService
             'token' => $token,
         ];
     }
+
 
 
     public function logout(): void

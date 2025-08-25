@@ -21,6 +21,7 @@ class Order extends Model
         'rate',
         'status',
         'message',
+        'mark_no_id',
     ];
 
     protected $casts = [

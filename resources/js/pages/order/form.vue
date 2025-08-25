@@ -14,6 +14,7 @@ import BrokerSelect from '@/components/BrokerSelect.vue'
 import TransportCompanySelect from '@/components/TransportCompanySelect.vue'
 import DesignNoDropdown from '@/components/DesignNoDropdown.vue'
 import ItemDropdown from '@/components/ItemDropdown.vue'
+import MarkNoDropdown from '@/components/MarkNoDropdown.vue'
 import { statusOptions } from '@/constants/orderStatus'
 
 const { createOrderHandler, fetchLatestOrderId, getOrderDetails, updateOrderHandler } = useOrders()
@@ -35,7 +36,8 @@ const form = reactive({
     quantity: '',
     rate: '',
     status: '0',
-    message: ''
+    message: '',
+    mark_no: '',
 })
 
 const validationErrors = reactive({})
@@ -44,6 +46,7 @@ const touched = reactive({})
 const validators = {
     customer_name: val => val ? '' : 'Customer is required',
     order_no: val => val ? '' : 'Order No is required',
+    mark_no: val => val ? '' : 'Mark No is required',
     date: val => val ? '' : 'Date is required',
     broker_name: val => val ? '' : 'Broker Name is required',
     transport_company: val => val ? '' : 'Transport Company is required',
@@ -102,7 +105,7 @@ onMounted(async () => {
             console.log('Fetched order:', order)
 
             Object.assign(form, {
-                customer_name: order.customer_name || '',  // use ID here
+                customer_name: order.customer_name || '',
                 order_no: order.order_no || '',
                 date: formatDateToISO(order.date) || '',
                 broker_name: order.broker_name || '',
@@ -191,7 +194,6 @@ const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'
                             </div>
 
                             <!-- Broker Name -->
-                            <!-- Broker Name -->
                             <div>
                                 <BrokerSelect v-model="form.broker_name" />
                                 <p v-if="touched.broker_name && validationErrors.broker_name"
@@ -204,6 +206,12 @@ const title = computed(() => (isEditMode.value ? 'Update Order' : 'Submit Order'
                                 <p v-if="touched.transport_company && validationErrors.transport_company"
                                     class="text-red-600 text-sm mt-1">
                                     {{ validationErrors.transport_company }}
+                                </p>
+                            </div>
+                            <div>
+                                <MarkNoDropdown v-model="form.mark_no" />
+                                <p v-if="touched.mark_no && validationErrors.mark_no" class="text-red-600 text-sm mt-1">
+                                    {{ validationErrors.mark_no }}
                                 </p>
                             </div>
                             <div>

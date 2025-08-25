@@ -2,8 +2,6 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useMarkNo } from '@/composables/useMarkNo'
 
-
-
 const emit = defineEmits(['update:modelValue'])
 
 const search = ref('')
@@ -14,7 +12,6 @@ const { options, loading, error: fetchError, fetchMarkNos } = useMarkNo()
 onMounted(() => {
     fetchMarkNos(true)
 })
-
 
 watch(
 
@@ -38,7 +35,6 @@ const selectOption = (mark) => {
     emit('update:modelValue', mark.id)
     showDropdown.value = false
 }
-
 
 const handleBlur = () => {
     setTimeout(() => {

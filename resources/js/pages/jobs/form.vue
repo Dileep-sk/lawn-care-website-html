@@ -6,12 +6,17 @@ import BaseInput from '@/components/BaseInput.vue'
 import left_arrow from '@/assets/icons/left-arrow.svg'
 import toastr from 'toastr'
 import { STATUS_OPTIONS } from '@/constants/jobStatus'
+import MarkNoDropdown from '@/components/MarkNoDropdown.vue'
+import CustomerDropdown from '@/components/CustomerDropdown.vue'
+import DesignNoDropdown from '@/components/DesignNoDropdown.vue'
+import ImageUploader from '@/components/ImageUploader.vue'
 
 const { createJobHandler } = useJobs()
 
 // --- Form ---
 const form = reactive({
     customer_name: '',
+    mark_no: '',
     design_no: '',
     images: [],
     quantity: '',
@@ -27,6 +32,7 @@ const touched = reactive({})
 const validators = {
     design_no: val => !val.trim() ? 'Design No is required' : '',
     customer_name: val => !val.trim() ? 'Customer Name is required' : '',
+    mark_no: val => !val.trim() ? 'Mark No is required' : '',
     quantity: val => !val ? 'Quantity is required' : isNaN(val) || val <= 0 ? 'Enter a valid quantity' : '',
     order_no: val => !val.trim() ? 'Order No is required' : '',
     status: val => (val === '' ? 'Status is required' : ''),
@@ -50,12 +56,6 @@ const validateForm = () => {
 const handleBlur = (field) => {
     touched[field] = true
     validateField(field)
-}
-
-const handleFileUpload = (event) => {
-    form.images = event.target.files ? Array.from(event.target.files) : []
-    touched.images = true
-    validateField('images')
 }
 
 // --- Submit ---
@@ -107,31 +107,35 @@ Object.keys(validators).forEach((field) => {
                         Back
                     </router-link>
                 </div>
-
                 <!-- Form -->
                 <div class="form_box p-[15px]">
                     <form class="p-[15px] bg-[rgba(56,92,76,0.04)]" @submit.prevent="handleSubmit">
                         <div class="grid grid-cols-3 gap-[30px]">
                             <!-- Customer Name -->
-                            <div class="input_box">
-                                <BaseInput v-model="form.customer_name" label="Customer Name" placeholder=""
-                                    @blur="handleBlur('customer_name')" />
-                                <span v-if="errors.customer_name" class="text-red-500">{{ errors.customer_name }}</span>
+                            <div>
+                                <CustomerDropdown v-model="form.customer_name" />
+                                <p v-if="touched.customer_name && errors.customer_name"
+                                    class="text-red-600 text-sm mt-1">
+                                    {{ errors.customer_name }}
+                                </p>
                             </div>
 
+                            <!-- mark No -->
+                            <div>
+                                <MarkNoDropdown v-model="form.mark_no" />
+                                <p v-if="touched.mark_no && errors.mark_no" class="text-red-600 text-sm mt-1">
+                                    {{ errors.mark_no }}
+                                </p>
+                            </div>
                             <!-- Design No -->
-                            <div class="input_box">
-                                <BaseInput v-model="form.design_no" label="Design No" placeholder="D1002"
-                                    @blur="handleBlur('design_no')" />
-                                <span v-if="errors.design_no" class="text-red-500">{{ errors.design_no }}</span>
+                            <div>
+                                <DesignNoDropdown v-model="form.design_no" />
+                                <p v-if="touched.design_no && errors.design_no" class="text-red-600 text-sm mt-1">
+                                    {{ errors.design_no }}
+                                </p>
                             </div>
-
                             <!-- Image Upload -->
-                            <div class="input_box">
-                                <label>Image</label>
-                                <input type="file" multiple class="input" @change="handleFileUpload" />
-                                <span v-if="errors.images" class="text-red-500">{{ errors.images }}</span>
-                            </div>
+
 
                             <!-- Quantity -->
                             <div class="input_box">
@@ -165,7 +169,9 @@ Object.keys(validators).forEach((field) => {
                                 <input v-model="form.matchings[index].text" type="text" class="input" />
                             </div>
                         </div>
-
+                        <div class="input_box mt-[20px]">
+                            <ImageUploader v-model="form.images" />
+                        </div>
                         <div class="flex justify-end mt-[20px]">
                             <button type="submit" class="flex create justify-center gap-[10px] items-center">
                                 Submit Job

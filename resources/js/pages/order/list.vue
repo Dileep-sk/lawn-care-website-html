@@ -13,7 +13,8 @@ import eye from '@/assets/icons/eye.svg'
 import { useOrders } from '@/composables/useOrders'
 import { STATUS_OPTIONS } from '@/constants/orderListStatus'
 const searchTerm = ref('')
-const STATUS_CANCELLED  = 4 // order cancell
+const STATUS_CANCELLED = 4 // order cancell
+const STATUS_COMPLETE = 3 // order cancell
 const {
     orders,
     loading,
@@ -94,12 +95,12 @@ const getStatusOption = (status) =>
                             <div class="relative inline-block w-32">
                                 <!-- Current Status -->
                                 <button
-                                    @click="row.status !== STATUS_CANCELLED  && (row.showDropdown = !row.showDropdown)"
+                                    @click="row.status !== STATUS_CANCELLED && (row.showDropdown = !row.showDropdown)"
                                     class="w-full px-3 py-1 rounded text-sm font-medium flex items-center justify-between"
                                     :class="[
                                         getStatusOption(row.status).class,
-                                        row.status === STATUS_CANCELLED  ? 'cursor-not-allowed opacity-50' : ''
-                                    ]" :disabled="row.status === STATUS_CANCELLED ">
+                                        row.status === STATUS_CANCELLED ? 'cursor-not-allowed opacity-50' : ''
+                                    ]" :disabled="row.status === STATUS_CANCELLED">
                                     <span>{{ getStatusOption(row.status).text }}</span>
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -108,7 +109,7 @@ const getStatusOption = (status) =>
                                 </button>
 
                                 <!-- Dropdown -->
-                                <div v-if="row.showDropdown && row.status !== STATUS_CANCELLED "
+                                <div v-if="row.showDropdown && row.status !== STATUS_CANCELLED"
                                     class="absolute z-10 mt-1 w-full bg-white rounded shadow-lg">
                                     <div v-for="opt in STATUS_OPTIONS" :key="opt.value"
                                         @click="handleStatusToggle(row, opt.value); row.showDropdown = false"
@@ -130,12 +131,18 @@ const getStatusOption = (status) =>
 
                         <!-- Delete -->
                         <template #delete="{ row }">
-                            <button @click="handleDelete(row.id)"
-                                class="w-[90px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#D62925]">
+                            <button :disabled="row.status === STATUS_COMPLETE"
+                                @click="row.status !== STATUS_COMPLETE && handleDelete(row.id)"
+                                class="w-[90px] gap-[5px] h-[35px] flex justify-center text-[15px] items-center rounded-[5px]"
+                                :class="[
+                                    'text-white',
+                                    row.status === STATUS_COMPLETE ? 'bg-gray-400 cursor-not-allowed opacity-60' : 'bg-[#D62925]'
+                                ]">
                                 <img :src="deletes" class="w-[20px]" />
                                 Delete
                             </button>
                         </template>
+
 
                         <!-- Export -->
                         <template #export="{ row }">

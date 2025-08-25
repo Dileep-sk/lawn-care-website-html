@@ -12,7 +12,6 @@ export function useDesignNo() {
 
     try {
       const data = await getDesignNos(activeOnly ? { active: true } : {})
-      console.log(data);
 
       options.value = data.data || []
     } catch (err) {

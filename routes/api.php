@@ -43,7 +43,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::put('/orders/{id}', [OrderController::class, 'update']);
     Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
-
+    Route::get('/order_id', [OrderController::class, 'getOrderId'])->name('getOrder');
 
     Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
     Route::put('/jobs/{id}/status', [JobController::class, 'updateStatus']);

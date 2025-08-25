@@ -24,13 +24,24 @@ class MarkNoService
 
     public function createAndFind($name): int
     {
-        $existing = MarkNo::where('id', $name)->first();
+
+        if (is_numeric($name)) {
+            $existing = MarkNo::find($name);
+
+            if ($existing) {
+                return $existing->id;
+            }
+        }
+
+        $existing = MarkNo::where('name', $name)->first();
 
         if ($existing) {
             return $existing->id;
         }
 
+
         $new = MarkNo::create(['name' => $name]);
+
         return $new->id;
     }
 }

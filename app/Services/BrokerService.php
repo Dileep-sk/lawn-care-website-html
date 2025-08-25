@@ -18,12 +18,19 @@ class BrokerService
 
     public function createAndFind($name): int
     {
-        $existing = Broker::where('id', $name)->first();
+        if (is_numeric($name)) {
+            $existing = Broker::find($name);
+
+            if ($existing) {
+                return $existing->id;
+            }
+        }
+
+        $existing = Broker::where('name', $name)->first();
 
         if ($existing) {
             return $existing->id;
         }
-
         $newBroker = Broker::create(['name' => $name]);
         return $newBroker->id;
     }

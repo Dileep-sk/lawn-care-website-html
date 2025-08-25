@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Models\DesignNo;
 use App\Models\Item;
+use App\Models\MarkNo;
 use App\Models\Order;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -70,6 +71,15 @@ class OrderController extends Controller
     public function store(StoreOrderRequest $request): JsonResponse
     {
         try {
+
+            $isMarkNoExit = MarkNo::find($request->mark_no);
+            if (empty($isMarkNoExit)) {
+                return response()->json([
+                    'message' => 'Mark No does not Please select correct Mark No.',
+                    'error' => ""
+                ], 500);
+            }
+
             $isDesignNameExit = DesignNo::find($request->design_no);
             if (empty($isDesignNameExit)) {
 
@@ -83,7 +93,7 @@ class OrderController extends Controller
             if (empty($isitemExit)) {
 
                 return response()->json([
-                    'message' => 'Item Name No does not Please select correct Item Name.',
+                    'message' => 'Item Name does not Please select correct Item Name.',
                     'error' => ""
                 ], 500);
             }
@@ -97,14 +107,15 @@ class OrderController extends Controller
                 'customer_id' => $customer_name,
                 'design_no_id' => $request->design_no,
                 'item_id' => $request->item_name,
+                'mark_no_id' => $request->mark_no,
             ]);
 
             $stockData = [
                 'item_id' => $request->item_name,
                 'design_no_id' => $request->design_no,
-                'mark_no_id' => 1,
+                'mark_no_id' => $request->mark_no,
                 'quantity' => $request->quantity,
-                'message ' => 'Order Created',
+                'message' => 'Order Created',
                 'stock_manage' => 0,
             ];
 
@@ -142,7 +153,6 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
 
     public function show($id): JsonResponse
     {
@@ -201,6 +211,29 @@ class OrderController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Failed to delete Order.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getOrderId()
+    {
+        try {
+            $result = $this->orderService->getOrderId();
+
+            if ($result && !$result->isEmpty()) {
+                return response()->json([
+                    'message' => 'Order retrieved successfully.',
+                    'data' => $result
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'No orders found.'
+            ], 404);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Failed to retrieve orders.',
                 'error' => $e->getMessage()
             ], 500);
         }

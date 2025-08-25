@@ -15,13 +15,23 @@ class DesignNoService
 
     public function createAndFind($name): int
     {
-        $existing = DesignNo::where('id', $name)->first();
+
+        if (is_numeric($name)) {
+            $existing = DesignNo::find($name);
+
+            if ($existing) {
+                return $existing->id;
+            }
+        }
+
+        $existing = DesignNo::where('name', $name)->first();
 
         if ($existing) {
             return $existing->id;
         }
 
         $new = DesignNo::create(['name' => $name]);
+
         return $new->id;
     }
 }

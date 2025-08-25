@@ -97,26 +97,47 @@ class OrderService
 
         $order->order_no = 'ORD' . str_pad($order->id, 4, '0', STR_PAD_LEFT);
         $order->save();
-
         return $order;
     }
-
 
     public function getLatestOrderNo()
     {
         $latestOrder = Order::orderBy('id', 'desc')->first();
 
         if ($latestOrder) {
-            return 'ORD' . $latestOrder->id + 1;
+            return 'ORD-' . $latestOrder->id + 1;
         }
 
-        return 'ORD-00001';
+        return 'ORD-01';
     }
 
     public function getOrderById($id)
     {
-        return Order::find($id);
+        return Order::select([
+            'orders.id',
+            'orders.order_no',
+            'orders.quantity',
+            'orders.status',
+            'orders.date',
+            'orders.rate',
+            'orders.message',
+            'customers.name as customer_name',
+            'brokers.name as broker_name',
+            'transport_companies.name as transport_company',
+            'design_nos.name as design_no',
+            'mark_nos.name as mark_name',
+            'items.name as item_name',
+        ])
+            ->join('customers', 'orders.customer_id', '=', 'customers.id')
+            ->leftJoin('brokers', 'orders.broker_id', '=', 'brokers.id')
+            ->leftJoin('transport_companies', 'orders.transport_company_id', '=', 'transport_companies.id')
+            ->join('design_nos', 'orders.design_no_id', '=', 'design_nos.id')
+            ->join('mark_nos', 'orders.mark_no_id', '=', 'mark_nos.id')
+            ->join('items', 'orders.item_id', '=', 'items.id')
+            ->where('orders.id', $id)
+            ->first();
     }
+
 
     public function updateOrder($id, array $data)
     {
@@ -160,5 +181,13 @@ class OrderService
         }
 
         return $order->delete();
+    }
+
+    public function getOrderId(){
+
+          $order = Order::select('id','order_no')->get();
+
+          return $order;
+
     }
 }

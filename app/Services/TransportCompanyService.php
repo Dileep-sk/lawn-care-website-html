@@ -11,6 +11,7 @@ class TransportCompanyService
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
+
     public function getActiveCompanies()
     {
         return TransportCompany::where('status', 1)->get();
@@ -18,7 +19,15 @@ class TransportCompanyService
 
     public function createAndFind($name): int
     {
-        $existing = TransportCompany::where('id', $name)->first();
+        if (is_numeric($name)) {
+            $existing = TransportCompany::find($name);
+
+            if ($existing) {
+                return $existing->id;
+            }
+        }
+
+        $existing = TransportCompany::where('name', $name)->first();
 
         if ($existing) {
             return $existing->id;

@@ -21,12 +21,19 @@ class ItemService
 
     public function createAndFind($name): int
     {
-        $existing = Item::where('id', $name)->first();
+        if (is_numeric($name)) {
+            $existing = Item::find($name);
+
+            if ($existing) {
+                return $existing->id;
+            }
+        }
+
+        $existing = Item::where('name', $name)->first();
 
         if ($existing) {
             return $existing->id;
         }
-
         $newItem = Item::create(['name' => $name]);
         return $newItem->id;
     }

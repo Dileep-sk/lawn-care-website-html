@@ -88,7 +88,6 @@ export function useOrders(searchTerm = ref('')) {
     const fetchLatestOrderId = async () => {
         try {
             const data = await getLatestOrderId()
-            console.log(data);
 
             return data.latest_order_no
         } catch (error) {

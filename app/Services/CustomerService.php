@@ -16,17 +16,24 @@ class CustomerService
         return Customer::where('status', 1)->get();
     }
 
-     public function createAndFind($name): int
+    public function createAndFind($name): int
     {
-        $existing = Customer::where('id', $name)->first();
+        if (is_numeric($name)) {
+            $existing = Customer::find($name);
+
+            if ($existing) {
+                return $existing->id;
+            }
+        }
+
+        $existing = Customer::where('name', $name)->first();
 
         if ($existing) {
             return $existing->id;
         }
 
         $newCustomer = Customer::create(['name' => $name]);
+
         return $newCustomer->id;
     }
-
-
 }

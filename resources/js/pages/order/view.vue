@@ -6,7 +6,7 @@ import { useOrders } from '@/composables/useOrders'
 import { useRoute } from 'vue-router'
 
 import DetailItem from '../../components/DetailItem.vue'
-
+import { STATUS_OPTIONS } from '@/constants/orderListStatus'
 const route = useRoute()
 const orderId = route.params.id || 1
 
@@ -15,13 +15,6 @@ const { getOrderDetails } = useOrders()
 const order = ref(null)
 const loading = ref(false)
 const error = ref(null)
-
-const STATUS_OPTIONS = [
-    { text: 'Pending', value: 0, class: 'bg-yellow-100 text-yellow-600 px-2 py-1 rounded font-semibold' },
-    { text: 'Hold', value: 1, class: 'bg-blue-100 text-blue-600 px-2 py-1 rounded font-semibold' },
-    { text: 'Completed', value: 2, class: 'bg-green-100 text-green-600 px-2 py-1 rounded font-semibold' },
-    { text: 'Cancelled', value: 3, class: 'bg-red-600 text-white px-2 py-1 rounded font-semibold' }
-]
 
 const orderStatus = computed(() => {
     if (!order.value) return { text: '', class: '' }
@@ -72,6 +65,7 @@ onMounted(async () => {
                                 <DetailItem label="Date" :value="order.date" />
                                 <DetailItem label="Broker Name" :value="order.broker_name" />
                                 <DetailItem label="Transport Company" :value="order.transport_company" />
+                                <DetailItem label="Mark No" :value="order.mark_name" />
                                 <DetailItem label="Design No" :value="order.design_no" />
                                 <DetailItem label="Item Name" :value="order.item_name" />
                                 <DetailItem label="Quantity" :value="order.quantity" />

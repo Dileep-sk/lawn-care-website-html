@@ -76,7 +76,7 @@ onMounted(() => {
                         { label: 'Design No', key: 'design_no' },
                         { label: 'Quantity', key: 'quantity' },
                         { label: 'Status', key: 'status' },
-                        { label: 'Edit', key: 'edit', thClass: 'w-[100px]' },
+                        // { label: 'Edit', key: 'edit', thClass: 'w-[100px]' },
                         { label: 'Delete', key: 'delete', thClass: 'w-[100px]' },
                         { label: 'View Order', key: 'view_order', thClass: 'w-[130px]' }
                     ]" :loading="loading" :error="error" :currentPage="currentPage" :lastPage="lastPage"
@@ -95,12 +95,12 @@ onMounted(() => {
 
 
                         <!-- Edit Column -->
-                        <template #edit="{ row }">
+                        <!-- <template #edit="{ row }">
                             <router-link :to="{ name: 'jobs-edit', params: { id: row.id } }"
                                 class="w-[70px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#1e90ff]">
                                 <img :src="edit" class="w-[20px]" alt="">Edit
                             </router-link>
-                        </template>
+                        </template> -->
 
                         <!-- Delete Column -->
 
@@ -114,7 +114,7 @@ onMounted(() => {
 
                         <!-- View Order Column -->
                         <template #view_order="{ row }">
-                             <router-link v-if="row && row.id" :to="{ name: 'jobs-view', params: { id: row.id } }"
+                            <router-link v-if="row && row.id" :to="{ name: 'jobs-view', params: { id: row.id } }"
                                 class="bg-[#3C40C6] cursor-pointer w-[130px] h-[35px] text-white flex justify-center text-[15px] items-center gap-[5px] rounded-[5px]">
                                 <img :src="eye" class="w-[20px]" alt="">View Job
                             </router-link>

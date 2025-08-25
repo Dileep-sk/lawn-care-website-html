@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('date');
             $table->unsignedBigInteger('broker_id')->nullable()->index();
             $table->unsignedBigInteger('transport_company_id')->nullable()->index();
+            $table->unsignedBigInteger('mark_no_id')->index();
             $table->unsignedBigInteger('design_no_id')->index();
             $table->unsignedBigInteger('item_id')->index();
             $table->integer('quantity')->index();
@@ -29,9 +30,9 @@ return new class extends Migration
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('broker_id')->references('id')->on('brokers')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('transport_company_id')->references('id')->on('transport_companies')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('mark_no_id')->references('id')->on('mark_nos')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('design_no_id')->references('id')->on('design_nos')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade')->onUpdate('cascade');
-
         });
     }
 

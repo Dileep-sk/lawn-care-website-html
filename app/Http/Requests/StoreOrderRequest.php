@@ -33,6 +33,7 @@ class StoreOrderRequest extends FormRequest
             'rate'              => 'required|numeric|min:0',
             'status'            => 'nullable|string',
             'message'           => 'nullable|string',
+            'mark_no'           => 'nullable',
         ];
     }
 }

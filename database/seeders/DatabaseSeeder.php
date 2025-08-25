@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'email' => "admin@gmail.com",
             'mobile_number' => "123456789",
             'password' => Hash::make('admin@gmail.com'),
-            'status' => rand(0, 1),
+            'status' => 1,
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ]);

@@ -79,7 +79,10 @@ onMounted(() => {
                 <div class="h-[calc(100vh_-_209px)] flex flex-col justify-between">
                     <BaseTable :data="jobs" :columns="[
                         { label: 'Job No', key: 'id' },
+                        { label: 'Mark No', key: 'mark_no' },
                         { label: 'Design No', key: 'design_no' },
+                        { label: 'Item Name', key: 'item_name' },
+                        { label: 'Order No', key: 'order_no' },
                         { label: 'Quantity', key: 'quantity' },
                         { label: 'Status', key: 'status' },
                         // { label: 'Edit', key: 'edit', thClass: 'w-[100px]' },

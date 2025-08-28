@@ -1,32 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Login from "../pages/Login.vue";
-import Dashboard from "../pages/dashboard.vue";
-import Order from "../pages/order/list.vue";
-import OrderForm from "../pages/order/form.vue";
-import OrderView from "../pages/order/view.vue";
-import Users from "../pages/users/list.vue";
-import UsersForm from "../pages/users/form.vue";
-import Jobs from "../pages/jobs/list.vue";
-import JobForm from "../pages/jobs/form.vue";
-import JobView from "../pages/jobs/view.vue";
-import Stock from "../pages/stock/list.vue";
-import StockForm from "../pages/stock/form.vue";
-import Reports from "../pages/reports/lits.vue";
-import Profile from "../pages/profile/form.vue";
-import api from '@/utils/axios'
+import api from '@/utils/axios';
 
 const routes = [
     { path: "/", redirect: "/login" },
+
     {
         path: "/login",
         name: "login",
-        component: Login,
+        component: () => import("../pages/Login.vue"),
         meta: { title: "Login" },
     },
     {
         path: "/dashboard",
         name: "dashboard",
-        component: Dashboard,
+        component: () => import("../pages/dashboard.vue"),
         meta: { title: "Home", requiresAuth: true },
     },
 
@@ -34,25 +21,25 @@ const routes = [
     {
         path: "/order",
         name: "order",
-        component: Order,
+        component: () => import("../pages/order/list.vue"),
         meta: { title: "Order", requiresAuth: true },
     },
     {
         path: "/order/create",
         name: "order-create",
-        component: OrderForm,
+        component: () => import("../pages/order/form.vue"),
         meta: { title: "Order Create", requiresAuth: true },
     },
     {
         path: "/order/edit/:id",
         name: "order-edit",
-        component: OrderForm,
+        component: () => import("../pages/order/form.vue"),
         meta: { title: "Order Edit", requiresAuth: true },
     },
     {
         path: "/order/view/:id",
         name: "order-view",
-        component: OrderView,
+        component: () => import("../pages/order/view.vue"),
         meta: { title: "Order View", requiresAuth: true },
     },
 
@@ -60,25 +47,25 @@ const routes = [
     {
         path: "/jobs",
         name: "jobs",
-        component: Jobs,
+        component: () => import("../pages/jobs/list.vue"),
         meta: { title: "Jobs", requiresAuth: true },
     },
     {
         path: "/jobs/create",
         name: "jobs-create",
-        component: JobForm,
+        component: () => import("../pages/jobs/form.vue"),
         meta: { title: "Jobs Create", requiresAuth: true },
     },
     {
         path: "/jobs/edit",
         name: "jobs-edit",
-        component: JobForm,
+        component: () => import("../pages/jobs/form.vue"),
         meta: { title: "Jobs Edit", requiresAuth: true },
     },
     {
-        path: "/jobs/view:id",
+        path: "/jobs/view/:id",  // <-- fixed missing colon here
         name: "jobs-view",
-        component: JobView,
+        component: () => import("../pages/jobs/view.vue"),
         meta: { title: "Jobs View", requiresAuth: true },
     },
 
@@ -86,19 +73,19 @@ const routes = [
     {
         path: "/stock",
         name: "stock",
-        component: Stock,
+        component: () => import("../pages/stock/list.vue"),
         meta: { title: "Stock", requiresAuth: true },
     },
     {
         path: "/stock/create",
         name: "stock-create",
-        component: StockForm,
+        component: () => import("../pages/stock/form.vue"),
         meta: { title: "Stock Create", requiresAuth: true },
     },
     {
         path: "/stock/edit/:id",
         name: "stock-edit",
-        component: StockForm,
+        component: () => import("../pages/stock/form.vue"),
         meta: { title: "Stock Edit", requiresAuth: true },
     },
 
@@ -106,19 +93,19 @@ const routes = [
     {
         path: "/users",
         name: "users",
-        component: Users,
+        component: () => import("../pages/users/list.vue"),
         meta: { title: "User List", requiresAuth: true },
     },
     {
         path: "/users/create",
         name: "users-create",
-        component: UsersForm,
+        component: () => import("../pages/users/form.vue"),
         meta: { title: "User Create", requiresAuth: true },
     },
     {
         path: "/users/edit/:id",
         name: "users-edit",
-        component: UsersForm,
+        component: () => import("../pages/users/form.vue"),
         meta: { title: "User Edit", requiresAuth: true },
     },
 
@@ -126,15 +113,15 @@ const routes = [
     {
         path: "/reports",
         name: "reports",
-        component: Reports,
+        component: () => import("../pages/reports/lits.vue"),
         meta: { title: "Reports", requiresAuth: true },
     },
 
-    // profile
+    // Profile
     {
         path: "/profile",
         name: "profile",
-        component: Profile,
+        component: () => import("../pages/profile/form.vue"),
         meta: { title: "Profile", requiresAuth: true },
     },
 ];
@@ -144,49 +131,42 @@ const router = createRouter({
     routes,
 });
 
-
+// Update document title after each route change
 router.afterEach((to) => {
     document.title = to.meta?.title
         ? `${to.meta.title} | Textile Erp Software`
         : "Textile Erp Software";
 });
 
-router.beforeEach(async (to, from, next) => {
+// Navigation guard for authentication
+router.beforeEach(async (to) => {
     const token = localStorage.getItem("token");
 
     if (to.meta.requiresAuth) {
         if (!token) {
-            return next({ name: "login" });
+            return { name: "login" };
         }
 
         try {
             await api.get("/user");
-            return next();
+            return true;
         } catch (error) {
-
-            if (error.response?.status === 401) {
-                localStorage.removeItem("token");
-                return next({ name: "login" });
-            } else {
-
-                return next({ name: "login" });
-            }
+            localStorage.removeItem("token");
+            return { name: "login" };
         }
     }
-
 
     if (to.name === "login" && token) {
         try {
             await api.get("/user");
-            return next({ name: "dashboard" });
+            return { name: "dashboard" };
         } catch {
-
             localStorage.removeItem("token");
-            return next();
+            return true;
         }
     }
 
-    return next();
+    return true;
 });
 
 export default router;

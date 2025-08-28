@@ -19,7 +19,20 @@ class JobService
     public function getAllJobs(Request $request)
     {
         $query = Job::query()
-            ->select('order_jobs.*', 'design_nos.name as design_no')
+            ->select(
+                'order_jobs.id',
+                'order_jobs.customer_id',
+                'order_jobs.mark_no_id',
+                'order_jobs.design_no_id',
+                'order_jobs.item_id',
+                'order_jobs.order_no_id',
+                'order_jobs.quantity',
+                'order_jobs.status',
+                'design_nos.name as design_no',
+                'mark_nos.name as mark_no',
+                'items.name as item_name',
+                'orders.order_no as order_no'
+            )
             ->leftJoin('customers', 'order_jobs.customer_id', '=', 'customers.id')
             ->leftJoin('mark_nos', 'order_jobs.mark_no_id', '=', 'mark_nos.id')
             ->leftJoin('design_nos', 'order_jobs.design_no_id', '=', 'design_nos.id')
@@ -28,13 +41,15 @@ class JobService
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
-                $q->where('customers.name', 'like', "%{$search}%")
-                    ->orWhere('design_nos.design_no', 'like', "%{$search}%")
-                    ->orWhere('orders.order_no', 'like', "%{$search}%")
+                $q->where('mark_nos.name', 'like', "%{$search}%")
+                    ->orWhere('design_nos.name', 'like', "%{$search}%")
+                    ->orWhere('order_jobs.id', 'like', "%{$search}%")
+                    ->orWhere('items.name', 'like', "%{$search}%")
                     ->orWhere('order_jobs.quantity', 'like', "%{$search}%")
-                    ->orWhere('order_jobs.id', 'like', "%{$search}%");
+                    ->orWhere('order_jobs.status', 'like', "%{$search}%");
             });
         }
+
 
         if ($request->filled('status')) {
             $query->where('order_jobs.status', $request->status);

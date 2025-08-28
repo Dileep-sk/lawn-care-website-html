@@ -6,6 +6,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const search = ref('')
 const showDropdown = ref(false)
+const justSelected = ref(false)
 
 const { options, loading, error: fetchError, fetchDesignNos } = useDesignNo()
 
@@ -23,11 +24,6 @@ watch(
     { immediate: true }
 )
 
-
-watch(search, () => {
-    showDropdown.value = filteredOptions.value.length > 0
-})
-
 const filteredOptions = computed(() => {
     if (!search.value) return options.value
     return options.value.filter(design =>
@@ -35,10 +31,19 @@ const filteredOptions = computed(() => {
     )
 })
 
+watch(search, () => {
+    if (justSelected.value) return
+    showDropdown.value = filteredOptions.value.length > 0
+})
+
 const selectOption = (design) => {
+    justSelected.value = true
     search.value = design.name
     emit('update:modelValue', design.id)
     showDropdown.value = false
+    setTimeout(() => {
+        justSelected.value = false
+    }, 200)
 }
 
 const handleBlur = () => {
@@ -54,15 +59,25 @@ const handleBlur = () => {
         showDropdown.value = false
     }, 150)
 }
+
+const onFocus = () => {
+    showDropdown.value = true
+}
+
+const onClick = () => {
+    showDropdown.value = true
+}
 </script>
+
 
 
 <template>
     <div class="relative">
         <label class="block font-medium mb-1">Design No</label>
 
-        <input type="text" v-model="search" @focus="showDropdown = true" @blur="handleBlur"
+        <input type="text" v-model="search" @focus="onFocus" @click="onClick" @blur="handleBlur"
             placeholder="Search or enter new..." class="input w-full pr-10" :required="required" />
+
 
         <ul v-if="showDropdown && filteredOptions.length"
             class="absolute z-10 w-full bg-white border rounded-lg shadow mt-1 max-h-40 overflow-y-auto">

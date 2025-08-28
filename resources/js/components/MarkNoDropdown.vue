@@ -6,6 +6,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const search = ref('')
 const showDropdown = ref(false)
+const justSelected = ref(false)
 
 const { options, loading, error: fetchError, fetchMarkNos } = useMarkNo()
 
@@ -31,9 +32,13 @@ const filteredOptions = computed(() => {
 })
 
 const selectOption = (mark) => {
+    justSelected.value = true
     search.value = mark.name
     emit('update:modelValue', mark.id)
     showDropdown.value = false
+    setTimeout(() => {
+        justSelected.value = false
+    }, 200)
 }
 
 const handleBlur = () => {
@@ -49,18 +54,28 @@ const handleBlur = () => {
         showDropdown.value = false
     }, 150)
 }
+
+const onFocus = () => {
+    showDropdown.value = true
+}
+
+const onClick = () => {
+    showDropdown.value = true
+}
+
 watch(search, () => {
+    if (justSelected.value) return
     showDropdown.value = filteredOptions.value.length > 0
 })
-
 </script>
+
 
 <template>
     <div class="relative">
         <label class="block font-medium mb-1">Mark No</label>
 
-        <input type="text" v-model="search" @focus="showDropdown = true" @blur="handleBlur"
-            placeholder="Search or enter new..." class="input w-full pr-10" :required="required" />
+        <input type="text" v-model="search" @focus="onFocus" @click="onClick" @blur="handleBlur"
+            placeholder="Search or enter new..." class="input w-full pr-10" :required="required" autocomplete="off" />
 
         <ul v-if="showDropdown && filteredOptions.length"
             class="absolute z-10 w-full bg-white border rounded-lg shadow mt-1 max-h-40 overflow-y-auto">

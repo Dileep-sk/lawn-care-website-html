@@ -2,12 +2,11 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useItems } from '@/composables/useItems'
 
-
-
 const emit = defineEmits(['update:modelValue'])
 
 const search = ref('')
 const showDropdown = ref(false)
+const justSelected = ref(false)
 
 const { options, loading, error: fetchError, fetchItems } = useItems()
 
@@ -15,8 +14,8 @@ onMounted(() => {
     fetchItems(true)
 })
 
+// Sync search with incoming modelValue
 watch(
-
     (val) => {
         if (!val) return
         const found = options.value.find(o => o.id === val)
@@ -32,10 +31,19 @@ const filteredOptions = computed(() => {
     )
 })
 
+watch(search, () => {
+    if (justSelected.value) return
+    showDropdown.value = filteredOptions.value.length > 0
+})
+
 const selectOption = (item) => {
+    justSelected.value = true
     search.value = item.name
     emit('update:modelValue', item.id)
     showDropdown.value = false
+    setTimeout(() => {
+        justSelected.value = false
+    }, 200)
 }
 
 const handleBlur = () => {
@@ -51,17 +59,22 @@ const handleBlur = () => {
         showDropdown.value = false
     }, 150)
 }
-watch(search, () => {
-    showDropdown.value = filteredOptions.value.length > 0
-})
 
+const onFocus = () => {
+    showDropdown.value = true
+}
+
+const onClick = () => {
+    showDropdown.value = true
+}
 </script>
+
 
 <template>
     <div class="relative">
         <label class="block font-medium mb-1">Item Name</label>
 
-        <input type="text" v-model="search" @focus="showDropdown = true" @blur="handleBlur"
+        <input type="text" v-model="search" @focus="onFocus" @click="onClick" @blur="handleBlur"
             placeholder="Search or enter new..." class="input w-full pr-10" :required="required" />
 
         <ul v-if="showDropdown && filteredOptions.length"

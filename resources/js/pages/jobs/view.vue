@@ -16,13 +16,15 @@ const jobs = ref(null)
 const loading = ref(false)
 const error = ref(null)
 
-
 const jobsStatus = computed(() => {
-  if (!jobs.value) return { label: '', class: '' }
-  return STATUS_OPTIONS.find(s => s.value == jobs.value.status) || { label: 'Unknown', class: '' }
+    if (!jobs.value) return { label: '', class: '' }
+    return STATUS_OPTIONS.find(s => s.value == jobs.value.status) || { label: 'Unknown', class: '' }
 })
 
-
+const jobImages = computed(() => {
+    if (!jobs.value || !jobs.value.images) return []
+    return jobs.value.images.map(img => img.full_url || img.image)
+})
 
 onMounted(async () => {
     loading.value = true
@@ -34,6 +36,10 @@ onMounted(async () => {
         loading.value = false
     }
 })
+
+function openImageInNewTab(imgSrc) {
+    window.open(imgSrc, '_blank')
+}
 </script>
 
 <template>
@@ -68,7 +74,7 @@ onMounted(async () => {
                                 <DetailItem label="Broker Name" :value="jobs.jobs_no" />
                                 <DetailItem label="Status" :value="jobsStatus.label" :extraClass="jobsStatus.class" />
                                 <DetailItem label="Matching 1" :value="jobs.matching_1" />
-                                <DetailItem label="Matching 2" :value="jobs.matching_2" />  
+                                <DetailItem label="Matching 2" :value="jobs.matching_2" />
                                 <DetailItem label="Matching 3" :value="jobs.matching_3" />
                                 <DetailItem label="Matching 4" :value="jobs.matching_4" />
                                 <DetailItem label="Matching 5" :value="jobs.matching_5" />
@@ -76,9 +82,19 @@ onMounted(async () => {
                                 <DetailItem label="Matching 7" :value="jobs.matching_7" />
                                 <DetailItem label="Matching 8" :value="jobs.matching_8" />
 
-                                <!-- Message -->
                                 <DetailItem label="Message" :value="jobs.message" />
                             </ul>
+
+                            <div v-if="jobImages.length" class="mt-6">
+                                <h3 class="font-semibold mb-3">Job Images</h3>
+                                <div class="grid grid-cols-3 gap-4">
+                                    <div v-for="(imgSrc, idx) in jobImages" :key="idx"
+                                        class="image-wrapper cursor-pointer" @click="() => openImageInNewTab(imgSrc)">
+                                        <img :src="imgSrc" :alt="'Job Image ' + (idx + 1)"
+                                            class="w-full h-auto rounded border" />
+                                    </div>
+                                </div>
+                            </div>
                         </template>
 
                         <template v-else>

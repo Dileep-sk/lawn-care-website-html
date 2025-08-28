@@ -60,7 +60,7 @@ const getStatusOption = (status) =>
                                 class="input !border-0 !w-[325px] rounded-md !px-10 !h-[45px] bg-[rgba(23,23,23,0.05)]" />
                         </div>
                         <select v-model="filters.status"
-                            class="input w-[250px] border-0 mt-0 bg-[rgba(23,23,23,0.05)] h-[45px] text-left text-start">
+                            class="input !w-[250px] !border-0 !mt-[0] !bg-[rgba(23,23,23,0.05)] !h-[45px]">
                             <option value="">All Statuses</option>
                             <option v-for="opt in STATUS_OPTIONS" :key="opt.value" :value="opt.value"
                                 :class="opt.class + ' text-left'">

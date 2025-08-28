@@ -33,4 +33,9 @@ class Job extends Model
         'quantity' => 'integer',
         'status' => 'integer',
     ];
+    
+    public function images()
+    {
+        return $this->hasMany(JobImages::class, 'job_id', 'id');
+    }
 }

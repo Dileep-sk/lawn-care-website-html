@@ -29,7 +29,7 @@ class CreateJobRequest extends FormRequest
             'mark_no' => 'required',
             'design_no' => 'required',
             'item_name' => 'required',
-            'image' => 'nullable|array',
+            'images' => 'nullable|array',
             'quantity' => 'required|numeric',
             'order_no' => 'required',
             'status' => 'required|in:0,1,2,3',

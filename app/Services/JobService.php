@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\Job;
+use App\Models\JobImages;
 use Illuminate\Http\Request;
 use App\Services\StockService;
+use Illuminate\Support\Facades\Storage;
 
 class JobService
 {
@@ -87,7 +89,7 @@ class JobService
 
     public function getJobById($id)
     {
-        return Job::select(
+        $job = Job::select(
             'order_jobs.*',
             'customers.name as customer_name',
             'mark_nos.name as mark_no',
@@ -101,13 +103,23 @@ class JobService
             ->leftJoin('items', 'order_jobs.item_id', '=', 'items.id')
             ->leftJoin('orders', 'order_jobs.order_no_id', '=', 'orders.id')
             ->where('order_jobs.id', $id)
+            ->with('images')
             ->first();
+
+        if ($job) {
+
+            $job->images->transform(function ($image) {
+                $image->full_url = asset('storage/job_images/' . $image->image);
+                return $image;
+            });
+        }
+
+        return $job;
     }
 
 
     public function createJob(array $data)
     {
-
         $job = Job::create([
             'customer_id' => $data['customer_name'] ?? null,
             'mark_no_id' => $data['mark_no'] ?? null,
@@ -127,7 +139,31 @@ class JobService
             'message' => $data['message'] ?? null,
         ]);
 
+        if (!empty($data['images'])) {
+            $this->saveJobImages($job, $data['images']);
+        }
+
         return $job;
+    }
+
+    public function saveJobImages(Job $job, array $images)
+    {
+        $directory = storage_path('app/public/job_images');
+
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        foreach ($images as $image) {
+
+            $filename = uniqid() . '.' . $image->getClientOriginalExtension();
+            $image->move($directory, $filename);
+
+            JobImages::create([
+                'job_id' => $job->id,
+                'image' => $filename,
+            ]);
+        }
     }
 
     public function updateJob($id, array $data)

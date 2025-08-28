@@ -95,7 +95,7 @@ class OrderService
     {
         $order = Order::create(array_merge($data, ['order_no' => 'TEMP']));
 
-        $order->order_no = 'ORD' . str_pad($order->id, 4, '0', STR_PAD_LEFT);
+        $order->order_no = 'ORD-' . $order->id;
         $order->save();
         return $order;
     }
@@ -183,11 +183,11 @@ class OrderService
         return $order->delete();
     }
 
-    public function getOrderId(){
+    public function getOrderId()
+    {
 
-          $order = Order::select('id','order_no')->get();
+        $order = Order::select('id', 'order_no')->get();
 
-          return $order;
-
+        return $order;
     }
 }

@@ -1,7 +1,21 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import AuthLayout from '../layouts/AuthLayout.vue'
 import calender from '@/assets/icons/calender.svg'
+import OutOfStockTable from "../components/OutOfStockTable.vue"
+import { initCalendar } from "@/utils/calendar"
 
+const selectedStartDate = ref(null)
+const selectedEndDate = ref(null)
+
+function handleDateChange(start, end) {
+    selectedStartDate.value = start.format('YYYY-MM-DD')
+    selectedEndDate.value = end.format('YYYY-MM-DD')
+}
+
+onMounted(() => {
+    initCalendar(handleDateChange)
+})
 </script>
 
 <template>
@@ -14,23 +28,14 @@ import calender from '@/assets/icons/calender.svg'
                     <h1 class="text-[20px] text-[#000] font-[700]">Dashboard</h1>
 
                     <div class="flex gap-[15px] items-center">
-                        <!-- <div class="search_box relative">
-                                    <img src="../../../assets/icons/search.svg" class="absolute w-[20px]" alt="" srcset="">
-                                    <input type="text" placeholder="Search here.."
-                                        class=" input !border-0 !w-[325px] rounded-[5px] !px-[40px] !h-[45px] bg-[rgba(23,23,23,0.05)] ">
-                                </div> -->
-
                         <div class="relative">
                             <img :src="calender" class="absolute top-[17px] left-[10px]" alt="">
                             <input
                                 class="form-control input !border-0 !w-[300px] rounded-[5px] !px-[55px] !h-[45px] !bg-[rgba(23,23,23,0.05)]"
                                 placeholder="Pick date range" id="kt_daterangepicker_1" />
                         </div>
-
                     </div>
-
                 </div>
-
                 <div class="grid grid-cols-2 gap-[20px] p-[20px]">
                     <div
                         class="box shadow-[0px_8px_24px_rgba(149,157,165,0.2)] h-[calc(50vh_-_132px)] rounded-[10px] p-[15px] ">
@@ -42,12 +47,10 @@ import calender from '@/assets/icons/calender.svg'
                             <div class="div h-[calc(25vh_-90px)] bg-[rgba(255,185,0,0.1)] rounded-[10px] p-[10px]">
                                 <h6 class="text-[15px] font-[400] text-[#000]">Pending Shipments</h6>
                                 <h1 class="text-[50px] text-[#FFB900] font-[800] text-center mt-[15px]">1</h1>
-
                             </div>
                             <div class="div h-[calc(25vh_-90px)] bg-[#575FCF1A] rounded-[10px] p-[10px]">
                                 <h6 class="text-[15px] font-[400] text-[#000]">Total Sales</h6>
                                 <h1 class="text-[50px] text-[#575FCF] font-[800] text-center mt-[15px]">50</h1>
-
                             </div>
                             <div class="div h-[calc(25vh_-90px)] bg-[#FEEFF2] rounded-[10px] p-[10px]">
                                 <h6 class="text-[15px] font-[400] text-[#000]"> Out of Stock</h6>
@@ -64,45 +67,9 @@ import calender from '@/assets/icons/calender.svg'
                         </div>
                     </div>
 
-                    <div
-                        class="box shadow-[0px_8px_24px_rgba(149,157,165,0.2)] h-[calc(50vh_-_132px)] rounded-[10px] p-[15px] ">
-                        <h1 class="text-[18px] font-[600] text-[#EB2F06]">Out of Stock</h1>
-                        <div class="table_container pr-[10px] h-[calc(90%_-_20px)] overflow-y-auto mt-[15px]">
-                            <table>
-                                <thead class="!bg-[#eb2f060f]">
-                                    <tr>
-                                        <th class="rounded-tl-[5px]">Mark No</th>
-                                        <th>Design No</th>
-                                        <th>Item</th>
-                                        <th class="rounded-tr-[5px]">Quantity</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="!h-[40px]">
-                                        <td>12</td>
-                                        <td>D1002</td>
-                                        <td>Cotton Shirt</td>
-                                        <td>300</td>
-                                    </tr>
-                                    <tr class="!h-[40px]">
-                                        <td>12</td>
-                                        <td>D1002</td>
-                                        <td>Cotton Shirt</td>
-                                        <td>300</td>
-                                    </tr>
-                                    <tr class="!h-[40px]">
-                                        <td>12</td>
-                                        <td>D1002</td>
-                                        <td>Cotton Shirt</td>
-                                        <td>300</td>
-                                    </tr>
+                    <!-- <OutOfStockTable :start-date="selectedStartDate" :end-date="selectedEndDate" /> -->
 
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
+                    <OutOfStockTable />
                     <div
                         class="box shadow-[0px_8px_24px_rgba(149,157,165,0.2)] h-[calc(50vh_-_132px)] rounded-[10px] p-[15px] ">
 

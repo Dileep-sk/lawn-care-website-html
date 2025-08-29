@@ -1,5 +1,5 @@
 import { ref, watch, onMounted } from 'vue'
-import { fetchStocks, updateStockStatus, createStock, getStockById, updateStock, deleteStock, availableStock } from '@/services/stockService'
+import { fetchStocks, updateStockStatus, createStock, getStockById, updateStock, deleteStock, availableStock, fetchOutOfStocks } from '@/services/stockService'
 import { deleteConfirm } from '@/utils/deleteConfirm'
 import toastr from 'toastr'
 import { confirmDialog } from '@/utils/confirmDialog'
@@ -8,6 +8,7 @@ import { confirmDialog } from '@/utils/confirmDialog'
 export function useStocks() {
     const stocks = ref([])
     const availableStocks = ref([])
+    const outOfStocks = ref([])
     const loading = ref(false)
     const error = ref(null)
     const currentPage = ref(1)
@@ -131,6 +132,30 @@ export function useStocks() {
         }
     }
 
+
+    const loadOutOfStocks = async (page = 1, searchTerm = '') => {
+        loading.value = true
+        error.value = null
+        try {
+            const params = {
+                page,
+                per_page: perPage.value,
+                search: searchTerm || undefined,
+            }
+            const data = await fetchOutOfStocks(params)
+
+            outOfStocks.value = data.data
+            currentPage.value = data.current_page
+            lastPage.value = data.last_page
+            totalItems.value = data.total
+        } catch (err) {
+            error.value = err.message || 'Failed to fetch out of stocks'
+            toastr.error('Something went wrong while fetching out of stocks.', 'Error')
+        } finally {
+            loading.value = false
+        }
+    }
+
     let debounceTimeout = null
     watch(search, (val) => {
         clearTimeout(debounceTimeout)
@@ -141,6 +166,7 @@ export function useStocks() {
 
 
     return {
+        outOfStocks,
         stocks,
         loading,
         error,
@@ -156,5 +182,6 @@ export function useStocks() {
         handleUpdateStock,
         handleDelete,
         getAvailableStockByDesignNo,
+        loadOutOfStocks,
     }
 }

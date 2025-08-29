@@ -128,12 +128,3 @@ const chart = new Chart(document.getElementById("salesChart"), {
         }
       }
     });
-  
-
-$(document).ready(function () {
-  $("#kt_daterangepicker_1").daterangepicker({
-    locale: {
-      format: "DD-MM-YYYY",
-    },
-  });
-});

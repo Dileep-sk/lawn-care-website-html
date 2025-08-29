@@ -92,31 +92,18 @@ const getStatusOption = (status) =>
                         @page-changed="(page) => loadOrders(page, searchTerm)">
                         <!-- Status -->
                         <template #status="{ row }">
-                            <div class="relative inline-block w-32">
-                                <!-- Current Status -->
-                                <button
-                                    @click="row.status !== STATUS_CANCELLED && (row.showDropdown = !row.showDropdown)"
-                                    class="w-full px-3 py-1 rounded text-sm font-medium flex items-center justify-between"
-                                    :class="[
+                            <div class="w-32">
+                                <select v-model="row.status" @change="handleStatusToggle(row, +$event.target.value)"
+                                    :disabled="row.status === STATUS_CANCELLED"
+                                    class="w-full px-3 py-1 rounded text-sm text-center cursor-pointer" :class="[
                                         getStatusOption(row.status).class,
                                         row.status === STATUS_CANCELLED ? 'cursor-not-allowed opacity-50' : ''
-                                    ]" :disabled="row.status === STATUS_CANCELLED">
-                                    <span>{{ getStatusOption(row.status).text }}</span>
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-
-                                <!-- Dropdown -->
-                                <div v-if="row.showDropdown && row.status !== STATUS_CANCELLED"
-                                    class="absolute z-10 mt-1 w-full bg-white rounded shadow-lg">
-                                    <div v-for="opt in STATUS_OPTIONS" :key="opt.value"
-                                        @click="handleStatusToggle(row, opt.value); row.showDropdown = false"
-                                        class="px-3 py-1 cursor-pointer text-sm text-center" :class="opt.class">
+                                    ]">
+                                    <option class="text-left" v-for="opt in STATUS_OPTIONS" :key="opt.value"
+                                        :value="opt.value">
                                         {{ opt.text }}
-                                    </div>
-                                </div>
+                                    </option>
+                                </select>
                             </div>
                         </template>
 

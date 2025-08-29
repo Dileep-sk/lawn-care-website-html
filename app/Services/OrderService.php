@@ -42,7 +42,7 @@ class OrderService
             $query->where(function ($q) use ($search) {
                 $q->where('customers.name', 'like', "%{$search}%")
                     ->orWhere('orders.order_no', 'like', "%{$search}%")
-                    ->orWhere('design_nos.name  ', 'like', "%{$search}%")
+                    ->orWhere('design_nos.name', 'like', "%{$search}%")
                     ->orWhere('items.name', 'like', "%{$search}%")
                     ->orWhere('orders.quantity', 'like', "%{$search}%")
                     ->orWhere('brokers.name', 'like', "%{$search}%")

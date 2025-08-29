@@ -13,9 +13,18 @@ class StockService
      * @param string|null $search
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getStocksPaginated(int $perPage = 10, ?string $search = null)
+    public function getStocks(int $perPage = 10, ?string $search = null)
     {
-        $query = Stock::with(['item', 'designNo', 'markNp']);
+        $query = Stock::query()
+            ->selectRaw('
+            item_id,
+            design_no_id,
+            mark_no_id,
+            SUM(CASE WHEN stock_manage = 1 THEN quantity ELSE -quantity END) as total_quantity
+        ')
+            ->with(['item', 'designNo', 'markNp'])
+            ->groupBy('item_id', 'design_no_id', 'mark_no_id');
+
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -25,38 +34,22 @@ class StockService
             });
         }
 
-        $stocks = $query->get();
 
-        $grouped = $stocks->groupBy(function ($stock) {
-            return $stock->item_id . '-' . $stock->design_no_id . '-' . $stock->mark_no_id;
-        })->map(function ($group) {
-            $first = $group->first();
-            $totalQuantity = $group->sum(function ($stock) {
-                return $stock->stock_manage == 1
-                    ? $stock->quantity
-                    : -$stock->quantity;
-            });
+        $paginated = $query->paginate($perPage);
 
+        $paginated->getCollection()->transform(function ($row) {
             return [
-                'item_name' => $first->item->name ?? null,
-                'design_no' => $first->designNo->name ?? null,
-                'mark_no' => $first->markNp->name ?? null,
-                'quantity' => $totalQuantity,
-                'status' => $totalQuantity > 0 ? 1 : 0,
+                'item_name'  => $row->item->name ?? null,
+                'design_no'  => $row->designNo->name ?? null,
+                'mark_no'    => $row->markNp->name ?? null,
+                'quantity'   => (int) $row->total_quantity,
+                'status'     => $row->total_quantity > 0 ? 1 : 0,
             ];
-        })->values();
-
-        $currentPage = request()->get('page', 1);
-        $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
-            $grouped->forPage($currentPage, $perPage),
-            $grouped->count(),
-            $perPage,
-            $currentPage,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        });
 
         return $paginated;
     }
+
 
     public function updateStockStatus($id, $status): bool
     {
@@ -139,5 +132,43 @@ class StockService
         })->filter()->values();
 
         return response()->json($grouped);
+    }
+
+    public function getOutOffStocks(int $perPage = 10, ?string $search = null)
+    {
+        $query = Stock::query()
+            ->selectRaw('
+            item_id,
+            design_no_id,
+            mark_no_id,
+            SUM(CASE WHEN stock_manage = 1 THEN quantity ELSE -quantity END) as total_quantity
+        ')
+            ->with(['item', 'designNo', 'markNp'])
+            ->groupBy('item_id', 'design_no_id', 'mark_no_id')
+            ->having('total_quantity', '<=', 0);
+
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->orWhereHas('item', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('designNo', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('markNp', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        $paginated = $query->paginate($perPage);
+
+
+        $paginated->getCollection()->transform(function ($row) {
+            return [
+                'item_name'  => $row->item->name ?? null,
+                'design_no'  => $row->designNo->name ?? null,
+                'mark_no'    => $row->markNp->name ?? null,
+                'quantity'   => (int) $row->total_quantity,
+                'status'     => $row->total_quantity > 0 ? 1 : 0,
+            ];
+        });
+
+        return $paginated;
     }
 }

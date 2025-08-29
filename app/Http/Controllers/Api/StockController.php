@@ -35,7 +35,7 @@ class StockController extends Controller
         $perPage = $request->input('per_page', 10);
         $search = $request->input('search', null);
 
-        $stocks = $this->stockService->getStocksPaginated($perPage, $search);
+        $stocks = $this->stockService->getStocks($perPage, $search);
 
         return response()->json($stocks, 200);
     }
@@ -139,11 +139,11 @@ class StockController extends Controller
     public function update(StoreStockRequest $request, int $id): JsonResponse
     {
         try {
-            $user = $this->stockService->updateStcok($id, $request->validated());
+            $stock = $this->stockService->updateStcok($id, $request->validated());
 
             return response()->json([
-                'message' => 'User updated successfully.',
-                'data' => $user,
+                'message' => 'stock updated successfully.',
+                'data' => $stock,
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -154,10 +154,33 @@ class StockController extends Controller
 
     public function availableStock(Request $request, $id)
     {
-        $stock = $this->stockService->availableStock($id);
-        return response()->json([
-            'message' => 'Stock Get successfully.',
-            'data' => $stock,
-        ], 200);
+        try {
+            $stock = $this->stockService->availableStock($id);
+            return response()->json([
+                'message' => 'Stock Get successfully.',
+                'data' => $stock,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'stock not found.',
+            ], 404);
+        }
+    }
+
+
+    public function outOffStock(Request $request): JsonResponse
+    {
+        try {
+            $perPage = $request->input('per_page', 10);
+            $search = $request->input('search', null);
+
+            $stocks = $this->stockService->getOutOffStocks($perPage, $search);
+
+            return response()->json($stocks, 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'stock not found.',
+            ], 404);
+        }
     }
 }

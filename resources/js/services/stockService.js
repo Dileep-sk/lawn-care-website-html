@@ -53,6 +53,11 @@ export async function availableStock(id) {
     }
 }
 
+export const fetchOutOfStocks = async (params = {}) => {
+    const response = await axios.get('/out-of-stocks', { params })
+    return response.data
+}
+
 
 
 

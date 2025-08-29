@@ -36,6 +36,8 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/stocks/{id}/status', [StockController::class, 'updateStatus']);
     Route::delete('/stocks/{id}', [StockController::class, 'destroy']);
 
+    Route::get('/out-of-stocks', [StockController::class, 'outOffStock']);
+
     Route::get('/orders', [OrderController::class, 'index']);
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
     Route::post('/orders', [OrderController::class, 'store']);

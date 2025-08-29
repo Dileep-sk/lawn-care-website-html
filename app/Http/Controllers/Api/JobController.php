@@ -85,7 +85,7 @@ class JobController extends Controller
         return response()->json($job);
     }
 
-    public function store(CreateJobRequest $request): JsonResponse
+    public function store(CreateJobRequest $request)
     {
         try {
 
@@ -133,10 +133,12 @@ class JobController extends Controller
             }
 
             $job = $this->jobService->createJob($request->validated());
-            return response()->json([
-                'message' => 'Job created successfully',
-                'data' => $job
-            ], 201);
+            if (isset($job)) {
+                return response()->json([
+                    'message' => 'Job created successfully',
+                    'data' => $job
+                ], 201);
+            }
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Failed to create job.',

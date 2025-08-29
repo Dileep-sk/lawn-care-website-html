@@ -90,7 +90,6 @@ const handleSubmit = async () => {
 
     try {
         await createJobHandler(formData)
-        toastr.success('Job created successfully', 'Success')
     } catch (err) {
         toastr.error(err.response?.data?.message || 'Failed to create job', 'Error')
     }

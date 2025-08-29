@@ -5,7 +5,7 @@ import { initBarChart, initPieChart } from './chart'
 export function initUI() {
     initSidebarToggle()
     hideLoader()
-    fadeInBody()
-    initBarChart()
+    // fadeInBody()
+    // initBarChart()
     initPieChart()
 }

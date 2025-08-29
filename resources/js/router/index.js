@@ -57,13 +57,13 @@ const routes = [
         meta: { title: "Jobs Create", requiresAuth: true },
     },
     {
-        path: "/jobs/edit",
+        path: "/jobs/edit/:id",
         name: "jobs-edit",
         component: () => import("../pages/jobs/form.vue"),
         meta: { title: "Jobs Edit", requiresAuth: true },
     },
     {
-        path: "/jobs/view/:id",  // <-- fixed missing colon here
+        path: "/jobs/view/:id",
         name: "jobs-view",
         component: () => import("../pages/jobs/view.vue"),
         meta: { title: "Jobs View", requiresAuth: true },

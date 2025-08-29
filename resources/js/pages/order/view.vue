@@ -70,7 +70,7 @@ onMounted(async () => {
                                 <DetailItem label="Item Name" :value="order.item_name" />
                                 <DetailItem label="Quantity" :value="order.quantity" />
                                 <DetailItem label="Rate" :value="order.rate" />
-                                <DetailItem label="Status" :value="orderStatus.text" :extraClass="orderStatus.class" />
+                                <DetailItem label="Status" :value="orderStatus.label" :extraClass="orderStatus.class" />
                             </ul>
                         </template>
 

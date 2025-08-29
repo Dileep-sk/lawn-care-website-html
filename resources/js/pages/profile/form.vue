@@ -78,47 +78,47 @@ const handleSubmit = async () => {
                 </div>
 
                 <div class="form_box p-[15px]">
-                    <form @submit.prevent="handleSubmit"
-                        class="p-[15px] bg-[rgba(56,92,76,0.04)] max-w-[500px] mx-auto grid gap-[20px]">
+                    <form @submit.prevent="handleSubmit" class="p-[15px] bg-[rgba(56,92,76,0.04)]">
+                        <div class="grid grid-cols-3 gap-[30px]">
+                            <!-- Email -->
+                            <div>
+                                <BaseInput label="Email" v-model="user.email" type="text" placeholder="Email"
+                                    class="text-red-600 text-sm mt-1" readonly />
+                            </div>
 
-                        <!-- Email -->
-                        <div>
-                            <BaseInput label="Email" v-model="user.email" type="text" placeholder="Email" readonly />
+                            <!-- Old Password -->
+                            <div>
+                                <BaseInput label="Old Password" v-model="user.oldPassword" type="password"
+                                    class="text-red-600 text-sm mt-1" placeholder="********" />
+                                <p v-if="validationErrors.oldPassword" class="text-red-500 text-sm mt-1">
+                                    {{ validationErrors.oldPassword }}
+                                </p>
+                                <p v-if="apiError?.old_password" class="text-red-500 text-sm mt-1">
+                                    {{ apiError.old_password[0] }}
+                                </p>
+                            </div>
+
+                            <!-- New Password -->
+                            <div>
+                                <BaseInput label="New Password" v-model="user.newPassword" type="password"
+                                    placeholder="********" />
+                                <p v-if="validationErrors.newPassword" class="text-red-500 text-sm mt-1">
+                                    {{ validationErrors.newPassword }}
+                                </p>
+                                <p v-if="apiError?.new_password" class="text-red-500 text-sm mt-1">
+                                    {{ apiError.new_password[0] }}
+                                </p>
+                            </div>
+
+                            <!-- Re-entry New Password -->
+                            <div>
+                                <BaseInput label="Re-entry New Password" v-model="user.reNewPassword" type="password"
+                                    placeholder="********" />
+                                <p v-if="validationErrors.reNewPassword" class="text-red-500 text-sm mt-1">
+                                    {{ validationErrors.reNewPassword }}
+                                </p>
+                            </div>
                         </div>
-
-                        <!-- Old Password -->
-                        <div>
-                            <BaseInput label="Old Password" v-model="user.oldPassword" type="password"
-                                placeholder="********" />
-                            <p v-if="validationErrors.oldPassword" class="text-red-500 text-sm mt-1">
-                                {{ validationErrors.oldPassword }}
-                            </p>
-                            <p v-if="apiError?.old_password" class="text-red-500 text-sm mt-1">
-                                {{ apiError.old_password[0] }}
-                            </p>
-                        </div>
-
-                        <!-- New Password -->
-                        <div>
-                            <BaseInput label="New Password" v-model="user.newPassword" type="password"
-                                placeholder="********" />
-                            <p v-if="validationErrors.newPassword" class="text-red-500 text-sm mt-1">
-                                {{ validationErrors.newPassword }}
-                            </p>
-                            <p v-if="apiError?.new_password" class="text-red-500 text-sm mt-1">
-                                {{ apiError.new_password[0] }}
-                            </p>
-                        </div>
-
-                        <!-- Re-entry New Password -->
-                        <div>
-                            <BaseInput label="Re-entry New Password" v-model="user.reNewPassword" type="password"
-                                placeholder="********" />
-                            <p v-if="validationErrors.reNewPassword" class="text-red-500 text-sm mt-1">
-                                {{ validationErrors.reNewPassword }}
-                            </p>
-                        </div>
-
                         <!-- Submit -->
                         <div class="flex justify-end">
                             <button type="submit"

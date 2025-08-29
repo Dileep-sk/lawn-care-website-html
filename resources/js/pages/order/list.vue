@@ -12,9 +12,9 @@ import download from '@/assets/icons/download.svg'
 import eye from '@/assets/icons/eye.svg'
 import { useOrders } from '@/composables/useOrders'
 import { STATUS_OPTIONS } from '@/constants/orderListStatus'
+// import { STATUS_OPTIONS } from '@/constants/jobStatus'
 const searchTerm = ref('')
-const STATUS_CANCELLED = 4 // order cancell
-const STATUS_COMPLETE = 3 // order Complete
+const STATUS_CANCELLED =4  // order Complete
 const {
     orders,
     loading,
@@ -37,10 +37,6 @@ onMounted(() => {
 watch(() => filters.value.status, () => {
     loadOrders(1, searchTerm.value, filters.value.status)
 })
-
-const getStatusOption = (status) =>
-    STATUS_OPTIONS.find(opt => opt.value === status) || STATUS_OPTIONS[0]
-
 
 </script>
 <template>
@@ -92,20 +88,15 @@ const getStatusOption = (status) =>
                         @page-changed="(page) => loadOrders(page, searchTerm)">
                         <!-- Status -->
                         <template #status="{ row }">
-                            <div class="w-32">
-                                <select v-model="row.status" @change="handleStatusToggle(row, +$event.target.value)"
-                                    :disabled="row.status === STATUS_CANCELLED"
-                                    class="w-full px-3 py-1 rounded text-sm text-center cursor-pointer" :class="[
-                                        getStatusOption(row.status).class,
-                                        row.status === STATUS_CANCELLED ? 'cursor-not-allowed opacity-50' : ''
-                                    ]">
-                                    <option class="text-left" v-for="opt in STATUS_OPTIONS" :key="opt.value"
-                                        :value="opt.value">
-                                        {{ opt.text }}
-                                    </option>
-                                </select>
-                            </div>
+                            <select :value="row.status" @change="(event) => handleStatusToggle(row, event)"
+                                class="px-3 py-2 rounded-md border-2 border-gray-300 w-[150px]"
+                                :disabled="row.status === STATUS_CANCELLED">
+                                <option v-for="opt in STATUS_OPTIONS" :key="opt.value" :value="opt.value">
+                                    {{ opt.label }}
+                                </option>
+                            </select>
                         </template>
+
 
                         <!-- Edit -->
                         <!-- <template #edit="{ row }">
@@ -118,12 +109,12 @@ const getStatusOption = (status) =>
 
                         <!-- Delete -->
                         <template #delete="{ row }">
-                            <button :disabled="row.status === STATUS_COMPLETE"
-                                @click="row.status !== STATUS_COMPLETE && handleDelete(row.id)"
+                            <button :disabled="row.status === STATUS_CANCELLED"
+                                @click="row.status !== STATUS_CANCELLED && handleDelete(row.id)"
                                 class="w-[90px] gap-[5px] h-[35px] flex justify-center text-[15px] items-center rounded-[5px]"
                                 :class="[
                                     'text-white',
-                                    row.status === STATUS_COMPLETE ? 'bg-gray-400 cursor-not-allowed opacity-60' : 'bg-[#D62925]'
+                                    row.status === STATUS_CANCELLED ? 'bg-gray-400 cursor-not-allowed opacity-60' : 'bg-[#D62925]'
                                 ]">
                                 <img :src="deletes" class="w-[20px]" />
                                 Delete

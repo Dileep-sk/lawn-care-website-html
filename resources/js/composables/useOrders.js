@@ -1,25 +1,40 @@
-import { ref, watch, onMounted, createApp, nextTick } from 'vue'
-import { fetchOrder, updateOrderStatus, createOrder, getLatestOrderId, getOrderById, updateOrder, deleteOrder, getOrderId } from '@/services/orderService'
+import { ref, watch } from 'vue'
+import {
+    fetchOrder,
+    updateOrderStatus,
+    createOrder,
+    getLatestOrderId,
+    getOrderById,
+    updateOrder,
+    deleteOrder,
+    getOrderId
+} from '@/services/orderService'
 import toastr from 'toastr'
 import { confirmDialog } from '@/utils/confirmDialog'
 import { deleteConfirm } from '@/utils/deleteConfirm'
 import jsPDF from 'jspdf'
-
-import OrderPDFTemplate from '@/components/OrderPDFTemplate.vue'
+import { STATUS_OPTIONS } from '@/constants/orderListStatus'
 
 export function useOrders(searchTerm = ref('')) {
+    const STATUS_CANCELLED = 4 // order complete
     const orders = ref([])
     const loading = ref(false)
+    const statusLoading = ref(false)
     const error = ref(null)
     const currentPage = ref(1)
     const perPage = ref(10)
     const lastPage = ref(1)
     const totalItems = ref(0)
 
+    const handleError = (err, fallbackMsg = 'Something went wrong') => {
+        const msg = err?.response?.data?.message || err.message || fallbackMsg
+        toastr.error(msg, 'Error')
+        error.value = msg
+    }
+
     const loadOrders = async (page = 1, search = '', status = '') => {
         loading.value = true
         error.value = null
-
         try {
             const params = {
                 page,
@@ -27,232 +42,154 @@ export function useOrders(searchTerm = ref('')) {
                 search: search || undefined,
                 status: status !== '' ? status : undefined,
             }
-
-            const data = await fetchOrder(params)
-
-            orders.value = data.data?.data || []
-            currentPage.value = data.data?.current_page || 1
-            lastPage.value = data.data?.last_page || 1
-            totalItems.value = data.data?.total || 0
+            const { data } = await fetchOrder(params)
+            orders.value = data?.data || []
+            currentPage.value = data?.current_page || 1
+            lastPage.value = data?.last_page || 1
+            totalItems.value = data?.total || 0
         } catch (err) {
-            error.value = err.response?.data?.message || err.message || 'Failed to fetch orders'
-            toastr.error(error.value, 'Error')
+            handleError(err, 'Failed to fetch orders')
         } finally {
             loading.value = false
         }
     }
 
-    const handleStatusToggle = async (row, newStatus) => {
-        const oldStatus = row.status
-        const statusText =
-            newStatus === 0 ? 'set Pending' :
-                newStatus === 1 ? 'put on Hold' :
-                    newStatus === 2 ? 'put on Completed' :
-                        'mark as Cancelled'
+    const getStatusText = (value) =>
+        STATUS_OPTIONS.find(opt => opt.value === Number(value))?.label || ''
 
-        const confirmed = await confirmDialog(statusText, `Yes, ${statusText}`)
-        if (!confirmed) return
-
-        row.status = newStatus
-
+    const updateStatus = async (id, status, statusText) => {
+        statusLoading.value = true
         try {
-            await updateOrderStatus(row.id, newStatus)
-            toastr.success(`Order successfully ${statusText}`, 'Success')
+            const { message } = await updateOrderStatus(id, status)
+            toastr.success(message, 'Success')
         } catch (err) {
-            row.status = oldStatus
-            toastr.error(
-                err.response?.data?.message || 'Failed to update order status',
-                'Error'
-            )
+            handleError(err, 'Failed to update order status')
+        } finally {
+            statusLoading.value = false
         }
     }
 
+    const handleStatusToggle = async (row, event) => {
+        const newValue = Number(event.target.value)
+        const statusText = getStatusText(newValue)
 
-    const createOrderHandler = async (orderPayload) => {
+        const confirmed = await confirmDialog(statusText, `Yes, ${statusText}`)
+        if (!confirmed) {
+            event.target.value = row.status
+            return
+        }
+
+        await updateStatus(row.id, newValue, statusText)
+
+        if (newValue === STATUS_CANCELLED) {
+            await loadOrders(currentPage.value, searchTerm.value, STATUS_CANCELLED)
+        }
+    }
+
+    const apiHandler = async (apiCall, successMsg, fallbackMsg) => {
+        loading.value = true
         try {
-            loading.value = true
-            const { data } = await createOrder(orderPayload)
-            toastr.success('Order created successfully!', 'Success')
-            await loadOrders()
+            const { data } = await apiCall()
+            toastr.success(successMsg, 'Success')
             return data
         } catch (err) {
-            error.value = err.response?.data?.message || err.message || 'Failed to create order'
-            toastr.error(error.value, 'Error')
+            handleError(err, fallbackMsg)
             throw err
         } finally {
             loading.value = false
         }
     }
 
+    const createOrderHandler = (payload) =>
+        apiHandler(() => createOrder(payload), 'Order created successfully!', 'Failed to create order')
+            .then(() => loadOrders())
 
-    const fetchLatestOrderId = async () => {
-        try {
-            const data = await getLatestOrderId()
-
-            return data.latest_order_no
-        } catch (error) {
-            console.error('Failed to fetch latest order ID:', error)
-
-        }
-    }
+    const updateOrderHandler = (id, payload) =>
+        apiHandler(() => updateOrder(id, payload), 'Order updated successfully!', 'Failed to update order')
 
     const getOrderDetails = async (id) => {
         try {
             const { data } = await getOrderById(id)
             return data
         } catch (err) {
-            error.value = err.response?.data?.message || 'Failed to fetch order'
-            toastr.error(error.value, 'Error')
+            handleError(err, 'Failed to fetch order')
             throw err
         }
     }
-
-    const updateOrderHandler = async (id, orderPayload) => {
-        try {
-            loading.value = true
-            const { data } = await updateOrder(id, orderPayload)
-            toastr.success('Order updated successfully!', 'Success')
-            return data
-        } catch (err) {
-            error.value = err.response?.data?.message || err.message || 'Failed to update order'
-            toastr.error(error.value, 'Error')
-            throw err
-        } finally {
-            loading.value = false
-        }
-    }
-
 
     const handleDelete = async (id) => {
         try {
-            const confirmed = await deleteConfirm('this stock')
-            if (!confirmed) return
-
+            if (!(await deleteConfirm('this stock'))) return
             await deleteOrder(id)
-            orders.value = orders.value.filter(orders => orders.id !== id)
+            orders.value = orders.value.filter(o => o.id !== id)
             toastr.success('Order deleted successfully', 'Success')
-        } catch (err) {
-            error.value = 'Failed to delete user.'
+        } catch {
             toastr.error('Something went wrong while deleting.', 'Error')
         }
     }
 
+    const fetchLatestOrderId = async () => {
+        try {
+            const { latest_order_no } = await getLatestOrderId()
+            return latest_order_no
+        } catch (err) {
+            console.error('Failed to fetch latest order ID:', err)
+        }
+    }
 
     const fetchAllOrderNos = async () => {
         try {
             const { data } = await getOrderId()
             return data || []
-        } catch (err) {
+        } catch {
             toastr.error('Failed to fetch order numbers', 'Error')
             return []
         }
     }
 
-
-    // const exportOrderPDF = (order) => {
-    //     if (!order) return
-
-    //     const doc = new jsPDF()
-
-    //     doc.setFontSize(18)
-    //     doc.text('Order Details', 14, 20)
-
-    //     doc.setFontSize(12)
-    //     doc.text(`Order No: ${order.order_no}`, 14, 30)
-    //     doc.text(`Design No: ${order.design_no}`, 14, 40)
-    //     doc.text(`Item: ${order.item_name}`, 14, 50)
-    //     doc.text(`Quantity: ${order.quantity}`, 14, 60)
-    //     doc.text(`Status: ${order.status}`, 14, 70)
-
-    //     doc.save(`Order_${order.order_no}.pdf`)
-    // }
-
-
     const exportOrderPDF = (order) => {
-        const pdf = new jsPDF('p', 'mm', 'a4')
-        const pageWidth = pdf.internal.pageSize.getWidth()
+        if (!order) return
 
-        // Header Background
-        pdf.setFillColor(245, 222, 179) // light beige
-        pdf.rect(0, 0, pageWidth, 50, 'F')
+        const doc = new jsPDF()
 
-        // Company Name
-        pdf.setFontSize(22)
-        pdf.setTextColor(128, 0, 0) // dark red
-        pdf.text('SWATI FAB TEX', pageWidth / 2, 20, { align: 'center' })
+        doc.setFontSize(18)
+        doc.text('Order Details', 14, 20)
 
-        pdf.setFontSize(10)
-        pdf.setTextColor(0)
-        pdf.text('GSTIN: 24ADIFS5497C1ZV', pageWidth / 2, 27, { align: 'center' })
-        pdf.text('F-1050, Laxmi Villa Textiles Parks, Sachin GIDC, Surat', pageWidth / 2, 32, { align: 'center' })
+        doc.setFontSize(12)
+        doc.text(`Order No: ${order.order_no}`, 14, 30)
+        doc.text(`Design No: ${order.design_no}`, 14, 40)
+        doc.text(`Item: ${order.item_name}`, 14, 50)
+        doc.text(`Quantity: ${order.quantity}`, 14, 60)
+        doc.text(`Status: ${order.status}`, 14, 70)
 
-        // Order Info Box
-        pdf.setDrawColor(0)
-        pdf.rect(10, 40, 190, 20) // M/s. and Add.
-        pdf.text(`M/s.: ${order.customer_name || ''}`, 12, 45)
-        pdf.text(`Order No.: ${order.order_no || ''}`, 150, 45)
-        pdf.text(`Date: ${order.date || ''}`, 150, 50)
-
-        // Table Header
-        pdf.setFillColor(200, 0, 0) // red
-        pdf.setTextColor(255, 255, 255)
-        pdf.rect(10, 70, 190, 10, 'F')
-        pdf.text('Sr. No', 12, 77)
-        pdf.text('Description', 30, 77)
-        pdf.text('Design No.', 120, 77)
-        pdf.text('Pcs.', 150, 77)
-        pdf.text('Rate', 170, 77)
-
-        // Table Rows
-        pdf.setTextColor(0)
-        let y = 87
-        order.items?.forEach((item, index) => {
-            pdf.text(`${index + 1}`, 12, y)
-            pdf.text(`${item.description}`, 30, y)
-            pdf.text(`${item.design_no}`, 120, y)
-            pdf.text(`${item.pcs}`, 150, y)
-            pdf.text(`${item.rate}`, 170, y)
-            y += 8
-        })
-
-        // Footer
-        pdf.setFontSize(10)
-        pdf.text('Generated by Swati Textile ERP', 10, y + 10)
-
-        pdf.save(`Order_${order.order_no}.pdf`)
+        doc.save(`Order_${order.order_no}.pdf`)
     }
 
 
-
-
-
-    // 🔹 debounce search
-    let debounceTimeout = null
-    watch(searchTerm, (val) => {
+    // Debounced search
+    let debounceTimeout
+    watch(searchTerm, val => {
         clearTimeout(debounceTimeout)
-        debounceTimeout = setTimeout(() => {
-            loadOrders(1, val)
-        }, 500)
+        debounceTimeout = setTimeout(() => loadOrders(1, val), 500)
     })
-
-
 
     return {
         orders,
         loading,
+        statusLoading,
         error,
         currentPage,
         perPage,
         lastPage,
         totalItems,
-        fetchLatestOrderId,
         loadOrders,
         handleStatusToggle,
-        exportOrderPDF,
         createOrderHandler,
-        getOrderDetails,
         updateOrderHandler,
+        getOrderDetails,
         handleDelete,
+        fetchLatestOrderId,
         fetchAllOrderNos,
+        exportOrderPDF,
     }
 }

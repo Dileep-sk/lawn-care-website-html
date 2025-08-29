@@ -105,6 +105,7 @@ export function useJobs() {
             }
             const response = await createJob(formData)
             jobs.value.push(response.data)
+            toastr.success('Job created successfully', 'Success')
             router.push({ name: 'jobs' })
 
         } catch (err) {

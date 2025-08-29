@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 
 const props = defineProps({
     modelValue: [String, Number],
@@ -9,15 +9,19 @@ const props = defineProps({
     required: Boolean,
     placeholder: {
         type: String,
-        default: 'Search or enter new...',
+        default: 'Search or enter new...'
     },
     optionLabelKey: {
         type: String,
-        default: 'name',
+        default: 'name'
     },
     optionValueKey: {
         type: String,
-        default: 'id',
+        default: 'id'
+    },
+    isEdit: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -26,19 +30,27 @@ const emit = defineEmits(['update:modelValue'])
 const search = ref('')
 const showDropdown = ref(false)
 const justSelected = ref(false)
+const showInput = ref(!props.isEdit)
 
-watch(() => props.modelValue, (val) => {
-    if (!val) {
-        search.value = ''
-        return
-    }
+const originalValue = ref('')
 
-    const found = props.options.find(
-        o => o[props.optionValueKey] === val
-    )
-
-    search.value = found ? found[props.optionLabelKey] : val
-}, { immediate: true })
+watch(
+    () => props.modelValue,
+    (val) => {
+        if (!val) {
+            search.value = ''
+            originalValue.value = ''
+            showDropdown.value = false
+            return
+        }
+        const found = props.options.find(o => o[props.optionValueKey] === val)
+        const label = found ? found[props.optionLabelKey] : val
+        search.value = label
+        originalValue.value = label
+        showDropdown.value = false
+    },
+    { immediate: true }
+)
 
 const filteredOptions = computed(() => {
     if (!search.value) return props.options
@@ -49,15 +61,17 @@ const filteredOptions = computed(() => {
 
 watch(search, () => {
     if (justSelected.value) return
+    if (!showInput.value) return
     showDropdown.value = filteredOptions.value.length > 0
 })
 
 const selectOption = (item) => {
     justSelected.value = true
     search.value = item[props.optionLabelKey]
+    originalValue.value = item[props.optionLabelKey]
     emit('update:modelValue', item[props.optionValueKey])
     showDropdown.value = false
-    setTimeout(() => justSelected.value = false, 200)
+    setTimeout(() => (justSelected.value = false), 200)
 }
 
 const handleBlur = () => {
@@ -70,45 +84,103 @@ const handleBlur = () => {
 
         if (found) {
             emit('update:modelValue', found[props.optionValueKey])
+            search.value = found[props.optionLabelKey]
+            originalValue.value = found[props.optionLabelKey]
         } else if (search.value.trim()) {
             emit('update:modelValue', search.value.trim())
+            originalValue.value = search.value.trim()
         } else {
             emit('update:modelValue', '')
+            originalValue.value = ''
+            search.value = ''
         }
 
         showDropdown.value = false
+
+        if (props.isEdit) {
+            showInput.value = false
+        }
     }, 150)
 }
 
-const onFocus = () => showDropdown.value = true
-const onClick = () => showDropdown.value = true
+const onFocus = () => {
+    if (showInput.value) {
+        showDropdown.value = true
+    }
+}
+
+const onClick = () => {
+    if (!showInput.value && props.isEdit) {
+        search.value = ''
+        showDropdown.value = true
+        showInput.value = true
+        nextTick(() => {
+            const inputEl = document.getElementById(`autocomplete-${props.optionValueKey}`)
+            if (inputEl) inputEl.focus()
+        })
+    }
+}
+
+const onInputClick = () => {
+    if (showInput.value) {
+        search.value = ''
+        showDropdown.value = true
+    }
+}
+
+const clearInput = () => {
+    search.value = ''
+    emit('update:modelValue', '')
+    originalValue.value = ''
+    showDropdown.value = false
+    if (props.isEdit) {
+        showInput.value = true
+        nextTick(() => {
+            const inputEl = document.getElementById(`autocomplete-${props.optionValueKey}`)
+            if (inputEl) inputEl.focus()
+        })
+    }
+}
 </script>
 
 <template>
     <div class="relative">
         <label v-if="label" class="block font-medium mb-1">{{ label }}</label>
 
-        <div class="relative">
-            <input type="text" v-model="search" @focus="onFocus" @click="onClick" @blur="handleBlur"
-                :placeholder="placeholder"
-                class="block w-full appearance-none bg-white border border-gray-300 hover:border-gray-400 rounded px-3 py-2 pr-8 leading-tight "
+        <!-- Input -->
+        <div v-if="showInput" class="relative">
+            <input :id="`autocomplete-${props.optionValueKey}`" type="text" v-model="search" @focus="onFocus"
+                @click="onInputClick" @blur="handleBlur" :placeholder="placeholder"
+                class="block w-full appearance-none bg-white border border-gray-300 hover:border-gray-400 rounded px-3 py-2 pr-8 leading-tight"
                 :required="required" autocomplete="off" />
-            <!-- Dropdown arrow icon -->
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                <svg class="fill-current h-4 w-4" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+            <div class="absolute inset-y-0 right-0 flex items-center space-x-1 px-2" style="pointer-events:auto;">
+                <button v-if="search" @click.prevent="clearInput"
+                    class="text-gray-400 hover:text-gray-600 focus:outline-none" aria-label="Clear input">
+                    ✕
+                </button>
+                <svg class="fill-current h-4 w-4 text-gray-500" viewBox="0 0 20 20">
                     <path d="M5.516 7.548L10 12.033l4.484-4.485L16 8.064l-6 6-6-6z" />
                 </svg>
             </div>
         </div>
 
+        <!-- Label View -->
+        <div v-else @click="onClick"
+            class="block w-full appearance-none bg-white border border-gray-300 hover:border-gray-400 rounded px-3 py-2 pr-8 leading-tight">
+            {{ search && search.trim() !== '' ? search : '\u00A0' }}
+        </div>
+
+        <!-- Dropdown -->
         <ul v-if="showDropdown && filteredOptions.length"
             class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow mt-1 max-h-40 overflow-y-auto">
             <li v-for="option in filteredOptions" :key="option[optionValueKey]"
-                @mousedown.prevent="selectOption(option)" class="px-3 py-2 cursor-pointer hover:bg-blue-600 hover:text-white">
+                @mousedown.prevent="selectOption(option)"
+                class="px-3 py-2 cursor-pointer hover:bg-blue-600 hover:text-white">
                 {{ option[optionLabelKey] }}
             </li>
         </ul>
 
+        <!-- Error -->
         <p v-if="error" class="text-red-500 text-xs mt-1">{{ error }}</p>
     </div>
 </template>

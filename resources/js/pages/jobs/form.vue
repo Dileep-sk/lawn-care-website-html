@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, watch } from 'vue'
+import { reactive, ref, watch, onMounted } from 'vue'
 import { useJobs } from '@/composables/useJobs'
 import AuthLayout from '../../layouts/AuthLayout.vue'
 import BaseInput from '@/components/BaseInput.vue'
@@ -12,8 +12,11 @@ import DesignNoDropdown from '@/components/DesignNoDropdown.vue'
 import OrderNoDropdown from '@/components/OrderNoDropdown.vue'
 import ItemDropdown from '@/components/ItemDropdown.vue'
 import ImageUploader from '@/components/ImageUploader.vue'
+import { useRoute } from 'vue-router'
 
-const { createJobHandler } = useJobs()
+const route = useRoute()
+const jobId = route.params.id || null
+const { createJobHandler, getJobDetails } = useJobs()
 
 // --- Form ---
 const form = reactive({
@@ -37,17 +40,11 @@ const validators = {
     item_name: val => val ? '' : 'Item Name is required',
     customer_name: val => val ? '' : 'Customer Name is required',
     mark_no: val => val ? '' : 'Mark No is required',
-    quantity: val => {
-        if (!val) return 'Quantity is required'
-        if (isNaN(val) || val <= 0) return 'Enter a valid quantity'
-        return ''
-    },
+    quantity: val => (!val || isNaN(val) || val <= 0) ? 'Enter a valid quantity' : '',
     order_no: val => val ? '' : 'Order No is required',
     status: val => val === '' ? 'Status is required' : '',
     images: val => (!val || val.length === 0) ? 'At least one image is required' : ''
 }
-
-
 
 const validateField = (field) => {
     if (touched[field]) {
@@ -68,21 +65,42 @@ const handleBlur = (field) => {
     validateField(field)
 }
 
+// --- Prefill form for edit ---
+const editJob = async (id) => {
+    if (!id) return
+    try {
+        const data = await getJobDetails(id)
+
+        form.customer_name = data.customer_name || ''
+        form.mark_no = data.mark_no || ''
+        form.design_no = data.design_no || ''
+        form.item_name = data.item_name || ''
+        form.quantity = data.quantity || ''
+        form.order_no = data.order_no || ''
+        form.status = data.status ?? ''
+        form.images = data.images || []
+
+        // Populate matchings if present
+        if (data.matchings?.length) {
+            form.matchings.forEach((m, index) => {
+                form.matchings[index].text = data.matchings[index] || ''
+            })
+        }
+    } catch (err) {
+        toastr.error(err.response?.data?.message || 'Failed to load job details', 'Error')
+    }
+}
+
 // --- Submit ---
 const handleSubmit = async () => {
     if (!validateForm()) return
 
     const formData = new FormData()
-
     Object.entries(form).forEach(([key, value]) => {
         if (key === 'images') {
-            value.forEach(file => {
-                formData.append('images[]', file)
-            })
+            value.forEach(file => formData.append('images[]', file))
         } else if (key === 'matchings') {
-            value.forEach((matching, index) => {
-                formData.append(`matching_${index + 1}`, matching.text || '')
-            })
+            value.forEach((matching, index) => formData.append(`matching_${index + 1}`, matching.text || ''))
         } else {
             formData.append(key, value)
         }
@@ -91,17 +109,24 @@ const handleSubmit = async () => {
     try {
         await createJobHandler(formData)
     } catch (err) {
-        toastr.error(err.response?.data?.message || 'Failed to create job', 'Error')
+        toastr.error(err.response?.data?.message || 'Failed to save job', 'Error')
     }
 }
 
+// --- Watchers for validation ---
 Object.keys(validators).forEach((field) => {
     watch(
         () => form[field],
         () => validateField(field)
     )
 })
+
+// --- Load form if editing ---
+onMounted(() => {
+    if (jobId) editJob(jobId)
+})
 </script>
+
 
 <template>
     <AuthLayout>
@@ -122,7 +147,7 @@ Object.keys(validators).forEach((field) => {
                         <div class="grid grid-cols-3 gap-[30px]">
                             <!-- Customer Name -->
                             <div>
-                                <CustomerDropdown v-model="form.customer_name" />
+                                <CustomerDropdown v-model="form.customer_name" :is-edit="!!jobId" />
                                 <p v-if="touched.customer_name && errors.customer_name"
                                     class="text-red-600 text-sm mt-1">
                                     {{ errors.customer_name }}
@@ -131,14 +156,14 @@ Object.keys(validators).forEach((field) => {
 
                             <!-- mark No -->
                             <div>
-                                <MarkNoDropdown v-model="form.mark_no" />
+                                <MarkNoDropdown v-model="form.mark_no" :is-edit="!!jobId" />
                                 <p v-if="touched.mark_no && errors.mark_no" class="text-red-600 text-sm mt-1">
                                     {{ errors.mark_no }}
                                 </p>
                             </div>
                             <!-- Design No -->
                             <div>
-                                <DesignNoDropdown v-model="form.design_no" />
+                                <DesignNoDropdown v-model="form.design_no" :is-edit="!!jobId" />
                                 <p v-if="touched.design_no && errors.design_no" class="text-red-600 text-sm mt-1">
                                     {{ errors.design_no }}
                                 </p>
@@ -146,7 +171,7 @@ Object.keys(validators).forEach((field) => {
                             <!-- Image Upload -->
 
                             <div>
-                                <ItemDropdown v-model="form.item_name" />
+                                <ItemDropdown v-model="form.item_name" :is-edit="!!jobId" />
                                 <p v-if="touched.item_name && errors.item_name" class="text-red-600 text-sm mt-1">
                                     {{ errors.item_name }}
                                 </p>
@@ -161,7 +186,7 @@ Object.keys(validators).forEach((field) => {
 
                             <!-- Order No -->
                             <div>
-                                <OrderNoDropdown v-model="form.order_no" />
+                                <OrderNoDropdown v-model="form.order_no" :is-edit="!!jobId" />
                                 <p v-if="touched.order_no && errors.order_no" class="text-red-600 text-sm mt-1">
                                     {{ errors.order_no }}
                                 </p>
@@ -186,7 +211,8 @@ Object.keys(validators).forEach((field) => {
                             </div>
                         </div>
                         <div class="input_box mt-[20px]">
-                            <ImageUploader v-model="form.images" />
+                           <ImageUploader v-model="form.images" />
+
                             <p v-if="touched.images && errors.images" class="text-red-600 text-sm mt-1">
                                 {{ errors.images }}
                             </p>

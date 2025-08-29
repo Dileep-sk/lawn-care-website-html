@@ -133,14 +133,15 @@ export function useStocks() {
     }
 
 
-    const loadOutOfStocks = async (page = 1, searchTerm = '') => {
+    const loadOutOfStocks = async (startDate, endDate, options = {}) => {
         loading.value = true
         error.value = null
         try {
             const params = {
-                page,
-                per_page: perPage.value,
-                search: searchTerm || undefined,
+                start_date: startDate,
+                end_date: endDate,
+                per_page: options.perPage || 10,
+                page: options.page || 1,
             }
             const data = await fetchOutOfStocks(params)
 
@@ -155,6 +156,7 @@ export function useStocks() {
             loading.value = false
         }
     }
+
 
     let debounceTimeout = null
     watch(search, (val) => {

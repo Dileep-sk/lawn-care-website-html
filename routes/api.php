@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BrokerController;
 use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DesignNoController;
 use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\StockController;
@@ -36,8 +37,6 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/stocks/{id}/status', [StockController::class, 'updateStatus']);
     Route::delete('/stocks/{id}', [StockController::class, 'destroy']);
 
-    Route::get('/out-of-stocks', [StockController::class, 'outOffStock']);
-
     Route::get('/orders', [OrderController::class, 'index']);
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
     Route::post('/orders', [OrderController::class, 'store']);
@@ -62,6 +61,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/transport-company', [TransportCompanyController::class, 'index'])->name('broker.index');
 
     Route::get('/design-no/{id}', [StockController::class, 'availableStock'])->name('availableStock');
+
+    //Dashboard
+
+    Route::get('/out-of-stocks', [DashboardController::class, 'outOffStock']);
+    Route::get('/get-dashboard-details', [DashboardController::class, 'getDashboardDetails']);
 
     Route::get('/user', function (Request $request) {
         return $request->user();

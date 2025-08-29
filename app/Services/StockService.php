@@ -134,30 +134,20 @@ class StockService
         return response()->json($grouped);
     }
 
-    public function getOutOffStocks(int $perPage = 10, ?string $search = null)
+    public function getOutOffStocks(string $startDate, string $endDate, int $perPage = 10)
     {
         $query = Stock::query()
             ->selectRaw('
             item_id,
             design_no_id,
             mark_no_id,
-            SUM(CASE WHEN stock_manage = 1 THEN quantity ELSE -quantity END) as total_quantity
+            SUM(CASE WHEN stock_manage = 1 THEN quantity ELSE -quantity END) AS total_quantity
         ')
-            ->with(['item', 'designNo', 'markNp'])
+            ->whereBetween('created_at', ["$startDate 00:00:00", "$endDate 23:59:59"])
             ->groupBy('item_id', 'design_no_id', 'mark_no_id')
             ->having('total_quantity', '<=', 0);
 
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->orWhereHas('item', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
-                    ->orWhereHas('designNo', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
-                    ->orWhereHas('markNp', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
-            });
-        }
-
         $paginated = $query->paginate($perPage);
-
 
         $paginated->getCollection()->transform(function ($row) {
             return [

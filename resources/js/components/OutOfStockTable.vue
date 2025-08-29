@@ -1,17 +1,47 @@
 <script setup>
-import { onMounted, computed } from 'vue'
+import { watch, computed } from 'vue'
 import { useStocks } from '@/composables/useStocks'
+
+const props = defineProps({
+    startDate: String,
+    endDate: String,
+    perPage: {
+        type: Number,
+        default: 10,
+    },
+    search: {
+        type: String,
+        default: '',
+    },
+    page: {
+        type: Number,
+        default: 1,
+    },
+})
 
 const { outOfStocks, loading, loadOutOfStocks } = useStocks()
 
-onMounted(loadOutOfStocks)
+watch(
+    () => [props.startDate, props.endDate, props.perPage, props.page],
+    ([newStart, newEnd, newPerPage, newPage]) => {
+        if (newStart && newEnd) {
+            loadOutOfStocks(newStart, newEnd, {
+                perPage: newPerPage,
+                page: newPage,
+            })
+        }
+    },
+    { immediate: true }
+)
 
-const hasStocks = computed(() => outOfStocks?.value?.length > 0)
+const hasStocks = computed(() =>
+    Array.isArray(outOfStocks.value) && outOfStocks.value.length > 0
+)
 </script>
 
+
 <template>
-    <div class="box shadow-[0px_8px_24px_rgba(149,157,165,0.2)]
-           h-[calc(50vh_-_132px)] rounded-[10px] p-[15px]">
+    <div class="box shadow-[0px_8px_24px_rgba(149,157,165,0.2)] h-[calc(50vh_-_132px)] rounded-[10px] p-[15px]">
         <h1 class="text-[18px] font-[600] text-[#EB2F06]">Out of Stock</h1>
 
         <div class="table_container pr-[10px] h-[calc(90%_-_60px)] overflow-y-auto mt-[15px]">
@@ -24,19 +54,13 @@ const hasStocks = computed(() => outOfStocks?.value?.length > 0)
                         <th class="rounded-tr-[5px]">Quantity</th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    <!-- Loading -->
                     <tr v-if="loading">
                         <td colspan="4" class="text-center py-3">Loading...</td>
                     </tr>
-
-                    <!-- Empty -->
                     <tr v-else-if="!hasStocks">
                         <td colspan="4" class="text-center py-3">No out of stock items found</td>
                     </tr>
-
-                    <!-- Data -->
                     <tr v-else v-for="(stock, index) in outOfStocks" :key="index" class="!h-[40px]">
                         <td>{{ stock?.mark_no || '-' }}</td>
                         <td>{{ stock?.design_no || '-' }}</td>

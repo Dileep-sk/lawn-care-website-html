@@ -167,20 +167,4 @@ class StockController extends Controller
         }
     }
 
-
-    public function outOffStock(Request $request): JsonResponse
-    {
-        try {
-            $perPage = $request->input('per_page', 10);
-            $search = $request->input('search', null);
-
-            $stocks = $this->stockService->getOutOffStocks($perPage, $search);
-
-            return response()->json($stocks, 200);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'stock not found.',
-            ], 404);
-        }
-    }
 }

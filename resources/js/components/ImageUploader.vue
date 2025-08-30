@@ -10,30 +10,44 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const imagePreviews = ref([])
+const imagePreviews = ref([]) // Array of { src: string, isUrl: boolean }
 
-watch(() => props.modelValue, (newFiles) => {
-    imagePreviews.value.forEach(url => URL.revokeObjectURL(url))
+const revokeUrls = () => {
+    imagePreviews.value.forEach(img => {
+        if (!img.isUrl) URL.revokeObjectURL(img.src)
+    })
+}
+
+watch(() => props.modelValue, (newValues) => {
+    revokeUrls()
     imagePreviews.value = []
 
-    newFiles.forEach(file => {
-        imagePreviews.value.push(URL.createObjectURL(file))
+    newValues.forEach(item => {
+        if (typeof item === 'string') {
+            // Existing image URL
+            imagePreviews.value.push({ src: item, isUrl: true })
+        } else if (item instanceof File) {
+            // New file, create object URL
+            imagePreviews.value.push({ src: URL.createObjectURL(item), isUrl: false })
+        }
     })
 }, { immediate: true })
 
 const handleFileChange = (event) => {
     const files = event.target.files ? Array.from(event.target.files) : []
-    emit('update:modelValue', files)
+    // Combine existing URLs with newly added files
+    const existingUrls = props.modelValue.filter(item => typeof item === 'string')
+    emit('update:modelValue', [...existingUrls, ...files])
 }
 
 const removeImage = (index) => {
-    const newFiles = [...props.modelValue]
-    newFiles.splice(index, 1)
-    emit('update:modelValue', newFiles)
+    const newValues = [...props.modelValue]
+    newValues.splice(index, 1)
+    emit('update:modelValue', newValues)
 }
 
 onUnmounted(() => {
-    imagePreviews.value.forEach(url => URL.revokeObjectURL(url))
+    revokeUrls()
 })
 </script>
 
@@ -53,9 +67,9 @@ onUnmounted(() => {
         </label>
 
         <div class="image-preview-container">
-            <div v-for="(src, index) in imagePreviews" :key="index" class="image-wrapper" tabindex="0"
+            <div v-for="(image, index) in imagePreviews" :key="index" class="image-wrapper" tabindex="0"
                 aria-label="Uploaded image preview">
-                <img :src="src" alt="Image preview" class="image" />
+                <img :src="image.src" alt="Image preview" class="image" />
                 <button type="button" class="remove-btn" @click="removeImage(index)" aria-label="Remove image"
                     title="Remove image">
                     &times;

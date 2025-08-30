@@ -78,14 +78,12 @@ const editJob = async (id) => {
         form.quantity = data.quantity || ''
         form.order_no = data.order_no || ''
         form.status = data.status ?? ''
-        form.images = data.images || []
+        form.images = (data.images || []).map(imgObj => imgObj.full_url || '')
 
-        // Populate matchings if present
-        if (data.matchings?.length) {
-            form.matchings.forEach((m, index) => {
-                form.matchings[index].text = data.matchings[index] || ''
-            })
+        for (let i = 1; i <= 8; i++) {
+            form.matchings[i - 1].text = data[`matching_${i}`] || ''
         }
+
     } catch (err) {
         toastr.error(err.response?.data?.message || 'Failed to load job details', 'Error')
     }
@@ -122,9 +120,9 @@ Object.keys(validators).forEach((field) => {
 })
 
 // --- Load form if editing ---
-// onMounted(() => {
-//     if (jobId) editJob(jobId)
-// })
+onMounted(() => {
+    if (jobId) editJob(jobId)
+})
 </script>
 
 

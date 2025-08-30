@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Services\StockService;
+use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
@@ -189,5 +190,160 @@ class OrderService
         $order = Order::select('id', 'order_no')->get();
 
         return $order;
+    }
+
+    public function getTopDesigns($limit = 5)
+    {
+        return DB::table('orders')
+            ->join('design_nos', 'orders.design_no_id', '=', 'design_nos.id')
+            ->select('design_nos.name as design_no_name', DB::raw('SUM(orders.quantity) as total_quantity'))
+            ->groupBy('orders.design_no_id', 'design_nos.name')
+            ->orderByDesc('total_quantity')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function getSalesTrends($type)
+    {
+
+        $data = [];
+
+        switch ($type) {
+            case 'day':
+
+                $today = now();
+                $startDate = $today->copy()->subDays(6)->startOfDay();
+                $endDate = $today->copy()->endOfDay();
+
+
+                for ($i = 0; $i < 7; $i++) {
+                    $date = $startDate->copy()->addDays($i);
+                    $label = $date->format('Y-m-d');
+                    $data[$label] = ['0' => 0, '1' => 0, '2' => 0, '3' => 0, '4' => 0];
+                }
+
+                $results = DB::table('orders')
+                    ->select(
+                        DB::raw('DATE(date) as label'),
+                        'status',
+                        DB::raw('COUNT(*) as total')
+                    )
+                    ->whereBetween('date', [$startDate, $endDate])
+                    ->groupBy('label', 'status')
+                    ->get();
+
+                foreach ($results as $row) {
+                    $label = $row->label;
+                    $status = (string)$row->status;
+                    if (isset($data[$label])) {
+                        $data[$label][$status] = $row->total;
+                    }
+                }
+                break;
+
+            case 'week':
+
+                $today = now();
+                $startDate = $today->copy()->startOfWeek()->subWeeks(3);
+                $endDate = $today->copy()->endOfWeek();
+
+                for ($i = 0; $i < 4; $i++) {
+                    $weekStart = $startDate->copy()->addWeeks($i);
+                    $label = $weekStart->format('o-\WW');
+                    $data[$label] = ['0' => 0, '1' => 0, '2' => 0, '3' => 0, '4' => 0];
+                }
+
+                $results = DB::table('orders')
+                    ->select(
+                        DB::raw("YEARWEEK(date, 1) as yearweek"),
+                        'status',
+                        DB::raw('COUNT(*) as total')
+                    )
+                    ->whereBetween('date', [$startDate, $endDate])
+                    ->groupBy('yearweek', 'status')
+                    ->get();
+
+
+                foreach ($results as $row) {
+                    $yearweek = $row->yearweek;
+                    $year = intval(substr($yearweek, 0, 4));
+                    $week = intval(substr($yearweek, 4));
+                    $label = \Carbon\Carbon::now()->setISODate($year, $week)->startOfWeek()->format('o-\WW');
+                    $status = (string)$row->status;
+                    if (isset($data[$label])) {
+                        $data[$label][$status] = $row->total;
+                    }
+                }
+                break;
+
+            case 'month':
+
+                $today = now();
+                $startDate = $today->copy()->subMonths(11)->startOfMonth();
+                $endDate = $today->copy()->endOfMonth();
+
+                for ($i = 0; $i < 12; $i++) {
+                    $month = $startDate->copy()->addMonths($i);
+                    $label = $month->format('Y-m');
+                    $data[$label] = ['0' => 0, '1' => 0, '2' => 0, '3' => 0, '4' => 0];
+                }
+
+                $results = DB::table('orders')
+                    ->select(
+                        DB::raw('DATE_FORMAT(date, "%Y-%m") as label'),
+                        'status',
+                        DB::raw('COUNT(*) as total')
+                    )
+                    ->whereBetween('date', [$startDate, $endDate])
+                    ->groupBy('label', 'status')
+                    ->get();
+
+                foreach ($results as $row) {
+                    $label = $row->label;
+                    $status = (string)$row->status;
+                    if (isset($data[$label])) {
+                        $data[$label][$status] = $row->total;
+                    }
+                }
+                break;
+
+            case 'year':
+
+                $today = now();
+                $startYear = $today->year - 4;
+                $endYear = $today->year;
+
+                for ($year = $startYear; $year <= $endYear; $year++) {
+                    $data[(string)$year] = ['0' => 0, '1' => 0, '2' => 0, '3' => 0, '4' => 0];
+                }
+
+                $results = DB::table('orders')
+                    ->select(
+                        DB::raw('YEAR(date) as label'),
+                        'status',
+                        DB::raw('COUNT(*) as total')
+                    )
+                    ->whereBetween('date', ["$startYear-01-01", "$endYear-12-31"])
+                    ->groupBy('label', 'status')
+                    ->get();
+
+                foreach ($results as $row) {
+                    $label = (string)$row->label;
+                    $status = (string)$row->status;
+                    if (isset($data[$label])) {
+                        $data[$label][$status] = $row->total;
+                    }
+                }
+                break;
+
+            default:
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid type parameter'
+                ], 400);
+        }
+
+
+        return $data;
     }
 }

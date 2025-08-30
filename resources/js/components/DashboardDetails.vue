@@ -35,7 +35,7 @@ watch(
     <div class="box shadow-[0px_8px_24px_rgba(149,157,165,0.2)] h-[calc(50vh_-_132px)] rounded-[10px] p-[15px]">
         <div class="grid grid-cols-3 gap-[15px]">
             <DashboardCard title="Today's Orders" :value="dashboardData.todays_orders" bgColor="bg-[#E6FAF1]"
-                textColor="text-[#05C46B]" />
+            textColor="text-[#05C46B]" />
             <DashboardCard title="Pending Shipments" :value="dashboardData.pending_shipments"
                 bgColor="bg-[rgba(255,185,0,0.1)]" textColor="text-[#FFB900]" />
             <DashboardCard title="Total Sales" :value="dashboardData.total_sales" bgColor="bg-[#575FCF1A]"

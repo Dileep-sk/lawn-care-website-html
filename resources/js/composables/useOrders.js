@@ -82,7 +82,7 @@ export function useOrders(searchTerm = ref('')) {
         await updateStatus(row.id, newValue, statusText)
 
         if (newValue === STATUS_CANCELLED) {
-            await loadOrders(currentPage.value, searchTerm.value, STATUS_CANCELLED)
+            await loadOrders()
         }
     }
 

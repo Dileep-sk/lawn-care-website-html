@@ -41,7 +41,7 @@ const loadStocks = (page) => {
                         { label: 'Item', key: 'item_name' },
                         { label: 'Quantity', key: 'quantity' },
                         { label: 'Log', key: 'message' },
-                        { label: 'Stock Manage', key: 'stock_manage' }
+                        // { label: 'Stock Manage', key: 'stock_manage' }
                     ]" :loading="loading" :error="error" :currentPage="currentPage" :lastPage="lastPage"
                         @page-changed="loadStocks">
                         <!-- Custom slot for Stock Manage column -->

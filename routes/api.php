@@ -36,7 +36,7 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/stocks/{id}', [StockController::class, 'update']);
     Route::put('/stocks/{id}/status', [StockController::class, 'updateStatus']);
     Route::delete('/stocks/{id}', [StockController::class, 'destroy']);
-     Route::get('/stocks-log', [StockController::class, 'stockLog']);
+    Route::get('/stocks-log', [StockController::class, 'stockLog']);
 
     Route::get('/orders', [OrderController::class, 'index']);
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
@@ -67,6 +67,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/out-of-stocks', [DashboardController::class, 'outOffStock']);
     Route::get('/get-dashboard-details', [DashboardController::class, 'getDashboardDetails']);
+    Route::get('/top-designs', [DashboardController::class, 'topDesigns'])->name('top-designs');
+    Route::get('/sales-trends', [DashboardController::class, 'salesTrends']);
 
     Route::get('/user', function (Request $request) {
         return $request->user();

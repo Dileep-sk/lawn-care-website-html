@@ -5,3 +5,15 @@ export const fetchDashboardDetails = async (params = {}) => {
     return response.data
 }
 
+
+export const fetchTopDesign = async (params = {}) => {
+    const response = await axios.get('/top-designs', { params })
+    return response.data
+}
+
+
+export const fetchSalesTrends = async (params = {}) => {
+    const response = await axios.get('/sales-trends', { params })
+    return response.data
+}
+

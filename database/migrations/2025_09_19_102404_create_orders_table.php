@@ -23,7 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('item_id')->index();
             $table->integer('quantity')->index();
             $table->decimal('rate', 10, 2)->index();
-            $table->tinyInteger('status')->default(0)->comment("Active = 1, Inactive = 0");
+            $table->tinyInteger('status')->default(0);
             $table->string('message')->nullable();
             $table->timestamps();
 

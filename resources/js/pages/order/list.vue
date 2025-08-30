@@ -12,12 +12,15 @@ import download from '@/assets/icons/download.svg'
 import eye from '@/assets/icons/eye.svg'
 import { useOrders } from '@/composables/useOrders'
 import { STATUS_OPTIONS } from '@/constants/orderListStatus'
-// import { STATUS_OPTIONS } from '@/constants/jobStatus'
 const searchTerm = ref('')
-const STATUS_CANCELLED =4  // order Complete
+const filters = ref({
+    status: ''
+})
+const STATUS_CANCELLED = 4 // order complete
 const {
     orders,
     loading,
+    statusLoading,
     error,
     currentPage,
     lastPage,
@@ -26,10 +29,6 @@ const {
     exportOrderPDF,
     handleDelete,
 } = useOrders(searchTerm)
-
-const filters = ref({
-    status: ''
-})
 
 onMounted(() => {
     loadOrders(1, searchTerm.value, filters.value.status)
@@ -109,12 +108,14 @@ watch(() => filters.value.status, () => {
 
                         <!-- Delete -->
                         <template #delete="{ row }">
-                            <button :disabled="row.status === STATUS_CANCELLED"
+                            <button :disabled="row.status === STATUS_CANCELLED || statusLoading"
                                 @click="row.status !== STATUS_CANCELLED && handleDelete(row.id)"
                                 class="w-[90px] gap-[5px] h-[35px] flex justify-center text-[15px] items-center rounded-[5px]"
                                 :class="[
                                     'text-white',
-                                    row.status === STATUS_CANCELLED ? 'bg-gray-400 cursor-not-allowed opacity-60' : 'bg-[#D62925]'
+                                    row.status === STATUS_CANCELLED || statusLoading
+                                        ? 'bg-gray-400 cursor-not-allowed opacity-60'
+                                        : 'bg-[#D62925]'
                                 ]">
                                 <img :src="deletes" class="w-[20px]" />
                                 Delete

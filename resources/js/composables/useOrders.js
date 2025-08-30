@@ -64,6 +64,7 @@ export function useOrders(searchTerm = ref('')) {
             toastr.success(message, 'Success')
         } catch (err) {
             handleError(err, 'Failed to update order status')
+            throw err
         } finally {
             statusLoading.value = false
         }
@@ -79,10 +80,11 @@ export function useOrders(searchTerm = ref('')) {
             return
         }
 
-        await updateStatus(row.id, newValue, statusText)
-
-        if (newValue === STATUS_CANCELLED) {
-            await loadOrders()
+        try {
+            await updateStatus(row.id, newValue, statusText)
+            row.status = newValue
+        } catch {
+            event.target.value = row.status
         }
     }
 
@@ -160,7 +162,7 @@ export function useOrders(searchTerm = ref('')) {
         doc.text(`Design No: ${order.design_no}`, 14, 40)
         doc.text(`Item: ${order.item_name}`, 14, 50)
         doc.text(`Quantity: ${order.quantity}`, 14, 60)
-        doc.text(`Status: ${order.status}`, 14, 70)
+        doc.text(`Status: ${getStatusText(order.status)}`, 14, 70)
 
         doc.save(`Order_${order.order_no}.pdf`)
     }

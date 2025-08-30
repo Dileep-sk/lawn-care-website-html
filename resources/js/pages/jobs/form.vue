@@ -122,9 +122,9 @@ Object.keys(validators).forEach((field) => {
 })
 
 // --- Load form if editing ---
-onMounted(() => {
-    if (jobId) editJob(jobId)
-})
+// onMounted(() => {
+//     if (jobId) editJob(jobId)
+// })
 </script>
 
 
@@ -211,7 +211,7 @@ onMounted(() => {
                             </div>
                         </div>
                         <div class="input_box mt-[20px]">
-                           <ImageUploader v-model="form.images" />
+                            <ImageUploader v-model="form.images" />
 
                             <p v-if="touched.images && errors.images" class="text-red-600 text-sm mt-1">
                                 {{ errors.images }}

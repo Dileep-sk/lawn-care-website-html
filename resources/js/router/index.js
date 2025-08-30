@@ -89,6 +89,13 @@ const routes = [
         meta: { title: "Stock Edit", requiresAuth: true },
     },
 
+     {
+        path: "/stock/log",
+        name: "stock-log",
+        component: () => import("../pages/stock-log/list.vue"),
+        meta: { title: "Stock Log", requiresAuth: true },
+    },
+
     // Users
     {
         path: "/users",

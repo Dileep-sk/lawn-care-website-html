@@ -48,14 +48,21 @@ const route = useRoute()
                 </router-link>
             </li>
 
-            <li :class="{ 'active': route.path.startsWith('/stock') }">
+            <li :class="{ 'active': route.path.startsWith('/stock') && !route.path.startsWith('/stock/log') }">
                 <router-link :to="{ name: 'stock' }"
                     class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
-                    <img :src="stocks" alt="">
+                    <img :src="stocks" alt="Stocks" />
                     <span>Stocks</span>
                 </router-link>
             </li>
 
+            <li :class="{ 'active': route.path.startsWith('/stock/log') }">
+                <router-link :to="{ name: 'stock-log' }"
+                    class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
+                    <img :src="stocks" alt="Stock Log" />
+                    <span>Stock log</span>
+                </router-link>
+            </li>
             <li :class="{ 'active': route.path.startsWith('/users') }">
                 <router-link :to="{ name: 'users' }"
                     class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">

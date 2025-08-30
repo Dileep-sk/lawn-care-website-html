@@ -167,4 +167,21 @@ class StockController extends Controller
         }
     }
 
+    public function stockLog(Request $request)
+    {
+        try {
+            $search = $request->input('search', null);
+            $perPage = $request->input('per_page', 10);
+            $page = $request->input('page', 1);
+
+            $stocks = $this->stockService->getStockLog($search, $perPage, $page);
+
+            return response()->json($stocks);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to fetch stock logs.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

@@ -102,14 +102,14 @@ onMounted(() => {
                             </select>
                         </template>
 
-                        <!-- Edit Column -->
+                        <!-- Edit Column
                         <template #edit="{ row }">
                             <router-link :to="{ name: 'jobs-edit', params: { id: row.id } }"
                                 class="w-[70px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#1e90ff]">
                                 <img :src="edit" class="w-[20px]" alt="Edit Icon" />
                                 Edit
                             </router-link>
-                        </template>
+                        </template> -->
 
 
                         <!-- Delete Column -->

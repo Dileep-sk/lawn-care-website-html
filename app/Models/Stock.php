@@ -26,7 +26,7 @@ class Stock extends Model
     {
         return $this->belongsTo(DesignNo::class);
     }
-    public function markNp()
+    public function markNo()
     {
         return $this->belongsTo(MarkNo::class, 'mark_no_id', 'id');
     }

@@ -22,7 +22,7 @@ class StockService
             mark_no_id,
             SUM(CASE WHEN stock_manage = 1 THEN quantity ELSE -quantity END) as total_quantity
         ')
-            ->with(['item', 'designNo', 'markNp'])
+            ->with(['item', 'designNo', 'markNo'])
             ->groupBy('item_id', 'design_no_id', 'mark_no_id');
 
 
@@ -30,7 +30,7 @@ class StockService
             $query->where(function ($q) use ($search) {
                 $q->orWhereHas('item', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
                     ->orWhereHas('designNo', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
-                    ->orWhereHas('markNp', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
+                    ->orWhereHas('markNo', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
             });
         }
 
@@ -41,7 +41,7 @@ class StockService
             return [
                 'item_name'  => $row->item->name ?? null,
                 'design_no'  => $row->designNo->name ?? null,
-                'mark_no'    => $row->markNp->name ?? null,
+                'mark_no'    => $row->markNo->name ?? null,
                 'quantity'   => (int) $row->total_quantity,
                 'status'     => $row->total_quantity > 0 ? 1 : 0,
             ];
@@ -104,7 +104,7 @@ class StockService
 
     public function availableStock($designNoId)
     {
-        $stocks = Stock::with(['item', 'designNo', 'markNp'])
+        $stocks = Stock::with(['item', 'designNo', 'markNo'])
             ->where('design_no_id', $designNoId)
             ->get();
 
@@ -122,7 +122,7 @@ class StockService
                 return [
                     'item_name' => $first->item->name ?? null,
                     'design_no' => $first->designNo->name ?? null,
-                    'mark_no' => $first->markNp->name ?? null,
+                    'mark_no' => $first->markNo->name ?? null,
                     'quantity' => $totalQuantity,
                     'status' => 1,
                 ];
@@ -153,12 +153,48 @@ class StockService
             return [
                 'item_name'  => $row->item->name ?? null,
                 'design_no'  => $row->designNo->name ?? null,
-                'mark_no'    => $row->markNp->name ?? null,
+                'mark_no'    => $row->markNo->name ?? null,
                 'quantity'   => (int) $row->total_quantity,
                 'status'     => $row->total_quantity > 0 ? 1 : 0,
             ];
         });
 
         return $paginated;
+    }
+
+    public function getStockLog($search = null, $perPage = 10, $page = 1)
+    {
+        $query = Stock::query()
+            ->join('items', 'stocks.item_id', '=', 'items.id')
+            ->join('design_nos', 'stocks.design_no_id', '=', 'design_nos.id')
+            ->join('mark_nos', 'stocks.mark_no_id', '=', 'mark_nos.id')
+            ->select(
+                'stocks.item_id',
+                'stocks.design_no_id',
+                'stocks.mark_no_id',
+                'stocks.status',
+                'stocks.quantity',
+                'stocks.message',
+                'stocks.stock_manage',
+                'items.name as item_name',
+                'design_nos.name as design_no_name',
+                'mark_nos.name as mark_no_name'
+            );
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('items.name', 'like', "%{$search}%")
+                    ->orWhere('design_nos.name', 'like', "%{$search}%")
+                    ->orWhere('mark_nos.name', 'like', "%{$search}%")
+                    ->orWhere('stocks.message', 'like', "%{$search}%")
+                    ->orWhere('stocks.quantity', 'like', "%{$search}%");
+            });
+        }
+
+        \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($page) {
+            return $page;
+        });
+
+        return $query->paginate($perPage);
     }
 }

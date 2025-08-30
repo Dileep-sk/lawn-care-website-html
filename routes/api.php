@@ -36,6 +36,7 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/stocks/{id}', [StockController::class, 'update']);
     Route::put('/stocks/{id}/status', [StockController::class, 'updateStatus']);
     Route::delete('/stocks/{id}', [StockController::class, 'destroy']);
+     Route::get('/stocks-log', [StockController::class, 'stockLog']);
 
     Route::get('/orders', [OrderController::class, 'index']);
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);

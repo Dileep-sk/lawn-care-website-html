@@ -29,8 +29,6 @@ watch(
 )
 </script>
 
-
-
 <template>
     <div class="table_container relative p-[15px] min-h-[300px]">
 
@@ -47,7 +45,7 @@ watch(
                 <!-- Loader row for spacing -->
                 <tr v-if="showLoader">
                     <td :colspan="columns.length" class="text-center py-4 opacity-50">
-
+                        <!-- Empty row for spacing -->
                     </td>
                 </tr>
 
@@ -74,6 +72,7 @@ watch(
             </tbody>
         </table>
 
+        <!-- Loader overlay -->
         <div v-if="showLoader"
             class="absolute left-0 right-0 bg-white bg-opacity-70 z-10 pointer-events-none flex flex-col justify-center items-center"
             :style="{ top: '300px', bottom: '0', height: 'calc(100% - 300px)' }">
@@ -85,8 +84,8 @@ watch(
             <span class="text-sm text-gray-600">Loading...</span>
         </div>
 
-        <!-- Pagination -->
-        <Pagination v-if="lastPage > 1" :currentPage="currentPage" :lastPage="lastPage"
+        <!-- Pagination (hidden when loader is active) -->
+        <Pagination v-if="!showLoader && lastPage > 1" :currentPage="currentPage" :lastPage="lastPage"
             @page-changed="(page) => emit('page-changed', page)">
             <template #prev>
                 <img :src="arrow_black" />

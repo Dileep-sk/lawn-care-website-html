@@ -87,14 +87,20 @@ watch(() => filters.value.status, () => {
                         @page-changed="(page) => loadOrders(page, searchTerm)">
                         <!-- Status -->
                         <template #status="{ row }">
-                            <select :value="row.status" @change="(event) => handleStatusToggle(row, event)"
-                                class="px-3 py-2 rounded-md border-2 border-gray-300 w-[150px]"
-                                :disabled="row.status === STATUS_CANCELLED">
+                            <select v-if="row.status !== STATUS_CANCELLED" :value="row.status"
+                                @change="(event) => handleStatusToggle(row, event)"
+                                class="px-3 py-2 rounded-md border-2 border-gray-300 w-[150px] cursor-pointer">
                                 <option v-for="opt in STATUS_OPTIONS" :key="opt.value" :value="opt.value">
                                     {{ opt.label }}
                                 </option>
                             </select>
+
+                            <div v-else
+                                class="w-[150px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-gray-400 cursor-not-allowed opacity-50 select-none border-2 border-gray-300">
+                                {{STATUS_OPTIONS.find(opt => opt.value === row.status)?.label || 'Cancelled'}}
+                            </div>
                         </template>
+
 
 
                         <!-- Edit -->
@@ -108,20 +114,21 @@ watch(() => filters.value.status, () => {
 
                         <!-- Delete -->
                         <template #delete="{ row }">
-                            <button :disabled="row.status === STATUS_CANCELLED || statusLoading"
-                                @click="row.status !== STATUS_CANCELLED && handleDelete(row.id)"
-                                class="w-[90px] gap-[5px] h-[35px] flex justify-center text-[15px] items-center rounded-[5px]"
-                                :class="[
-                                    'text-white',
-                                    row.status === STATUS_CANCELLED || statusLoading
-                                        ? 'bg-gray-400 cursor-not-allowed opacity-60'
-                                        : 'bg-[#D62925]'
-                                ]">
-                                <img :src="deletes" class="w-[20px]" />
+                            <!-- Active delete button -->
+                            <button v-if="row.status !== STATUS_CANCELLED && !statusLoading"
+                                @click="handleDelete(row.id)"
+                                class="w-[90px] gap-[5px] h-[35px] flex justify-center items-center text-[15px] rounded-[5px] text-white bg-[#D62925] cursor-pointer">
+                                <img :src="deletes" class="w-[20px]" alt="Delete icon" />
                                 Delete
                             </button>
-                        </template>
 
+                            <!-- Disabled state -->
+                            <div v-else
+                                class="w-[90px] gap-[5px] h-[35px] flex justify-center items-center text-[15px] rounded-[5px] text-white bg-gray-400 cursor-not-allowed opacity-60 select-none">
+                                <img :src="deletes" class="w-[20px]" alt="Delete icon" />
+                                Delete
+                            </div>
+                        </template>
 
                         <!-- Export -->
                         <template #export="{ row }">

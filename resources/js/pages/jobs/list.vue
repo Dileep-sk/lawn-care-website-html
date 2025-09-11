@@ -105,22 +105,34 @@ onMounted(() => {
                         <!-- Edit Column -->
 
                         <template #edit="{ row }">
-                            <router-link :to="{ name: 'jobs-edit', params: { id: row.id } }"
-                                class="w-[70px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#1e90ff]">
+                            <router-link v-if="row.status !== MOVE_JOB_IN_STOCK"
+                                :to="{ name: 'jobs-edit', params: { id: row.id } }"
+                                class="w-[70px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#1e90ff] cursor-pointer">
                                 <img :src="edit" class="w-[20px]" alt="Edit Icon" />
                                 Edit
                             </router-link>
+
+                            <div v-else
+                                class="w-[70px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-gray-400 cursor-not-allowed opacity-50 select-none">
+                                <img :src="edit" class="w-[20px]" alt="Edit Icon" />
+                                Edit
+                            </div>
                         </template>
 
                         <!-- Delete Column -->
 
                         <template #delete="{ row }">
-                            <button @click="handleDeleteJob(row.id)" :disabled="row.status === MOVE_JOB_IN_STOCK"
-                                class="w-[90px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px]"
-                                :class="row.status === MOVE_JOB_IN_STOCK ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#D62925] cursor-pointer'">
+                            <button v-if="row.status !== MOVE_JOB_IN_STOCK" @click="handleDeleteJob(row.id)"
+                                class="w-[90px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-[#D62925] cursor-pointer">
                                 <img :src="deletes" class="w-[20px]" alt="" />Delete
                             </button>
+
+                            <div v-else
+                                class="w-[90px] gap-[5px] text-white h-[35px] flex justify-center text-[15px] items-center rounded-[5px] bg-gray-400 cursor-not-allowed opacity-50 select-none">
+                                <img :src="deletes" class="w-[20px]" alt="" />Delete
+                            </div>
                         </template>
+
 
 
 

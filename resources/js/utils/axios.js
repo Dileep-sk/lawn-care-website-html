@@ -2,7 +2,7 @@ import axios from 'axios'
 import router from '@/router'
 
 const instance = axios.create({
-    baseURL: import.meta.env.VITE_APP_URL,
+    baseURL: import.meta.env.VITE_APP_URL || 'http://erp.atithibhavan.com/api',
     headers: {
         // 'Content-Type': 'application/json',
         Accept: 'application/json',

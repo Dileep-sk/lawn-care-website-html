@@ -94,6 +94,13 @@ const handleSubmit = async () => {
     if (!validateForm()) return
 
     const formData = new FormData()
+
+    // Add job_id to the formData if we are editing a job
+    if (jobId) {
+        formData.append('job_id', jobId)
+    }
+
+    // Loop through the form data and append it to the FormData object
     Object.entries(form).forEach(([key, value]) => {
         if (key === 'images') {
             value.forEach(file => formData.append('images[]', file))

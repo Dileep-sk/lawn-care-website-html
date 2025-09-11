@@ -11,6 +11,7 @@ class Job extends Model
     protected $table = 'order_jobs';
 
     protected $fillable = [
+        'id',
         'customer_id',
         'mark_no_id',
         'design_no_id',
@@ -33,7 +34,7 @@ class Job extends Model
         'quantity' => 'integer',
         'status' => 'integer',
     ];
-    
+
     public function images()
     {
         return $this->hasMany(JobImages::class, 'job_id', 'id');

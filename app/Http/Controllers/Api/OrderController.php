@@ -229,8 +229,9 @@ class OrderController extends Controller
             }
 
             return response()->json([
-                'message' => 'No orders found.'
-            ], 404);
+                    'message' => 'Order retrieved successfully.',
+                    'data' => $result
+                ]);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Failed to retrieve orders.',

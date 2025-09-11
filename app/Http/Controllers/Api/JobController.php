@@ -53,7 +53,6 @@ class JobController extends Controller
             }
 
             return response()->json(['message' => 'Job not found or status not updated.'], 404);
-
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Failed to update Job status.',
@@ -88,65 +87,122 @@ class JobController extends Controller
     public function store(CreateJobRequest $request)
     {
         try {
+            if ($request->job_id) {
+                $isCustomerNameExit = Customer::where('name', $request->customer_name)->first();
+                if (!$isCustomerNameExit) {
+                    return response()->json([
+                        'message' => 'Customer Name does not exist. Please select a correct Customer Name.',
+                        'error' => ""
+                    ], 500);
+                }
 
-            $isCustomerNameExit = Customer::find($request->customer_name);
-            if (empty($isCustomerNameExit)) {
-                return response()->json([
-                    'message' => 'Customer Name does not Please select correct Customer Name.',
-                    'error' => ""
-                ], 500);
+                $isMarkNoExit = MarkNo::where('name', $request->mark_no)->first();
+                if (!$isMarkNoExit) {
+                    return response()->json([
+                        'message' => 'Mark No does not exist. Please select a correct Mark No.',
+                        'error' => ""
+                    ], 500);
+                }
+
+                $isDesignNameExit = DesignNo::where('name', $request->design_no)->first();
+                if (!$isDesignNameExit) {
+                    return response()->json([
+                        'message' => 'Design No does not exist. Please select a correct Design No.',
+                        'error' => ""
+                    ], 500);
+                }
+
+                $isItemExit = Item::where('name', $request->item_name)->first();
+                if (!$isItemExit) {
+                    return response()->json([
+                        'message' => 'Item Name does not exist. Please select a correct Item Name.',
+                        'error' => ""
+                    ], 500);
+                }
+
+                $isOrderNoExit = Order::where('order_no', $request->order_no)->first();
+                if (!$isOrderNoExit) {
+                    return response()->json([
+                        'message' => 'Order No does not exist. Please select a correct Order No.',
+                        'error' => ""
+                    ], 500);
+                }
+            } else {
+                $isCustomerNameExit = Customer::where('name', $request->customer_name)->first();
+                if (!$isCustomerNameExit) {
+                    return response()->json([
+                        'message' => 'Customer Name does not exist. Please select a correct Customer Name.',
+                        'error' => ""
+                    ], 500);
+                }
+
+                $isMarkNoExit = MarkNo::where('name', $request->mark_no)->first();
+                if (!$isMarkNoExit) {
+                    return response()->json([
+                        'message' => 'Mark No does not exist. Please select a correct Mark No.',
+                        'error' => ""
+                    ], 500);
+                }
+
+                $isDesignNameExit = DesignNo::where('name', $request->design_no)->first();
+                if (!$isDesignNameExit) {
+                    return response()->json([
+                        'message' => 'Design No does not exist. Please select a correct Design No.',
+                        'error' => ""
+                    ], 500);
+                }
+
+                $isItemExit = Item::where('name', $request->item_name)->first();
+                if (!$isItemExit) {
+                    return response()->json([
+                        'message' => 'Item Name does not exist. Please select a correct Item Name.',
+                        'error' => ""
+                    ], 500);
+                }
+
+                $isOrderNoExit = Order::where('name', $request->order_no)->first();
+                if (!$isOrderNoExit) {
+                    return response()->json([
+                        'message' => 'Order No does not exist. Please select a correct Order No.',
+                        'error' => ""
+                    ], 500);
+                }
             }
 
-            $isMarkNoExit = MarkNo::find($request->mark_no);
-            if (empty($isMarkNoExit)) {
-                return response()->json([
-                    'message' => 'Mark No does not Please select correct Mark No.',
-                    'error' => ""
-                ], 500);
+            $validatedData = $request->validated();
+            unset($validatedData['customer_name']);
+            unset($validatedData['mark_no']);
+            unset($validatedData['design_no']);
+            unset($validatedData['item_name']);
+            unset($validatedData['order_no']);
+
+            $jobData = array_merge($validatedData, [
+                'customer_id' => $isCustomerNameExit->id,
+                'mark_no_id' => $isMarkNoExit->id,
+                'design_no_id' => $isDesignNameExit->id,
+                'item_id' => $isItemExit->id,
+                'order_no_id' => $isOrderNoExit->id,
+            ]);
+
+            if (!empty($request->images)) {
+                $jobData['images'] = $request->images;
             }
 
-            $isDesignNameExit = DesignNo::find($request->design_no);
-            if (empty($isDesignNameExit)) {
+            $job = $this->jobService->createOrUpdateJob($jobData);
 
+            if ($job) {
                 return response()->json([
-                    'message' => 'Design No does not Please select correct Design No.',
-                    'error' => ""
-                ], 500);
-            }
-
-            $isitemExit = Item::find($request->item_name);
-            if (empty($isitemExit)) {
-
-                return response()->json([
-                    'message' => 'Item Name does not Please select correct Item Name.',
-                    'error' => ""
-                ], 500);
-            }
-
-            $isOrderNoExit = Order::find($request->order_no);
-            if (empty($isOrderNoExit)) {
-
-                return response()->json([
-                    'message' => 'Order No does not Please select correct Order No.',
-                    'error' => ""
-                ], 500);
-            }
-
-            $job = $this->jobService->createJob($request->validated());
-            if (isset($job)) {
-                return response()->json([
-                    'message' => 'Job created successfully',
+                    'message' => 'Job created/updated successfully.',
                     'data' => $job
                 ], 201);
             }
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Failed to create job.',
+                'message' => 'Failed to create/update job.',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
-
 
     public function update(Request $request, $id): JsonResponse
     {

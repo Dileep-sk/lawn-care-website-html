@@ -42,6 +42,7 @@ class CreateJobRequest extends FormRequest
             'matching_7' => 'nullable|string',
             'matching_8' => 'nullable|string',
             'message' => 'nullable|string',
+            'job_id' =>'nullable'
         ];
     }
 }

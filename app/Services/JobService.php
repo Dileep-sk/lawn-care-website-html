@@ -132,33 +132,78 @@ class JobService
         return $job;
     }
 
-
-    public function createJob(array $data)
+    public function createOrUpdateJob($data)
     {
-        $job = Job::create([
-            'customer_id' => $data['customer_name'] ?? null,
-            'mark_no_id' => $data['mark_no'] ?? null,
-            'design_no_id' => $data['design_no'] ?? null,
-            'item_id' => $data['item_name'] ?? null,
-            'quantity' => $data['quantity'] ?? null,
-            'order_no_id' => $data['order_no'] ?? null,
-            'status' => $data['status'] ?? null,
-            'matching_1' => $data['matching_1'] ?? null,
-            'matching_2' => $data['matching_2'] ?? null,
-            'matching_3' => $data['matching_3'] ?? null,
-            'matching_4' => $data['matching_4'] ?? null,
-            'matching_5' => $data['matching_5'] ?? null,
-            'matching_6' => $data['matching_6'] ?? null,
-            'matching_7' => $data['matching_7'] ?? null,
-            'matching_8' => $data['matching_8'] ?? null,
-            'message' => $data['message'] ?? null,
-        ]);
+        if (isset($data['job_id'])) {
+            $job = Job::where('id', $data['job_id'])->first();
 
-        if (!empty($data['images'])) {
-            $this->saveJobImages($job, $data['images']);
+            if (!$job) {
+                throw new \Exception('Job not found.');
+            }
+            if (!empty($data['images'])) {
+                $this->deleteOldJobImages($job);
+                $this->saveJobImages($job, $data['images']);
+            }
+
+            $job->update([
+                'customer_id' => $data['customer_id'] ?? null,
+                'mark_no_id' => $data['mark_no_id'] ?? null,
+                'design_no_id' => $data['design_no_id'] ?? null,
+                'item_id' => $data['item_id'] ?? null,
+                'quantity' => $data['quantity'] ?? null,
+                'order_no_id' => $data['order_no_id'] ?? null,
+                'status' => $data['status'] ?? null,
+                'matching_1' => $data['matching_1'] ?? null,
+                'matching_2' => $data['matching_2'] ?? null,
+                'matching_3' => $data['matching_3'] ?? null,
+                'matching_4' => $data['matching_4'] ?? null,
+                'matching_5' => $data['matching_5'] ?? null,
+                'matching_6' => $data['matching_6'] ?? null,
+                'matching_7' => $data['matching_7'] ?? null,
+                'matching_8' => $data['matching_8'] ?? null,
+                'message' => $data['message'] ?? null,
+            ]);
+        } else {
+
+            $job = Job::create([
+                'customer_id' => $data['customer_id'] ?? null,
+                'mark_no_id' => $data['mark_no_id'] ?? null,
+                'design_no_id' => $data['design_no_id'] ?? null,
+                'item_id' => $data['item_id'] ?? null,
+                'quantity' => $data['quantity'] ?? null,
+                'order_no_id' => $data['order_no_id'] ?? null,
+                'status' => $data['status'] ?? null,
+                'matching_1' => $data['matching_1'] ?? null,
+                'matching_2' => $data['matching_2'] ?? null,
+                'matching_3' => $data['matching_3'] ?? null,
+                'matching_4' => $data['matching_4'] ?? null,
+                'matching_5' => $data['matching_5'] ?? null,
+                'matching_6' => $data['matching_6'] ?? null,
+                'matching_7' => $data['matching_7'] ?? null,
+                'matching_8' => $data['matching_8'] ?? null,
+                'message' => $data['message'] ?? null,
+            ]);
+
+            if (!empty($data['images'])) {
+                $this->saveJobImages($job, $data['images']);
+            }
         }
 
         return $job;
+    }
+
+    public function deleteOldJobImages(Job $job)
+    {
+        $oldImages = JobImages::where('job_id', $job->id)->get();
+
+        foreach ($oldImages as $oldImage) {
+            $imagePath = storage_path('app/public/job_images/' . $oldImage->image);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+
+            $oldImage->delete();
+        }
     }
 
     public function saveJobImages(Job $job, array $images)
@@ -170,9 +215,12 @@ class JobService
         }
 
         foreach ($images as $image) {
-
-            $filename = uniqid() . '.' . $image->getClientOriginalExtension();
-            $image->move($directory, $filename);
+            if (filter_var($image, FILTER_VALIDATE_URL)) {
+                $filename = basename($image);
+            } else {
+                $filename = uniqid() . '.' . $image->getClientOriginalExtension();
+                $image->move($directory, $filename);
+            }
 
             JobImages::create([
                 'job_id' => $job->id,

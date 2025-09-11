@@ -16,7 +16,22 @@ const {
 const loadStocks = (page) => {
     loadStocksLog(page, search.value)
 }
+
+const formatDateTime = (dateStr) => {
+    const date = new Date(dateStr)
+    return new Intl.DateTimeFormat('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+    }).format(date)
+}
 </script>
+
 <template>
     <AuthLayout>
         <div class="inner_contant mt-[20px] w-[100%]">
@@ -41,10 +56,14 @@ const loadStocks = (page) => {
                         { label: 'Item', key: 'item_name' },
                         { label: 'Quantity', key: 'quantity' },
                         { label: 'Log', key: 'message' },
-                        // { label: 'Stock Manage', key: 'stock_manage' }
+                        { label: 'Created At', key: 'created_at' }
                     ]" :loading="loading" :error="error" :currentPage="currentPage" :lastPage="lastPage"
                         @page-changed="loadStocks">
-                        <!-- Custom slot for Stock Manage column -->
+
+                        <template #created_at="{ row }">
+                            {{ formatDateTime(row.created_at) }}
+                        </template>
+
                         <template #stock_manage="{ row }">
                             <span :class="[
                                 'badge px-3 py-1 rounded-full text-white text-sm',
@@ -54,6 +73,7 @@ const loadStocks = (page) => {
                             </span>
                         </template>
                     </BaseTable>
+
                 </div>
             </div>
         </div>

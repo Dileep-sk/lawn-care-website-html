@@ -176,10 +176,11 @@ class StockService
                 'stocks.quantity',
                 'stocks.message',
                 'stocks.stock_manage',
+                'stocks.created_at',
                 'items.name as item_name',
                 'design_nos.name as design_no_name',
                 'mark_nos.name as mark_no_name'
-            );
+            )->orderBy('stocks.created_at', 'desc');
 
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {

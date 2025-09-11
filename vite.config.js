@@ -17,6 +17,6 @@ export default defineConfig({
         },
     },
     define: {
-        'import.meta.env.VITE_APP_URL': JSON.stringify(process.env.VITE_APP_URL || 'http://erp.atithibhavan.com/api'),
+        'import.meta.env.VITE_APP_URL': JSON.stringify(process.env.VITE_APP_URL || 'https://erp.atithibhavan.com/api'),
     },
 });

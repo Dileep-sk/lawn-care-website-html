@@ -128,7 +128,7 @@ class JobController extends Controller
                     ], 500);
                 }
             } else {
-                $isCustomerNameExit = Customer::where('name', $request->customer_name)->first();
+                $isCustomerNameExit = Customer::where('id', $request->customer_name)->first();
                 if (!$isCustomerNameExit) {
                     return response()->json([
                         'message' => 'Customer Name does not exist. Please select a correct Customer Name.',
@@ -136,7 +136,7 @@ class JobController extends Controller
                     ], 500);
                 }
 
-                $isMarkNoExit = MarkNo::where('name', $request->mark_no)->first();
+                $isMarkNoExit = MarkNo::where('id', $request->mark_no)->first();
                 if (!$isMarkNoExit) {
                     return response()->json([
                         'message' => 'Mark No does not exist. Please select a correct Mark No.',
@@ -144,7 +144,7 @@ class JobController extends Controller
                     ], 500);
                 }
 
-                $isDesignNameExit = DesignNo::where('name', $request->design_no)->first();
+                $isDesignNameExit = DesignNo::where('id', $request->design_no)->first();
                 if (!$isDesignNameExit) {
                     return response()->json([
                         'message' => 'Design No does not exist. Please select a correct Design No.',
@@ -152,7 +152,7 @@ class JobController extends Controller
                     ], 500);
                 }
 
-                $isItemExit = Item::where('name', $request->item_name)->first();
+                $isItemExit = Item::where('id', $request->item_name)->first();
                 if (!$isItemExit) {
                     return response()->json([
                         'message' => 'Item Name does not exist. Please select a correct Item Name.',
@@ -160,7 +160,7 @@ class JobController extends Controller
                     ], 500);
                 }
 
-                $isOrderNoExit = Order::where('name', $request->order_no)->first();
+                $isOrderNoExit = Order::where('id', $request->order_no)->first();
                 if (!$isOrderNoExit) {
                     return response()->json([
                         'message' => 'Order No does not exist. Please select a correct Order No.',

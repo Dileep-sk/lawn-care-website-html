@@ -16,4 +16,7 @@ export default defineConfig({
             '@': path.resolve(__dirname, 'resources/js'),
         },
     },
+    define: {
+        'import.meta.env.VITE_APP_URL': JSON.stringify(process.env.VITE_APP_URL || 'http://127.0.0.1:8000'),
+    },
 });

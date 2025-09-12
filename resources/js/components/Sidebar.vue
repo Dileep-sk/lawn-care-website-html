@@ -8,7 +8,7 @@ import jobs from '@/assets/icons/jobs.svg'
 import stocks from '@/assets/icons/stock.svg'
 import users from '@/assets/icons/users.svg'
 import doc from '@/assets/icons/doc.svg'
-
+import stock_log from '@/assets/icons/stock_log.svg'
 const route = useRoute()
 </script>
 
@@ -59,7 +59,7 @@ const route = useRoute()
             <li :class="{ 'active': route.path.startsWith('/stock/log') }">
                 <router-link :to="{ name: 'stock-log' }"
                     class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
-                    <img :src="stocks" alt="Stock Log" />
+                    <img :src="stock_log" alt="Stock Log" />
                     <span>Stock log</span>
                 </router-link>
             </li>

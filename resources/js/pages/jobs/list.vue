@@ -29,6 +29,12 @@ const {
     handleStatusChange,
 } = useJobs()
 
+function getStatusLabel(value) {
+  const option = STATUS_OPTIONS.find(opt => opt.value === value);
+  return option ? option.label : value;
+}
+
+
 watch(filters, ({ search, status }) => {
     loadJobs(1, search, status)
 })
@@ -91,16 +97,23 @@ onMounted(() => {
                     ]" :loading="loading" :error="error" :currentPage="currentPage" :lastPage="lastPage"
                         @page-changed="(page) => loadJobs(page, filters.search, filters.status)">
 
-                        <!-- Status Column -->
+
                         <template #status="{ row }">
-                            <select :value="row.status" @change="(event) => handleStatusChange(row, event)"
-                                class="px-3 py-2 rounded-md border-2 border-gray-300 w-[150px]"
-                                :disabled="row.status === MOVE_JOB_IN_STOCK">
-                                <option v-for="opt in STATUS_OPTIONS" :key="opt.value" :value="opt.value">
-                                    {{ opt.label }}
-                                </option>
-                            </select>
+                            <div v-if="row.status !== MOVE_JOB_IN_STOCK">
+                                <select :value="row.status" @change="(event) => handleStatusChange(row, event)"
+                                    class="px-3 py-2 rounded-md border-2 border-gray-300 w-[150px]">
+                                    <option v-for="opt in STATUS_OPTIONS" :key="opt.value" :value="opt.value">
+                                        {{ opt.label }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div v-else
+                                class="px-3 py-2 rounded-md border-2 border-gray-300 w-[150px] bg-gray-100 text-gray-500 cursor-not-allowed select-none">
+                                {{ getStatusLabel(row.status) }}
+                            </div>
                         </template>
+
 
                         <!-- Edit Column -->
 

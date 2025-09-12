@@ -141,6 +141,24 @@ const clearInput = () => {
         })
     }
 }
+
+const handleEnter = () => {
+    const match = filteredOptions.value.find(
+        (opt) =>
+            opt[props.optionLabelKey]?.toLowerCase() === search.value.trim().toLowerCase()
+    )
+
+    if (match) {
+        selectOption(match)
+    } else if (search.value.trim()) {
+        emit('update:modelValue', search.value.trim())
+        originalValue.value = search.value.trim()
+        showDropdown.value = false
+        if (props.isEdit) {
+            showInput.value = false
+        }
+    }
+}
 </script>
 
 <template>
@@ -150,9 +168,10 @@ const clearInput = () => {
         <!-- Input -->
         <div v-if="showInput" class="relative">
             <input :id="`autocomplete-${props.optionValueKey}`" type="text" v-model="search" @focus="onFocus"
-                @click="onInputClick" @blur="handleBlur" :placeholder="placeholder"
-                class="block w-full appearance-none bg-white border border-gray-300 hover:border-gray-400 rounded px-3 py-2 pr-8 leading-tight"
+                @click="onInputClick" @keydown.enter.prevent="handleEnter" @blur="handleBlur" :placeholder="placeholder"
+                class="block w-full appearance-none bg-white input !mt-[11px] border border-gray-300 hover:border-gray-400 rounded px-3 py-2 pr-8 leading-tight"
                 :required="required" autocomplete="off" />
+
             <div class="absolute inset-y-0 right-0 flex items-center space-x-1 px-2" style="pointer-events:auto;">
                 <button v-if="search" @click.prevent="clearInput"
                     class="text-gray-400 hover:text-gray-600 focus:outline-none" aria-label="Clear input">

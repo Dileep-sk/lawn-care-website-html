@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from "vue"
-import eye from "@/assets/icons/eye-off.svg"
+import eye_off from "@/assets/icons/eye-off.svg"
+import eye_on from "@/assets/icons/eye-on.svg"
+
 
 const props = defineProps({
     modelValue: [String, Number],
@@ -37,7 +39,7 @@ const togglePassword = () => {
                 :value="modelValue" @input="emit('update:modelValue', $event.target.value)" />
 
             <!-- Show toggle only if password field -->
-            <img v-if="props.type === 'password'" :src="eye"
+            <img v-if="props.type === 'password'" :src="inputType === 'password' ? eye_off : eye_on"
                 class="absolute right-[10px] top-[50%] -translate-y-1/2 w-5 h-5 cursor-pointer"
                 @click="togglePassword" />
         </div>

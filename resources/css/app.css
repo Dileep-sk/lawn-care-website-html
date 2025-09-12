@@ -347,3 +347,6 @@ button {
         transform: rotate(360deg);
     }
     }
+select option {
+    padding: 15px !important;
+}

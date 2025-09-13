@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\MarkNoController;
+use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TransportCompanyController;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -31,6 +32,10 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::get('/users/{id}', [UserController::class, 'view']);
+
+    Route::get('/services', [ServiceController::class, 'index']);
+    Route::post('/services', [ServiceController::class, 'store']);
+    Route::get('/services/{id}', [ServiceController::class, 'show']);
 
     Route::get('/stocks', [StockController::class, 'index']);
     Route::get('/stocks/{id}', [StockController::class, 'view']);

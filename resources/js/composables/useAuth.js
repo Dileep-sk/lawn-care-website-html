@@ -1,6 +1,6 @@
 import { ref } from "vue"
 import { useRouter } from "vue-router"
-import { loginApi, logoutApi, profile } from "@/services/authService"
+import { loginApi, logoutApi, profile,forgotPasswordApi, resetPasswordApi } from "@/services/authService"
 import toastr from 'toastr'
 export function useAuth() {
     const router = useRouter()
@@ -19,6 +19,37 @@ export function useAuth() {
             router.push({ name: 'dashboard' })
         } catch (err) {
             error.value = err.response?.data?.message || 'Login failed'
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+
+    const forgotPassword = async (payload) => {
+        loading.value = true
+        error.value = null
+        try {
+            const response = await forgotPasswordApi(payload)
+            success.value = response.message || 'Reset link sent'        
+            return response
+        } catch (err) {
+            error.value = err.response?.data?.message || 'Failed to send reset link'            
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+    
+    const resetPassword = async (payload) => {
+        loading.value = true
+        error.value = null
+        try {
+            const response = await resetPasswordApi(payload)
+            success.value = response.message || 'Password reset successfully'            
+            router.push({ name: 'login' })
+            return response
+        } catch (err) {
+            error.value = err.response?.data?.message || 'Failed to reset password'            
             throw err
         } finally {
             loading.value = false
@@ -75,6 +106,8 @@ export function useAuth() {
 
     return {
         login,
+        forgotPassword,
+        resetPassword,
         logout,
         updateProfile,
         loading,

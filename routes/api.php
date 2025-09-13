@@ -17,6 +17,8 @@ use App\Http\Controllers\Api\MarkNoController;
 use App\Http\Controllers\Api\TransportCompanyController;
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
 
 Route::middleware('auth:api')->group(function () {
 

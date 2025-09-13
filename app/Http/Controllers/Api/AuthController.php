@@ -76,4 +76,47 @@ class AuthController extends Controller
             'message' => 'Logout successful',
         ]);
     }
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $result = $this->authService->sendForgotPasswordLink($request->email);
+
+        if ($result['success']) {
+            return response()->json([
+                'message' => $result['message']
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => $result['message']
+        ], 422);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed'
+        ]);
+
+        $result = $this->authService->resetPassword($request->only(
+            'token', 'email', 'password', 'password_confirmation'
+        ));
+
+        if ($result['success']) {
+            return response()->json([
+                'message' => $result['message']
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => $result['message']
+        ], 422);
+    }
+
 }

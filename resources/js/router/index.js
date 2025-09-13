@@ -11,6 +11,18 @@ const routes = [
         meta: { title: "Login" },
     },
     {
+        path: "/forgot-password",
+        name: "forgot-password",
+        component: () => import("../pages/ForgotPassword.vue"),
+        meta: { title: "ForgotPassword" },
+    },
+    {
+        path: "/reset-password",
+        name: "reset-password",
+        component: () => import("../pages/ResetPassword.vue"),
+        meta: { title: "ResetPassword" },
+    },
+    {
         path: "/dashboard",
         name: "dashboard",
         component: () => import("../pages/dashboard.vue"),

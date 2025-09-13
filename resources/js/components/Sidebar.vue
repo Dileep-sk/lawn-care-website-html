@@ -9,6 +9,8 @@ import stocks from '@/assets/icons/stock.svg'
 import users from '@/assets/icons/users.svg'
 import doc from '@/assets/icons/doc.svg'
 import stock_log from '@/assets/icons/stock_log.svg'
+import service from '@/assets/icons/service.svg'
+
 const route = useRoute()
 </script>
 
@@ -29,6 +31,14 @@ const route = useRoute()
                     class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
                     <img :src="dashboard" alt="">
                     <span>Dashboard</span>
+                </router-link>
+            </li>
+
+            <li :class="{ 'active': route.path.startsWith('/service') }">
+                <router-link :to="{ name: 'service' }"
+                    class="h-[45px] rounded-[5px] flex gap-[10px] items-center px-[15px] text-[#000]">
+                    <img :src="service" alt="">
+                    <span>Services</span>
                 </router-link>
             </li>
 

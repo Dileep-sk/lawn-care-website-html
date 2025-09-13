@@ -29,6 +29,32 @@ const routes = [
         meta: { title: "Home", requiresAuth: true },
     },
 
+    //Services
+    {
+        path: "/service",
+        name: "service",
+        component: () => import("../pages/service/list.vue"),
+        meta: { title: "Service", requiresAuth: true },
+    },
+    {
+        path: "/service/create",
+        name: "service-create",
+        component: () => import("../pages/service/form.vue"),
+        meta: { title: "Service Create", requiresAuth: true },
+    },
+    {
+        path: "/service/edit/:id",
+        name: "service-edit",
+        component: () => import("../pages/service/form.vue"),
+        meta: { title: "Service Edit", requiresAuth: true },
+    },
+    {
+        path: "/service/view/:id",
+        name: "service-view",
+        component: () => import("../pages/service/view.vue"),
+        meta: { title: "Service View", requiresAuth: true },
+    },
+    
     // Orders
     {
         path: "/order",

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -76,4 +78,37 @@ class AuthController extends Controller
             'message' => 'Logout successful',
         ]);
     }
+
+    public function forgotPassword(ForgotPasswordRequest $request)
+    {
+        $result = $this->authService->sendForgotPasswordLink($request->email);
+
+        if ($result['success']) {
+            return response()->json([
+                'message' => $result['message']
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => $result['message']
+        ], 422);
+    }
+
+    public function resetPassword(ResetPasswordRequest $request)
+    {
+        $result = $this->authService->resetPassword($request->only(
+            'token', 'email', 'password', 'password_confirmation'
+        ));
+
+        if ($result['success']) {
+            return response()->json([
+                'message' => $result['message']
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => $result['message']
+        ], 422);
+    }
+
 }

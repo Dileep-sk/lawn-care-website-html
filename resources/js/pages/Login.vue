@@ -60,6 +60,11 @@ const handleLogin = async () => {
                 <!-- Password -->
                 <BaseInput v-model="password" label="Password" type="password" placeholder="Enter your password"
                     :error="passwordError" />
+                <div class="flex justify-end">
+                    <router-link to="/forgot-password" class="text-[#FF4757] text-sm hover:underline">
+                        Forgot Password?
+                    </router-link>
+                </div>
 
                 <button :disabled="loading" type="submit"
                     class="h-[45px] flex gap-[10px] justify-center items-center px-[60px] w-full my-[20px] rounded-[6px] bg-[linear-gradient(90deg,_#FF7556_0%,_#FF4757_100%)] text-white font-[500] text-[17px]">

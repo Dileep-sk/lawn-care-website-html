@@ -1,6 +1,6 @@
 <script setup>
 import GuestLayout from '@/layouts/GuestLayout.vue'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import toastr from 'toastr'
@@ -12,41 +12,51 @@ const route = useRoute()
 const router = useRouter()
 const { resetPassword, loading } = useAuth()
 
-const email = ref(route.query.email || '')
-const token = ref(route.query.token || '')
-const password = ref('')
-const password_confirmation = ref('')
-
-watch(password, (value) => {
-    passwordError.value = value ? '' : 'Password is required'
+const form = ref({
+    email: route.query.email || '',
+    token: route.query.token || '',
+    password: '',
+    password_confirmation: '',
 })
 
-watch(password_confirmation, (value) => {
-    confirmError.value = value ? '' : 'Please confirm your password'
+const errors = ref({
+    password: '',
+    password_confirmation: '',
 })
 
-const passwordError = ref('')
-const confirmError = ref('')
+const validateField = (key, value) => {
+    const trimmed = value.toString().trim()
+    if (['password', 'password_confirmation'].includes(key)) {
+        errors.value[key] = trimmed ? '' : 'This field is required'
+    }
+}
+
+let validationSetupDone = false
+const setupValidation = () => {
+    if (validationSetupDone) return
+    validationSetupDone = true
+    Object.keys(form.value).forEach(key => {
+    watch(() => form.value[key], value => validateField(key, value))
+    })
+}
+
+setupValidation();
+
+const isFormValid = computed(() =>
+    Object.values(errors.value).every(e => !e) &&
+    form.value.password &&
+    form.value.password_confirmation
+)
 
 const handleResetPassword = async () => {
-    passwordError.value = ''
-    confirmError.value = ''
-
-    if (!password.value) passwordError.value = 'Password is required'    
-    if (!password_confirmation.value) confirmError.value = 'Please confirm your password'    
-
-    if (password.value && password_confirmation.value && password.value !== password_confirmation.value) {
-        confirmError.value = 'Passwords do not match'
-        return
-    }
-    if (!password.value || !password_confirmation.value) return
-
+    Object.entries(form.value).forEach(([key, val]) => validateField(key, val))
+    if (!isFormValid.value) return
     try {
         await resetPassword({
-        email: email.value,
-        token: token.value,
-        password: password.value,
-        password_confirmation: password_confirmation.value
+            email: form.value.email,
+            token: form.value.token,
+            password: form.value.password,
+            password_confirmation: form.value.password_confirmation
         })
         toastr.success('Password has been reset successfully')
         router.push('/login')
@@ -68,12 +78,12 @@ const handleResetPassword = async () => {
 
       <div class="flex flex-col gap-[20px]">
         <!-- New Password -->        
-        <BaseInput v-model="password" label="Password" type="password" placeholder="Enter your password"
-                    :error="passwordError" />
+        <BaseInput v-model="form.password" label="Password" type="password" placeholder="Enter your password"
+                    :error="errors.password" />
 
         <!-- Confirm Password -->        
-        <BaseInput v-model="password_confirmation" label="Password" type="password" placeholder="Confirm Password"
-                    :error="confirmError" />
+        <BaseInput v-model="form.password_confirmation" label="confirm Password" type="password" placeholder="Confirm Password"
+                    :error="errors.password_confirmation" />
 
         <button type="submit" :disabled="loading"
                 class="h-[45px] flex gap-[10px] justify-center items-center w-full my-[20px] rounded-[6px] bg-[linear-gradient(90deg,_#FF7556_0%,_#FF4757_100%)] text-white font-[500] text-[17px]">

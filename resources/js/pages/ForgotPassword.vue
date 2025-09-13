@@ -1,27 +1,50 @@
 <script setup>
 import GuestLayout from '@/layouts/GuestLayout.vue'
 import logo from '@/assets/images/logo.png'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import toastr from 'toastr'
 import { useAuth } from '@/composables/useAuth'
 import BaseInput from '@/components/BaseInput.vue'
 import arrowIcon from '@/assets/icons/right-arrow_white.svg'
 
-const email = ref('')
-const emailError = ref('')
 const { forgotPassword, loading } = useAuth()
 
-watch(email, (value) => {
-    emailError.value = value ? '' : 'Email is required'
+const form = ref({
+    email: '',
 })
 
+const errors = ref({
+    email: '',
+})
+
+const validateField = (key, value) => {
+    const trimmed = value.toString().trim()
+    if (['email'].includes(key)) {
+        errors.value[key] = trimmed ? '' : 'This field is required'
+    }
+}
+
+let validationSetupDone = false
+const setupValidation = () => {
+    if (validationSetupDone) return
+    validationSetupDone = true
+    Object.keys(form.value).forEach(key => {
+    watch(() => form.value[key], value => validateField(key, value))
+    })
+}
+
+setupValidation();
+
+const isFormValid = computed(() =>
+    Object.values(errors.value).every(e => !e) &&
+    form.value.email
+)
+
 const handleForgotPassword = async () => {
-    if (!email.value) emailError.value = 'Email is required'
-
-    if (emailError.value) return
-
+    Object.entries(form.value).forEach(([key, val]) => validateField(key, val))
+    if (!isFormValid.value) return
     try {
-        await forgotPassword({ email: email.value })
+        await forgotPassword({ email: form.value.email })
         toastr.success('Password reset link sent to your email')
     } catch (err) {
         const errors = err.response?.data?.errors || {}
@@ -44,8 +67,8 @@ const handleForgotPassword = async () => {
       </h1>
 
       <div class="input_container flex flex-col gap-[20px]">        
-        <BaseInput v-model="email" label="User ID" type="email" placeholder="test@user.com"
-                    :error="emailError" />
+        <BaseInput v-model="form.email" label="User ID" type="email" placeholder="test@user.com"
+                    :error="errors.email" />
 
         <button type="submit" :disabled="loading"
                 class="h-[45px] flex gap-[10px] justify-center items-center w-full my-[20px] rounded-[6px] bg-[linear-gradient(90deg,_#FF7556_0%,_#FF4757_100%)] text-white font-[500] text-[17px]">

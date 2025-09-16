@@ -8,6 +8,8 @@
 
     <title>Document</title>
     <link rel="stylesheet" href="./assets/style/style.css">
+    <link rel="stylesheet" href="./assets/style/service.css">
+
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <!-- Slick CSS -->
@@ -67,14 +69,14 @@
                     </a>
                     <div class="link_bar ">
                         <ul class="flex gap-[15px] ">
-                            <li> <a href="#"
-                                    class="  flex gap-[10px] items-center !px-[10px]  relative !py-[8px] text-[16px] avtive_link font-[500] text-[var(--black-color)]  ">Home</a>
+                            <li> <a href="./index.html"
+                                    class="  flex gap-[10px] items-center !px-[10px]  relative !py-[8px] text-[16px]  font-[500] text-[var(--black-color)]  ">Home</a>
                             </li>
-                            <li> <a href="./About.html"
-                                    class="!px-[10px]  relative flex gap-[10px] items-center !py-[8px] text-[16px] font-[500] text-[var(--black-color)]  ">About</a>
+                            <li> <a href="#"
+                                    class="!px-[10px] avtive_link  relative flex gap-[10px] items-center !py-[8px] text-[16px] font-[500] text-[var(--black-color)]  ">About</a>
                             </li>
                             <li class="relative service_link ">
-                                <div href=""
+                                <div
                                     class=" !px-[10px]   flex gap-[10px] items-center !py-[8px] text-[16px] font-[500] text-[var(--black-color)] w-full ">
                                     Service
                                     <img src="./assets/images/downarrow.svg" alt="">
@@ -82,13 +84,15 @@
                                 <div
                                     class="drop_down z-[999] absolute left-[0px] w-[200px]  bg-[var(--green-color)] !p-[10px] ">
                                     <ol>
-                                        <li> <a href="./LawnCareService.html" class=" text-[15px] !py-[5px] text-[var(--white-color)] block">
+                                        <li> <a href="./LawnCareService.html"
+                                                class=" text-[15px] !py-[5px] text-[var(--white-color)] block">
                                                 Lawn Care
                                             </a> </li>
-                                        <li> <a href="./Landscaping.html" class=" text-[15px] !py-[5px] text-[var(--white-color)] block">
+                                        <li> <a href="#" class=" text-[15px] !py-[5px] text-[var(--white-color)] block">
                                                 Landscaping
                                             </a> </li>
-                                        <li> <a href="./Propertycleanups.html" class=" text-[15px] !py-[5px] text-[var(--white-color)] block">
+                                        <li> <a href="./Propertycleanups.html"
+                                                class=" text-[15px] !py-[5px] text-[var(--white-color)] block">
                                                 Property
                                                 Cleanups </a> </li>
                                     </ol>
@@ -125,21 +129,15 @@
     </header>
 
 
-    <section class="main_home flex items-center overflow-hidden relative min-h-[800px] border !mt-[-70px]  ">
-        <img src="./assets/images/home-right.svg" class=" w-[500px] right_img  absolute bottom-[-10px] right-[0px] "
-            alt="">
-        <video autoplay muted loop class="background-video">
-            <source src="./assets/images/7844329-uhd_3840_2160_25fps.mp4" type="video/mp4">
-            <!-- Add other formats as fallback -->
-        </video>
+    <section class="main_home flex items-center overflow-hidden relative min-h-[600px] border !mt-[-70px]  ">
+
+        <img src="./assets/images/LandscapingHomeBg.png" class="background-video" alt="">
+
         <div class="container">
             <div class="home_content flex flex-col gap-[25px]  max-w-[1200px]  relative z-[9] ">
-                <h1 class="text-[var(--light-gree)] mb-0 text-[75px] font-bold ">Florida’s Lawn Care Experts <br>
-                    You Can Trust</h1>
-                <p class="text-[var(--light-gree)] text-[18px] ">We provide professional lawn care services designed for
-                    Florida’s unique climate. Our team handles everything from mowing and landscaping to full property
-                    cleanups. Whether you own a home or manage a business, we keep your outdoor space looking sharp.
-                    Trusted by customers across Largo and nearby communities, we deliver reliable results.</p>
+                <h1 class="text-[var(--light-gree)] mb-0 text-[75px] font-bold ">About Us</h1>
+                <p class="text-[var(--light-gree)] text-[18px] ">We provide Keep your grass green, healthy, and
+                    perfectly trimmed year-round.</p>
                 <div class="flex gap-[30px] flex-wrap items-center !my-[20px] ">
                     <button
                         class="flex text-[18px] green_bg gap-[10px] cursor-pointer  px-[15px] h-[50px] items-center justify-center  gap-[5px] items-center text-[var(--white-color)] ">
@@ -157,144 +155,69 @@
     </section>
 
 
-    <section class="service py-[50px] pb-[100px] relative  mt-[-20px] min-h-[100vh]">
-        <img src="./assets/images/house-mountain.svg" class="w-[1000px] absolute right-[0] bottom-[10px] " alt="">
+
+
+
+    <section class=" about_info relative min-h-[700px] py-[80px]">
         <div class="container">
-            <div class="heading ">
-
-                <div class="  flex items-center mb-[20px] gap-[15px]">
-                    <img src="./assets/images/plant_green.svg" alt="">
-                    <h1 class="text-[45px] leading-[50px] font-[500] text-[var(--green-color)] mt-[20px] ">
-                        Our Services
-                    </h1>
+            <div class="grid grid-cols-12 gap-[30px]">
+                <div class="col-span-6 relative">
+                    <img src="./assets/images/About.png" alt="">
+                    <div class="absolute gap-[15px] top-[10%] flex right-[7%]">
+                        <h1 class="text-[70px]">25+</h1>
+                        <p class="text-[22px] font-bold ">Years of <br> Experience</p>
+                    </div>
                 </div>
 
-                <p class="text-[16px] text-[var(--black-color)] ">Keeping your yard healthy and beautiful in Florida’s
-                    climate takes more than just an occasional mow.
-                    Our Largo lawn care service provides consistent maintenance designed to keep your grass green,
-                    trimmed, and thriving all year long. From routine mowing and edging to weed control and
-                    fertilization, we handle the details so you can enjoy a yard that always looks its best. Whether
-                    it’s for your home or business, our reliable team delivers results you’ll notice every time you step
-                    outside.</p>
-            </div>
+                <div class="col-span-6 about_content">
+                    <div class="servie_head flex gap-[10px]">
+                        <img src="./assets/images/plantBlack.svg" alt="">
+                        <h1 class="text-[35px] pt-[30px] "> About Florida</h1>
 
-            <div class="grid_box relative z-[99] flex justify-center gap-[50px] mt-[50px] flex-wrap ">
-                <div class="box max-w-[440px] rounded-[10px] w-full bg-[var(--white-color)] p-[20px] 
-                 min-h-[545px]
-                accordion
-                 ">
-                    <div class="service_img w-full h-[275px]">
-                        <img class="fit-contain" src="./assets/images/service1.png" alt="">
                     </div>
-
-                    <div class="service_content mt-[15px]">
-                        <h2 class="text-[22px] mb-[5px] font-[600] text-[var(--black-color)] ">Mowing</h2>
-                        <p class="text-[16px] font-[500] ">Keeping your yard healthy and beautiful in Florida’s climate
-                            takes more than just an occasional mow. Our Largo lawn care service provides consistent
-                            maintenance designed to keep your grass green, trimmed, </p>
-                        <button
-                            class="w-[155px] ml-auto cursor-pointer flex gap-[15px] items-center justify-center text-[var(--white-color)] green_bg h-[50px] ">View
-                            More <img src="./assets/images/right-arrow-white.svg" alt=""></button>
-                    </div>
-
-                </div>
-                <div class="box max-w-[440px] rounded-[10px] w-full bg-[var(--white-color)] p-[20px] 
-                 min-h-[545px]
-                accordion
-                 ">
-                    <div class="service_img w-full h-[275px]">
-                        <img class="fit-contain" src="./assets/images/service2.svg" alt="">
-                    </div>
-
-                    <div class="service_content mt-[15px]">
-                        <h2 class="text-[22px] mb-[5px] font-[600] text-[var(--black-color)] ">Landscaping</h2>
-                        <p class="text-[16px] font-[500] ">Keeping your yard healthy and beautiful in Florida’s climate
-                            takes more than just an occasional mow. Our Largo lawn care service provides consistent
-                            maintenance designed to keep your grass green, trimmed, </p>
-                        <button
-                            class="w-[155px] ml-auto cursor-pointer flex gap-[15px] items-center justify-center text-[var(--white-color)] green_bg h-[50px] ">View
-                            More <img src="./assets/images/right-arrow-white.svg" alt=""></button>
-                    </div>
-
-                </div>
-                <div class="box max-w-[440px] rounded-[10px] w-full bg-[var(--white-color)] p-[20px] 
-                 min-h-[545px]
-                accordion
-                 ">
-                    <div class="service_img w-full h-[275px]">
-                        <img class="fit-contain" src="./assets/images/service3.png" alt="">
-                    </div>
-
-                    <div class="service_content mt-[15px]">
-                        <h2 class="text-[22px] mb-[5px] font-[600] text-[var(--black-color)] ">Hardscaping</h2>
-                        <p class="text-[16px] font-[500] ">Keeping your yard healthy and beautiful in Florida’s climate
-                            takes more than just an occasional mow. Our Largo lawn care service provides consistent
-                            maintenance designed to keep your grass green, trimmed, </p>
-                        <button
-                            class="w-[155px] ml-auto cursor-pointer flex gap-[15px] items-center justify-center text-[var(--white-color)] green_bg h-[50px] ">View
-                            More <img src="./assets/images/right-arrow-white.svg" alt=""></button>
-                    </div>
-
-                </div>
-                <div class="box max-w-[440px] rounded-[10px] w-full bg-[var(--white-color)] p-[20px] 
-                 min-h-[545px]
-                accordion
-                 ">
-                    <div class="service_img w-full h-[275px]">
-                        <img class="fit-contain" src="./assets/images/service2.svg" alt="">
-                    </div>
-
-                    <div class="service_content mt-[15px]">
-                        <h2 class="text-[22px] mb-[5px] font-[600] text-[var(--black-color)] ">Lawn Care</h2>
-                        <p class="text-[16px] font-[500] ">Keeping your yard healthy and beautiful in Florida’s climate
-                            takes more than just an occasional mow. Our Largo lawn care service provides consistent
-                            maintenance designed to keep your grass green, trimmed, </p>
-                        <button
-                            class="w-[155px] ml-auto cursor-pointer flex gap-[15px] items-center justify-center text-[var(--white-color)] green_bg h-[50px] ">View
-                            More <img src="./assets/images/right-arrow-white.svg" alt=""></button>
+                    <div class="mt-[15px]">
+                        <p class="mb-[10px] ">Most humans take multivitamins, supplements, or medications… Your lawn
+                            needs
+                            nutrients and
+                            vitamins as well to stay healthy and fight off disease.</p>
+                        <p class="mb-[10px]">In addition to weekly mowing service, we also offer fertilization packages
+                            to keep your lawn green and healthy. The best way to keep the weeds and moss out is to have
+                            a thick healthy lawn with deep roots. Our basic treatment package is a 4-step program
+                            including moss and weed control, core aeration, and lime treatment to balance the pH of the
+                            soil. Our premium treatment package is a 9-step program that can turn your lawn around with
+                            added dethatching and organic fertilizations.
+                        </p>
                     </div>
 
 
+                    <div class="w-[95%] mt-[30px]">
+                        <div class="flex gap-[30px] items-center w-full">
+                            <div
+                                class="box flex flex-col items-center justify-center gap-[10px] max-w-[250px] w-full h-[130px] bg-[#1B5032] rounded-[20px] ">
+                                <h1 class="text-[50px] text-white leading-[40px] ">200+</h1>
+                                <p class="text-[16px] text-white ">Projects Complete</p>
+                            </div>
 
-                </div>
-                <div class="box max-w-[440px] rounded-[10px] w-full bg-[var(--white-color)] p-[20px] 
-                 min-h-[545px]
-                accordion
-                 ">
-                    <div class="service_img w-full h-[275px]">
-                        <img class="fit-contain" src="./assets/images/service3.png" alt="">
-                    </div>
-
-                    <div class="service_content mt-[15px]">
-                        <h2 class="text-[22px] mb-[5px] font-[600] text-[var(--black-color)] ">Lawn Care</h2>
-                        <p class="text-[16px] font-[500] ">Keeping your yard healthy and beautiful in Florida’s climate
-                            takes more than just an occasional mow. Our Largo lawn care service provides consistent
-                            maintenance designed to keep your grass green, trimmed, </p>
-                        <button
-                            class="w-[155px] ml-auto cursor-pointer flex gap-[15px] items-center justify-center text-[var(--white-color)] green_bg h-[50px] ">View
-                            More <img src="./assets/images/right-arrow-white.svg" alt=""></button>
-                    </div>
+                            <div
+                                class="box flex flex-col items-center justify-center gap-[10px] max-w-[250px] w-full h-[130px] bg-[var(--yellow-color)] rounded-[20px] ">
+                                <h1 class="text-[50px] text-black leading-[40px] ">200+</h1>
+                                <p class="text-[16px] text-black ">Projects Complete</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-[30px] items-center justify-end mt-[20px] w-full">
 
 
-
-                </div>
-
-                <div class="box max-w-[440px] rounded-[10px] w-full bg-[var(--white-color)] p-[20px] 
-                 min-h-[545px]
-                accordion
-                 ">
-                    <div class="service_img w-full h-[275px]">
-                        <img class="fit-contain" src="./assets/images/service1.png" alt="">
-                    </div>
-
-                    <div class="service_content mt-[15px]">
-                        <h2 class="text-[22px] mb-[5px] font-[600] text-[var(--black-color)] ">Lawn Care</h2>
-                        <p class="text-[16px] font-[500] ">Keeping your yard healthy and beautiful in Florida’s climate
-                            takes more than just an occasional mow. Our Largo lawn care service provides consistent
-                            maintenance designed to keep your grass green, trimmed, </p>
-                        <button
-                            class="w-[155px] ml-auto cursor-pointer flex gap-[15px] items-center justify-center text-[var(--white-color)] green_bg h-[50px] ">View
-                            More <img src="./assets/images/right-arrow-white.svg" alt=""></button>
+                            <div
+                                class="box flex flex-col items-center justify-center gap-[10px] max-w-[250px] w-full h-[130px] bg-[var(--yellow-color)] rounded-[20px] ">
+                                <h1 class="text-[50px] text-black leading-[40px] ">200+</h1>
+                                <p cl.ass="text-[16px] text-black ">Projects Complete</p>
+                            </div>
+                            <div
+                                class="box flex flex-col items-center justify-center gap-[10px] max-w-[250px] w-full h-[130px] bg-[#1B5032] rounded-[20px] ">
+                                <h1 class="text-[50px] text-white leading-[40px] ">200+</h1>
+                                <p class="text-[16px] text-white ">Projects Complete</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -302,49 +225,105 @@
     </section>
 
 
-    <section class="why_choose relative mt-[-15px] min-h-[700px] py-[40px] ">
-        <div class="container relative z-[8] ">
-            <div class="heading flex items-center mb-[20px] gap-[15px]">
-                <img src="./assets/images/plant_white.svg" alt="">
-                <h1 class="text-[45px] leading-[50px] font-[500] text-[var(--white-color)] mt-[20px] ">
-                    Why Homeowners Choose Trim
-                </h1>
+    <section class="mission relative z-[99] bg-[var(--light-gree)] flex ">
+        <div class="w-[50%] pl-[150px] pr-[50px] py-[100px] ">
+            <div class="servie_head flex gap-[10px]">
+                <img src="./assets/images/plantBlack.svg" alt="">
+                <h1 class="text-[35px] pt-[30px] "> Our Mission</h1>
+            </div>
+            <p class="my-[10px]">Most humans take multivitamins, supplements, or medications… Your lawn needs nutrients
+                and vitamins as
+                well to stay healthy and fight off disease.</p>
+            <p class="my-[10px]">At Trim Lawn Care, our mission is simple: to keep Florida lawns healthy, beautiful, and
+                stress-free for
+                the people who live and work here. We believe every yard deserves reliable care, whether it’s a small
+                family home or a large commercial property. Our team is committed to delivering consistent quality,
+                honest communication, and dependable service you can count on. By combining local expertise with
+                professional standards, we aim to create outdoor spaces that our customers are proud of, season after
+                season.</p>
+
+            <button
+                class="flex mt-[20px] text-[18px] green_bg gap-[10px] cursor-pointer  px-[15px] h-[50px] items-center justify-center  gap-[5px] items-center text-[var(--white-color)] ">
+                Get Free Estimation <img src="./assets/images/right-arrow-white.svg" alt="">
+            </button>
+        </div>
+
+        <div class="w-[50%] box1 ">
+            <img class="object-cover why_img  !h-full" src="./assets/images/missionBg.png" alt="">
+        </div>
+    </section>
+
+
+
+
+    <section class="py-[40px]">
+
+        <div class="container">
+            <div class="servie_head  justify-center flex gap-[10px]">
+                <img src="./assets/images/plantBlack.svg" alt="">
+                <h1 class="text-[35px] pt-[30px] "> Meet Our Expert Gardener</h1>
             </div>
 
-            <div
-                class="why_box flex justify-between flex-wrap  gap-[20px] bg-[var(--white-color)] p-[20px] mt-[50px]  rounded-[20px]  min-h-[450px] w-full ">
-
-                <div class="w-[48%] box1">
-                    <h2 class="text-[35px] mb-[5px] italic font-bold text-[var(--black-color)] ">We’re Since 1987!</h2>
-                    <p class="text-[16px] text-[var(--black-color)] font-[500]  ">Choosing the right lawn care company
-                        matters, and our customers trust us for a reason.  As a
-                        locally owned business, we understand the needs of Florida lawns year-round.  Our licensed and
-                        insured team brings professionalism and peace of mind to every job.  Homeowners love our
-                        reliable service and consistent attention to detail.  With hundreds of 5-star Google reviews,
-                        we’ve built a reputation you can count on.</p>
-                    <div class="flex gap-[30px] flex-wrap items-center mt-[30px]">
-                        <img src="./assets/images/choose-mini.png" alt="">
-                        <ul>
-                            <li class="text-[18px] mb-[15px]  font-[500] flex items-center gap-[10px] ">
-                                <img src="./assets/images/check.svg" alt=""> 5 Star Professional Lawn Service
-                            </li>
-                            <li class="text-[18px] mb-[15px]  font-[500] flex items-center gap-[10px] ">
-                                <img src="./assets/images/check.svg" alt=""> 5 Star Trusted Gardening Partners
-                            </li>
-                            <li class="text-[18px] mb-[15px]  font-[500] flex items-center gap-[10px] ">
-                                <img src="./assets/images/check.svg" alt=""> 5 Star Locally Owned & Operated
-                            </li>
-
-                            <li class="text-[18px] mb-[15px]  font-[500] flex items-center gap-[10px] ">
-                                <img src="./assets/images/check.svg" alt=""> 5 Star Licensed & Insured
-                            </li>
-                        </ul>
+            <div class="expert_grid_box flex gap-[40px] mt-[50px] justify-center  flex-wrap ">
+                <div class="box max-w-[300px]">
+                    <img src="./assets/images/exprt1.png" class="w-full h-[300px] " alt="">
+                    <div class="text-center mt-[15px]">
+                        <h4 class="text-[20px] font-bold ">Michael D. Beauford</h4>
+                        <p>Senior Gardener</p>
+                    </div>
+                </div>
+                <div class="box max-w-[300px]">
+                    <img src="./assets/images/exprt2.png" class="w-full h-[300px] " alt="">
+                    <div class="text-center mt-[15px]">
+                        <h4 class="text-[20px] font-bold ">Michael D. Beauford</h4>
+                        <p>Senior Gardener</p>
+                    </div>
+                </div>
+                <div class="box max-w-[300px]">
+                    <img src="./assets/images/exprt1.png" class="w-full h-[300px] " alt="">
+                    <div class="text-center mt-[15px]">
+                        <h4 class="text-[20px] font-bold ">Michael D. Beauford</h4>
+                        <p>Senior Gardener</p>
+                    </div>
+                </div>
+                <div class="box max-w-[300px]">
+                    <img src="./assets/images/exprt2.png" class="w-full h-[300px] " alt="">
+                    <div class="text-center mt-[15px]">
+                        <h4 class="text-[20px] font-bold ">Michael D. Beauford</h4>
+                        <p>Senior Gardener</p>
                     </div>
                 </div>
 
-                <div class="w-[50%] box1 ">
-                    <img class="object-cover why_img rounded-[20px] !h-full" src="./assets/images/why_choose.svg"
-                        alt="">
+
+
+                <div class="box max-w-[300px]">
+                    <img src="./assets/images/exprt2.png" class="w-full h-[300px] " alt="">
+                    <div class="text-center mt-[15px]">
+                        <h4 class="text-[20px] font-bold ">Michael D. Beauford</h4>
+                        <p>Senior Gardener</p>
+                    </div>
+                </div>
+                <div class="box max-w-[300px]">
+                    <img src="./assets/images/exprt1.png" class="w-full h-[300px] " alt="">
+                    <div class="text-center mt-[15px]">
+                        <h4 class="text-[20px] font-bold ">Michael D. Beauford</h4>
+                        <p>Senior Gardener</p>
+                    </div>
+                </div>
+                <div class="box max-w-[300px]">
+                    <img src="./assets/images/exprt2.png" class="w-full h-[300px] " alt="">
+                    <div class="text-center mt-[15px]">
+                        <h4 class="text-[20px] font-bold ">Michael D. Beauford</h4>
+                        <p>Senior Gardener</p>
+                    </div>
+                </div>
+
+                <div class="box max-w-[300px]">
+                    <img src="./assets/images/exprt1.png" class="w-full h-[300px] " alt="">
+                    <div class="text-center mt-[15px]">
+                        <h4 class="text-[20px] font-bold ">Michael D. Beauford</h4>
+                        <p>Senior Gardener</p>
+                    </div>
                 </div>
 
             </div>
@@ -352,87 +331,128 @@
     </section>
 
 
-    <section class=" min-h-[650px] flex bg-[var(--light-gree)] w-full free_estimation ">
-
-        <div class="w-[55%] free_box  flex relative  items-center text-center ml-auto">
-            <div class="free_content">
-                <h3 class="text-[95px] text-[var(--yellow-color)] ">
-                    GET YOUR MOWING PRICE INSTANTLY!
-                </h3>
-                <h6 class="text-[45px] text-[var(--black-color)] "> OR <br>
-                    Get a Free Estimate For <br> All Other Services</h6>
+    <section class="story h-[500px] py-[40px] bg-[var(--light-gree)] ">
+        <div class="container">
+            <div class="servie_head   flex gap-[10px]">
+                <img src="./assets/images/plantBlack.svg" alt="">
+                <h1 class="text-[35px] pt-[30px] "> Our Story </h1>
             </div>
-            <img src="./assets/images/grass.svg" class="absolute left_side_img left-[-50px] bottom-[0px] " alt="">
+            <p class="mt-[15px]">Trim Lawn Care was founded with one goal in mind—making it easier for Florida
+                homeowners and businesses
+                to enjoy beautiful, well-kept outdoor spaces. What started as a small operation with a single mower has
+                grown into a trusted local company known for dependable service and honest work. Our mission is to
+                provide reliable, affordable lawn care while treating every property as if it were our own.</p>
         </div>
 
-        <div class="form_box free_box pt-[50px] px-[40px]  min-h-[750px] bg-[var(--white-color)]  w-[40%] h-full ">
-            <h2 class="text-[22px] font-bold text-[var(--black-color)] ">Request a Free Estimate</h2>
-            <p class="text-[18px] text-[var(--black-color)] mt-[7px] ">Fast, no-hassle quotes. Tell us about your
-                project and we’ll get back to you quickly.</p>
-
-
-            <form action="" class="mt-[40px]">
-
-                <div class="grid grid-cols-12 gap-[30px]">
-                    <div class="md:col-span-6 col-span-12">
-                        <div class="input_box">
-                            <label class="text-[16px] font-[600] text-[var(--black-color)] " for="">First Name<span
-                                    class="text-[var(--red-color)]">*</span> </label>
-                            <input type="text" placeholder="Enter Your First Name"
-                                class="w-full h-[40px] border border-[var( --input-border)] mt-[7px] px-[10px] ">
-                        </div>
-                    </div>
-                    <div class="md:col-span-6 col-span-12">
-                        <div class="input_box">
-                            <label class="text-[16px] font-[600] text-[var(--black-color)] " for="">Last Name<span
-                                    class="text-[var(--red-color)]">*</span> </label>
-                            <input type="text" placeholder="Enter Your Last Name"
-                                class="w-full h-[40px] border border-[var( --input-border)] mt-[7px] px-[10px] ">
-                        </div>
-                    </div>
-                    <div class="md:col-span-6 col-span-12">
-                        <div class="input_box">
-                            <label class="text-[16px] font-[600] text-[var(--black-color)] " for="">
-                                Email<span class="text-[var(--red-color)]">*</span> </label>
-                            <input type="text" placeholder="Enter Your Email"
-                                class="w-full h-[40px] border border-[var( --input-border)] mt-[7px] px-[10px] ">
-                        </div>
-                    </div>
-                    <div class="md:col-span-6 col-span-12">
-                        <div class="input_box">
-                            <label class="text-[16px] font-[600] text-[var(--black-color)] " for="">Phone<span
-                                    class="text-[var(--red-color)]">*</span> </label>
-                            <input type="text" placeholder="Enter Your Phone Number"
-                                class="w-full h-[40px] border border-[var( --input-border)] mt-[7px] px-[10px] ">
-                        </div>
-                    </div>
-                    <div class="col-span-12">
-                        <div class="input_box">
-                            <label class="text-[16px] font-[600] text-[var(--black-color)] " for="">Upload Image <span
-                                    class="text-[var(--red-color)]">*</span> </label>
-                            <input type="file" placeholder="Enter Your First Name"
-                                class="w-full p-[8px] h-[40px] border border-[var( --input-border)] mt-[7px] px-[10px] ">
-                        </div>
-                    </div>
-
-                    <div class="col-span-12">
-                        <div class="input_box">
-                            <label class="text-[16px] font-[600] text-[var(--black-color)] " for="">Address<span
-                                    class="text-[var(--red-color)]">*</span> </label>
-                            <textarea name="" placeholder="Enter Your Address" id=""
-                                class="w-full h-[100px] border border-[var( --input-border)] mt-[7px] py-[10px] px-[10px] "></textarea>
-                        </div>
-                    </div>
-
-                    <div class="col-span-12 flex justify-end">
-                        <button type="submit"
-                            class="flex cursor-pointer items-center yellow_bg justify-center gap-[10px] w-[150px] h-[50px] text-[18px]  ">
-                            Submit <img src="./assets/images/right-arrow.svg" alt=""> </button>
-                    </div>
-            </form>
-
-        </div>
+       
     </section>
+
+    <section class="mt-[-200px] mb-[80px] px-[40px]">
+    <!-- Horizontally scrollable container with animation -->
+    <div class="story_grid relative min-h-[600px] ">
+        <div class="scrolling-content flex gap-[50px]">
+            <!-- Initial content (these will be the first items displayed) -->
+            <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story1.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Garden Caring</h2>
+            </div>
+            <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story2.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Water in Garden</h2>
+            </div>
+            <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story3.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Cutting Hedge</h2>
+            </div>
+            <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story1.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Plants Greenhouse</h2>
+            </div>
+             <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story3.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Cutting Hedge</h2>
+            </div>
+            <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story1.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Plants Greenhouse</h2>
+            </div>
+             <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story3.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Cutting Hedge</h2>
+            </div>
+            <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story1.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Plants Greenhouse</h2>
+            </div>
+             <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story3.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Cutting Hedge</h2>
+            </div>
+            <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story1.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Plants Greenhouse</h2>
+            </div>
+
+             <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story3.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Cutting Hedge</h2>
+            </div>
+            <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story1.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Plants Greenhouse</h2>
+            </div> <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story3.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Cutting Hedge</h2>
+            </div>
+            <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story1.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Plants Greenhouse</h2>
+            </div>
+             <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story3.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Cutting Hedge</h2>
+            </div>
+            <div class="box max-w-[422px] rounded-[20px] overflow-hidden relative">
+                <img src="./assets/images/story1.png" alt="">
+                <h2 class="text-[24px] text-white absolute left-[15px] bottom-[20px] z-[999]">Plants Greenhouse</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Hide overflow to prevent showing content outside the container */
+    .story_grid {
+        width: 100%;  /* Make sure the container takes full width */
+        height: 300px; /* Adjust based on your content */
+    }
+
+    .scrolling-content {
+        display: flex;
+        animation: scroll-left 15s linear infinite; /* Infinite animation loop */
+    }
+
+    /* Keyframe animation for scrolling content */
+    @keyframes scroll-left {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-100%); /* Scroll the content completely to the left */
+        }
+    }
+
+    /* Optional: Adjusting the box styling */
+    .box {
+        flex-shrink: 0; /* Prevent items from shrinking */
+      
+    }
+
+    /* Optional: Prevent scrollbars */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+</style>
 
 
 

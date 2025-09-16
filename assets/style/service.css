@@ -18,7 +18,8 @@
     .lawn_grid_box .care_box2 {
         width: 100%;
     }
- .care_service_content{
+
+    .care_service_content {
         margin-top: 20px;
     }
 
@@ -26,15 +27,85 @@
 
 @media (max-width:991px) {
 
-    .servie_head h1{
+
+    .servie_head h1 {
         font-size: 30px;
     }
+
     .lawn_grid_box .care_box1 {
         width: 80%;
     }
 
-   
-    .lawn_care_bottom{
+
+    .lawn_care_bottom {
         display: none;
     }
+
+    .contact_form {
+        gap: 0 !important;
+        padding: 20px;
+        flex-direction: column-reverse;
+    }
+
+    .form_box p {
+        font-size: 14px;
+    }
+
+    .contact_content {
+        padding: 0 !important;
+        margin-bottom: 30px;
+    }
 }
+
+
+
+@media (max-width:575px) {
+    .form_box {
+        padding: 15px;
+    }
+
+    .form_box form .grid {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:1024px){
+    /* .locatoin_input_box{
+        flex-direction: column;
+    } */
+    .locatoin_input_box button{
+        /* order: 2; */
+        /* margin: 10px 0; */
+        /* width: 100%; */
+        white-space: nowrap;
+        padding: 0 10px;
+        font-size: 15px;
+    }
+    /* .locatoin_input_box input{
+        order: 1;
+    } */
+    
+}
+
+
+@media(max-width:575px){
+    .locatoin_input_box{
+        flex-direction: column;
+    }
+     .locatoin_input_box button{
+        margin: 10px 0;
+        width: 100%;
+        white-space: nowrap;
+    }
+   
+    
+}
+

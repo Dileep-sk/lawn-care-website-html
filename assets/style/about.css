@@ -1,0 +1,75 @@
+@media(max-width:1400px) {
+    .exprience_year {
+        top: 5%;
+        right: 0%;
+    }
+}
+
+@media(max-width:1200px) {
+    .exprience_year {
+        top: 5%;
+        right: 0%;
+    }
+
+    .about_info_grid{
+        display: block;
+    }
+
+    .about_info .box1 {
+        max-width: 700px;
+        margin: auto;
+    }
+    .mission {
+        flex-direction: column;
+    }
+    .mission > div{
+        width: 100%;
+    }
+    .mission > div .why_img  {
+        width: 100%;
+    }
+}
+
+@media(max-width:768px){
+    .exprience_year h1{
+        font-size: 50px;
+    }
+      .exprience_year p{
+        font-size: 18px;
+      }
+}
+
+
+@media(max-width:575px){
+    .exprience_year h1{
+        font-size: 35px;
+    }
+      .exprience_year p{
+        font-size: 16px;
+      }
+      .export_team_count{
+        justify-content: start ;
+      }
+}
+
+
+@media(max-width:400px){
+    .exprience_year h1{
+        font-size: 30px;
+    }
+      .exprience_year p{
+        font-size: 14px;
+      }
+}
+
+@media(max-width:350px){
+    .exprience_year{
+        position: relative;
+        margin-top: 30px;
+        justify-content: end;
+    }
+    
+
+
+    
+}

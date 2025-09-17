@@ -13,6 +13,7 @@ body {
     /* background-color: #F5F5DC; */
     height: 100vh;
     overflow-x: hidden;
+    scroll-behavior: smooth;
 }
 
 ::-webkit-scrollbar {

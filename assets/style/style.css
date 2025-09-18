@@ -276,7 +276,52 @@ h1 {
     scale: 1.5;
 }
 
+.service_content_img {
+    border-bottom-right-radius: 1000px !important;
+    border-top-right-radius: 1000px !important;
+    overflow: hidden;
+    height: 605px;
+    width: 900px;
+}
+.service_content_img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media(max-width:1600px){
+    
+.testimonials .slick-prev {
+    left: -25px;
+}
+
+.testimonials .slick-next {
+    right: -25px;
+}
+
+}
+
+@media(max-width:1200px){
+    .service_content_img{
+   border-radius: 10px !important;
+   margin: auto !important;
+   max-width: 700px;
+   width: 100%;
+
+}
+
+.service_content_img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+}
+
 @media(max-width:1300px) {
+
+    .lawn_care_bottom{
+        display: none;
+    }
 
     .slick-arrow{
         display: none !important; 
@@ -333,6 +378,7 @@ h1 {
 .service_img img {
     height: 100%;
     object-fit: cover;
+    width: 100%;
 }
 
  .service_content p {

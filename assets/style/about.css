@@ -14,7 +14,9 @@
     .about_info_grid{
         display: block;
     }
-
+.complete_count > div{
+    justify-content: center !important;
+}
     .about_info .box1 {
         max-width: 700px;
         margin: auto;
@@ -37,6 +39,16 @@
       .exprience_year p{
         font-size: 18px;
       }
+      .mission_content{
+        padding: 25px !important;
+      }
+
+      .scroll_story{
+        margin-top: -100px;
+      }
+      .story_grid {
+        min-height: max-content !important;
+      }
 }
 
 
@@ -49,6 +61,9 @@
       }
       .export_team_count{
         justify-content: start ;
+      }
+       .scroll_story{
+        margin-top: -70px;
       }
 }
 
